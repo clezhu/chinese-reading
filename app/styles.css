@@ -89,7 +89,6 @@ input { width: 100%; min-height: 46px; border: 1px solid #7d8b80; border-radius:
   .reader-reveal[data-save-state="pending"] { outline-color: Highlight; }
   .reader-reveal:hover { outline: 1px solid Highlight; }
 }
-/* Context previews are not the revision mastery interface (#6). */
-.revision-preview { list-style: none; padding: 0; display: grid; gap: 1rem; }
+/* Frozen story context is visible only on a revision flashcard's back. */
 .revision-sentence { display: flex; flex-wrap: wrap; align-items: end; font-size: 1.5rem; }
 .revision-token { display: inline-flex; flex-direction: column; align-items: center; min-width: 2.75rem; }

@@ -1,4 +1,4 @@
-# Issues #3–#5 tests
+# Issues #3–#6 tests
 
 ```sh
 npm ci
@@ -78,3 +78,16 @@ Type-check tests as well as app code with `npx tsc --noEmit -p tests/tsconfig.js
 (after `npm run typegen` on a fresh checkout). Expected rejected cross-origin
 requests can produce React Router CSRF errors in the server log; the suite
 asserts their 400/403 responses.
+
+## Completion and revisits
+
+`completion.browser.spec.ts` covers contextual revision mastery, failed full-deck
+confirmations, reload/another-device resume, narrow context wrapping, rejected
+save/retry, first/latest completion, fresh and resumable revisits, retained later
+access, phase/ownership/lock guards, and the full three-lesson end state. Lesson
+card SSR tests cover completed status and non-destructive actions at every
+revisit phase. No attempt-history or scheduling tables are added.
+
+Run `npm run test:revision` for the separate checked revision-kind curriculum
+and real Worker/D1 browser journey. See [`revision-README.md`](revision-README.md)
+for isolation details; normal builds and tests retain three published lessons.

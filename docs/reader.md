@@ -95,7 +95,12 @@ derivation and accessible rendering; offline authoring checks cover data/CLI
 validation and candidate-over-current composition.
 
 No claim is made for physical phones, Safari/Firefox, screen-reader testing or
-final Mandarin approval. #6 owns revision mastery and explicit revisits; it can
-reuse `completeRevisionDeck()` and the derived card payload. #7 owns final
+final Mandarin approval. Revision mastery now uses the shared flashcard loop:
+fronts show only the target character; backs add all readings and the frozen
+sentence help. A passed revision deck completes through the guarded lesson
+action. Explicit revisits replace only the latest attempt, retaining earned
+milestones; the list offers Resume revisit while that attempt is unfinished.
+An isolated checked revision-kind build tests story-first entry without adding
+a published lesson (see `tests/revision-README.md`). #7 owns final
 story review/promotion and complete hosted release verification. This change
 does not deploy or apply remote migrations.

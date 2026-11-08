@@ -98,7 +98,9 @@ test("independent repeated/polyphonic occurrences persist and freeze sentence-sp
     ["0:2:10", "míng", false, true], ["0:2:11", "bai", false, true],
   ]);
   const preview = page.locator('[data-revision-character="了"]');
-  await expect(preview.getByRole("list", { name: "All readings for 了", exact: true }).getByRole("listitem")).toHaveText(["le", "liǎo"]);
+  await expect(preview).toHaveCount(0); // Context belongs on the back, never the front.
+  await page.getByRole("button", { name: "Reveal", exact: true }).click();
+  await expect(page.getByRole("list", { name: "Readings for 了", exact: true }).getByRole("listitem")).toHaveText(["le", "liǎo"]);
   await expect(preview.locator('[data-context-occurrence="0:2:4"] .reader-pinyin')).toBeVisible();
   await expect(preview.locator('[data-context-occurrence="0:2:9"] .reader-pinyin')).toBeHidden();
   await expect(preview.locator('[data-context-occurrence="0:2:0"] .reader-pinyin')).toBeVisible();

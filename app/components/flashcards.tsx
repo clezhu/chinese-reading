@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { Character } from "../content/curriculum";
 import { answerCard, createDeckProgress, restoreDeckProgress, revealCard, type DeckProgress } from "../lib/flashcards";
+import type { RevisionCard } from "../lib/story";
 
-export function Flashcards({ cards, storageKey, attemptId }: { cards: readonly Character[]; storageKey: string; attemptId: string }) {
+export function Flashcards({ cards, storageKey, attemptId, contextCards, contentRevision }: { cards: readonly Character[]; storageKey: string; attemptId: string; contextCards?: readonly RevisionCard[]; contentRevision?: number }) {
   const [progress, setProgress] = useState<DeckProgress | null>(null);
   const [storageAvailable, setStorageAvailable] = useState(true);
   const revealButton = useRef<HTMLButtonElement>(null);
@@ -35,16 +36,19 @@ export function Flashcards({ cards, storageKey, attemptId }: { cards: readonly C
 
   if (!progress) return <p role="status">Loading flashcards…</p>;
   const card = cards.find((entry) => entry.id === progress.round[progress.index]);
+  const context = contextCards?.find((entry) => entry.character.id === card?.id);
+  const continueLabel = contextCards ? "Complete lesson" : "Continue to story";
   return <section className="flashcard-panel panel" aria-label="Flashcard practice">
     {!storageAvailable && <p className="notice" role="status">Browser storage is unavailable. You can practise, but returning will restart this deck.</p>}
     <p className="input-hint">Practice progress is saved in this browser only. If it is cleared, this deck restarts; your lesson phase stays saved.</p>
     {progress.stage === "complete" ? <>
       <h2>Deck recognised</h2>
-      <p>You recognised the entire deck in one clean round. Save this result to continue to the story.</p>
+      <p>You recognised the entire deck in one clean round. Save this result to {contextCards ? "complete the lesson" : "continue to the story"}.</p>
       <fetcher.Form method="post">
-        <input type="hidden" name="intent" value="deck-passed" />
+        <input type="hidden" name="intent" value={contextCards ? "revision-passed" : "deck-passed"} />
         <input type="hidden" name="attempt_id" value={attemptId} />
-        <button ref={continueButton} type="submit" disabled={fetcher.state !== "idle"}>{fetcher.state !== "idle" ? "Saving…" : "Continue to story"}</button>
+        {contextCards && <input type="hidden" name="content_revision" value={contentRevision} />}
+        <button ref={continueButton} type="submit" disabled={fetcher.state !== "idle"}>{fetcher.state !== "idle" ? "Saving…" : continueLabel}</button>
       </fetcher.Form>
       {fetcher.data?.error && <p className="form-error" role="alert">{fetcher.data.error} Your result has not been saved. Retry, or reload if the attempt changed.</p>}
     </> : card && <>
@@ -56,6 +60,7 @@ export function Flashcards({ cards, storageKey, attemptId }: { cards: readonly C
       <div className="practice-card">
         <span className="hanzi" lang="zh-Hans">{card.hanzi}</span>
         {progress.revealed && <ul className="readings" aria-label={`Readings for ${card.hanzi}`}>{card.pinyin.map((reading) => <li key={reading} lang="zh-Latn-pinyin">{reading}</li>)}</ul>}
+        {progress.revealed && context && <p lang="zh-Hans" className="revision-sentence" aria-label="Saved sentence context" data-revision-character={card.hanzi}>{context.sentence.map((token, index) => typeof token === "string" ? <span key={index}>{token}</span> : <span className="revision-token" key={index} data-context-occurrence={token.ref} data-show-pinyin={String(token.showPinyin)}><span className="reader-pinyin" style={{ visibility: token.showPinyin ? "visible" : "hidden" }} lang="zh-Latn-pinyin">{token.pinyin}</span><span>{token.hanzi}</span></span>)}</p>}
       </div>
       <div className="flashcard-actions">
         {!progress.revealed ? <button ref={revealButton} type="button" onClick={() => setProgress(revealCard(progress))}>Reveal</button> : <>

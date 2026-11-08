@@ -1,11 +1,12 @@
 # Chinese Reading
 
 React Router 8 framework-mode, React, and TypeScript on Cloudflare Workers;
-D1 holds accounts, sessions, and learner progress. Issues #3–#5 implement
+D1 holds accounts, sessions, and learner progress. Issues #3–#6 implement
 accounts → ordered lesson list → character introduction → mastery flashcards
-→ story reading → collected contextual revision. Finishing without reveals
-completes the lesson and unlocks the next one. Collected revision mastery and
-explicit revisits remain in #6. The three runtime stories are illustrative
+→ story reading → contextual revision mastery → completion. Finishing without
+reveals completes directly; otherwise recognise the collected deck to unlock
+the next lesson. Explicit revisits reset practice without undoing milestones
+or later access. The three runtime stories are illustrative
 fixtures, not approved frequency-graded curriculum; actual story drafts await
 #7 review. The reader under `prototype/` remains unrelated throwaway work.
 
@@ -30,6 +31,7 @@ Usernames are case-insensitive. There is no email or account/password recovery.
 npm run typecheck
 npx playwright install chromium
 npm test
+npm run test:revision
 ```
 
 Tests build and serve the real Worker with a separate local D1 store under
@@ -145,6 +147,16 @@ use `wrangler secret put NAME` and ignored `.dev.vars` locally.
   browser-local round progress supersede the original #1/#4 requirements; see
   [the agreed amendment](https://github.com/clezhu/chinese-reading/issues/4#issuecomment-6719667579).
 
+Completed lessons offer View lesson and an explicit Revisit lesson action on
+the list. An active revisit retains its Completed badge and offers only Resume
+revisit, so returning cannot discard practice. Revisit replaces the current
+attempt ID, clears reveals and browser-practice identity, and preserves first
+completion and later access. Completing it updates only the latest milestone.
+Stale/repeated revisit requests cannot replace an active attempt.
+
+Revision-kind lessons enter the story directly with no new characters or initial
+deck. `npm run test:revision` validates an unpublished fixture in a separate
+build/D1 store; it does not add a fourth production lesson. See
+[`tests/revision-README.md`](tests/revision-README.md).
+
 No R2, content administration, email/recovery system, or runtime content generation.
-Future explicit revisits must replace the attempt ID and clear reveals while
-preserving first/latest completion milestones; current actions cannot revisit.

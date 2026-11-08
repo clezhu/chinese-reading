@@ -1,11 +1,12 @@
 import { data, Form, Link, redirect, useNavigation } from "react-router";
+import { useMemo } from "react";
 import { Flashcards } from "../components/flashcards";
 import { StoryReader } from "../components/story-reader";
 import { orderedLessons } from "../content/curriculum";
 import { cloudflareContext } from "../context";
 import { requireUser } from "../lib/auth.server";
 import { readForm, requireSameOriginPost } from "../lib/http.server";
-import { getProgress, passInitialDeck, requireLessonAccess, startFlashcards, startIntroduction, storyState } from "../lib/progress.server";
+import { completeRevisionDeck, getProgress, passInitialDeck, requireLessonAccess, startFlashcards, startIntroduction, startRevisit, storyState } from "../lib/progress.server";
 import { revisionCards } from "../lib/story";
 import type { Route } from "./+types/lesson";
 
@@ -28,8 +29,8 @@ export async function action({ request, context, params }: Route.ActionArgs) {
   await requireLessonAccess(db, user.id, params.lessonId);
   const form = await readForm(request);
   const intent = form.get("intent");
-  if (form.getAll("intent").length !== 1 || !["start", "start-flashcards", "deck-passed"].includes(intent ?? "")) {
-    throw new Response("Unsupported lesson action. Lessons cannot be completed here.", { status: 400 });
+  if (form.getAll("intent").length !== 1 || !["start", "start-flashcards", "deck-passed", "revision-passed", "revisit"].includes(intent ?? "")) {
+    throw new Response("Unsupported lesson action.", { status: 400 });
   }
   // Browser-supplied user IDs, phase, or completion fields are never consumed.
   if (intent === "start") await startIntroduction(db, user.id, params.lessonId);
@@ -37,7 +38,11 @@ export async function action({ request, context, params }: Route.ActionArgs) {
     if (form.getAll("attempt_id").length !== 1) throw new Response("An attempt ID is required", { status: 400 });
     try {
       if (intent === "start-flashcards") await startFlashcards(db, user.id, params.lessonId, form.get("attempt_id")!);
-      else await passInitialDeck(db, user.id, params.lessonId, form.get("attempt_id")!);
+      else if (intent === "revisit") await startRevisit(db, user.id, params.lessonId, form.get("attempt_id")!);
+      else if (intent === "revision-passed") {
+        if (form.getAll("content_revision").length !== 1 || !/^\d+$/.test(form.get("content_revision") ?? "")) throw new Response("A content revision is required", { status: 400 });
+        await completeRevisionDeck(db, user.id, params.lessonId, form.get("attempt_id")!, Number(form.get("content_revision")));
+      } else await passInitialDeck(db, user.id, params.lessonId, form.get("attempt_id")!);
     } catch (error) {
       if (error instanceof Response) return data({ error: await error.text() }, { status: error.status });
       console.error("Lesson phase save failed", error);
@@ -49,13 +54,16 @@ export async function action({ request, context, params }: Route.ActionArgs) {
 
 export default function Lesson({ loaderData, actionData }: Route.ComponentProps) {
   const { lesson, progress, userId, state, cards, nextLessonId } = loaderData;
+  const revisionCharacters = useMemo(() => cards.map((card) => card.character), [cards]);
   const navigation = useNavigation();
-  const phase = progress?.phase ?? "introduction";
+  const phase = progress?.phase ?? (lesson.kind === "learning" ? "introduction" : "not-started");
+  const phaseLabel = phase === "introduction" ? "Character introduction" : phase === "flashcards" ? "Flashcards" : phase === "revision-flashcards" ? "Collected revision" : phase === "complete" ? "Complete" : "Story";
   return (
     <section>
       <Link className="back-link" to="/lessons">← Back to lessons</Link>
-      <p className="eyebrow">{lesson.kind === "learning" ? `Learning · ${phase === "introduction" ? "Character introduction" : phase === "flashcards" ? "Flashcards" : "Story"}` : "Revision"}</p>
+      <p className="eyebrow">{lesson.kind === "learning" ? "Learning" : "Revision"} · {phaseLabel}</p>
       <h1>{lesson.title}</h1>
+      {actionData?.error && <p role="alert" className="form-error">{actionData.error}</p>}
       {progress?.first_completed_at != null && <dl aria-label="Completion milestones" className="input-hint">
         <dt>First completed</dt><dd><time dateTime={new Date(progress.first_completed_at).toISOString()}>{new Date(progress.first_completed_at).toISOString()}</time> · content revision {progress.first_completed_content_revision}</dd>
         <dt>Last completed</dt><dd><time dateTime={new Date(progress.last_completed_at!).toISOString()}>{new Date(progress.last_completed_at!).toISOString()}</time> · content revision {progress.last_completed_content_revision}</dd>
@@ -68,7 +76,6 @@ export default function Lesson({ loaderData, actionData }: Route.ComponentProps)
           <input type="hidden" name="attempt_id" value={progress?.attempt_id ?? ""} />
           <button type="submit" disabled={navigation.state !== "idle"}>Start flashcards</button>
         </Form>
-        {actionData?.error && <p role="alert" className="form-error">{actionData.error}</p>}
       </> : phase === "flashcards" && lesson.kind === "learning" && progress ?
         <Flashcards key={progress.attempt_id} cards={lesson.newCharacters} attemptId={progress.attempt_id} storageKey={`chinese-reading:flashcards:${userId}:${lesson.id}:${progress.attempt_id}:initial`} /> : phase === "story" && state && lesson.story ? <>
           <h2>Story phase</h2>
@@ -76,16 +83,15 @@ export default function Lesson({ loaderData, actionData }: Route.ComponentProps)
           <StoryReader lesson={lesson} state={state} />
         </> : phase === "revision-flashcards" ? <>
           <h2>Collected revision</h2>
-          <p>Reading is saved. Your {cards.length} collected character{cards.length === 1 ? "" : "s"} and sentence help are frozen for this attempt. Revision practice is supplied by #6; this lesson is not complete yet.</p>
-          <ul className="revision-preview" aria-label="Collected revision cards">{cards.map((card) => <li className="panel" key={card.character.hanzi} data-revision-character={card.character.hanzi}>
-            <h3 lang="zh-Hans">{card.character.hanzi}</h3>
-            <ul className="readings" aria-label={`All readings for ${card.character.hanzi}`}>{card.character.pinyin.map((reading) => <li key={reading} lang="zh-Latn-pinyin">{reading}</li>)}</ul>
-            <p lang="zh-Hans" className="revision-sentence">{card.sentence.map((token, index) => typeof token === "string" ? <span key={index}>{token}</span> : <span className="revision-token" key={index} data-context-occurrence={token.ref} data-show-pinyin={String(token.showPinyin)}><span className="reader-pinyin" style={{ visibility: token.showPinyin ? "visible" : "hidden" }} lang="zh-Latn-pinyin">{token.pinyin}</span><span>{token.hanzi}</span></span>)}</p>
-          </li>)}</ul>
+          <p>Reading is saved. Your {cards.length} collected character{cards.length === 1 ? "" : "s"} and sentence help are frozen for this attempt.</p>
+          {progress && <Flashcards key={`${progress.attempt_id}:revision`} cards={revisionCharacters} contextCards={cards} contentRevision={progress.content_revision} attemptId={progress.attempt_id} storageKey={`chinese-reading:flashcards:${userId}:${lesson.id}:${progress.attempt_id}:revision`} />}
         </> : phase === "complete" ? <>
           <h2>Lesson complete</h2>
           <p>Your completion is saved.</p>
           {nextLessonId ? <Link className="button" to={`/lessons/${nextLessonId}`}>Next lesson</Link> : <p>You reached the end of the current curriculum.</p>}
+        </> : phase === "not-started" ? <>
+          <p>No new characters. Begin with the story.</p>
+          <Form method="post"><input type="hidden" name="intent" value="start" /><button type="submit" disabled={navigation.state !== "idle"}>Start reading</button></Form>
         </> : <>
           <h2>Story unavailable</h2><p>This lesson does not have a reader fixture yet.</p>
         </>}

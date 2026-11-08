@@ -62,11 +62,25 @@ export async function requireLessonAccess(db: D1Database, userId: string, lesson
 export async function startIntroduction(db: D1Database, userId: string, lessonId: string) {
   // The write owns its own access check: do not rely on a previous page loader.
   const lesson = await requireLessonAccess(db, userId, lessonId);
-  if (lesson.kind !== "learning") throw new Response("Revision practice is not available yet", { status: 400 });
   const now = Date.now();
   await db.prepare(
-    "INSERT INTO lesson_progress (user_id, lesson_id, phase, attempt_id, started_at, updated_at, content_revision) VALUES (?, ?, 'introduction', ?, ?, ?, ?) ON CONFLICT(user_id, lesson_id) DO NOTHING",
-  ).bind(userId, lessonId, crypto.randomUUID(), now, now, lesson.contentRevision).run();
+    "INSERT INTO lesson_progress (user_id, lesson_id, phase, attempt_id, started_at, updated_at, content_revision) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(user_id, lesson_id) DO NOTHING",
+  ).bind(userId, lessonId, lesson.kind === "learning" ? "introduction" : "story", crypto.randomUUID(), now, now, lesson.contentRevision).run();
+}
+
+/** Explicitly replace a finished attempt, never an active revisit or a stale tab. */
+export async function startRevisit(db: D1Database, userId: string, lessonId: string, attemptId: string) {
+  const lesson = await requireLessonAccess(db, userId, lessonId);
+  const now = Date.now();
+  // Completion milestones (including their content revisions) are not reset.
+  // A fresh identity also isolates optional browser-local flashcard practice.
+  const result = await db.prepare(`UPDATE lesson_progress SET phase = ?, attempt_id = ?,
+    revealed_occurrence_ids = '[]', state_version = 0, started_at = ?, updated_at = ?
+    WHERE user_id = ? AND lesson_id = ? AND attempt_id = ? AND content_revision = ?
+      AND phase = 'complete' AND first_completed_at IS NOT NULL`)
+    .bind(lesson.kind === "learning" ? "introduction" : "story", crypto.randomUUID(), now, now,
+      userId, lessonId, attemptId, lesson.contentRevision).run();
+  if (result.meta.changes !== 1) throw new Response("This attempt changed. Reload the lesson to continue.", { status: 409 });
 }
 
 export async function startFlashcards(db: D1Database, userId: string, lessonId: string, attemptId: string) {
@@ -123,7 +137,7 @@ export async function revealOccurrence(db: D1Database, userId: string, lessonId:
 }
 
 /** Shared completion assignments: the caller supplies a trusted SQL predicate,
- * never browser input. #6 can reuse this for a passed revision deck. */
+ * never browser input. */
 function completionFields(when: string) {
   return `first_completed_at = CASE WHEN ${when} THEN COALESCE(first_completed_at, ?1) ELSE first_completed_at END,
     last_completed_at = CASE WHEN ${when} THEN MAX(COALESCE(last_completed_at, ?1), ?1) ELSE last_completed_at END,
@@ -148,8 +162,7 @@ export async function finishReading(db: D1Database, userId: string, lessonId: st
   throw new Response("This attempt is not in the story phase. Reload the lesson.", { status: 409 });
 }
 
-/** No public route accepts a revision-passed claim in #5. #6 connects this
- * shared, guarded completion operation to the revision mastery interface. */
+/** Complete only the current frozen contextual revision phase. */
 export async function completeRevisionDeck(db: D1Database, userId: string, lessonId: string, attemptId: string, revision: number) {
   await currentAttempt(db, userId, lessonId, attemptId, revision);
   const row = await db.prepare(`UPDATE lesson_progress SET phase = 'complete', ${completionFields("1")},
