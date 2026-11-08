@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chinese-reading",
+  "main": "./workers/app.ts",
+  "compatibility_date": "2026-11-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+  "assets": { "directory": "./build/client" },
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "chinese-reading",
+      "database_id": "02c00481-681d-4127-aa22-e6cbb25b3ad3",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
