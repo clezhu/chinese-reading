@@ -1,9 +1,10 @@
 # Chinese Reading
 
 React Router 8 framework-mode, React, and TypeScript on Cloudflare Workers;
-D1 holds accounts, sessions, and learner progress. Issue #3 implements the
-account → ordered lesson list → character introduction slice of spec #1.
-Flashcards, stories, and lesson completion are deliberately not implemented yet.
+D1 holds accounts, sessions, and learner progress. Issues #3–#4 implement
+accounts → ordered lesson list → character introduction → mastery flashcards
+→ a persisted story-phase placeholder. The reader and lesson completion are
+not implemented yet; passing flashcards does not unlock the next lesson.
 The three published learning fixtures are structural examples, not approved
 frequency-graded curriculum. The reader under `prototype/` is unrelated throwaway work.
 
@@ -13,12 +14,14 @@ Requires Node.js 22.12+ and npm.
 
 ```sh
 npm ci
-npm run db:migrate
 npm run dev
 ```
 
-Open the local URL printed by Vite. D1 persists under `.wrangler/`; local
-migrations do not affect Cloudflare's database. Register with a 3–32-character
+`npm run dev` automatically applies pending local D1 migrations before starting
+Vite. You can also run `npm run db:migrate` explicitly against an already-running
+development server. D1 persists under `.wrangler/`; local migrations do not
+affect Cloudflare's database. Open the local URL printed by Vite.
+Register with a 3–32-character
 ASCII letters/numbers/underscore username and a 12–128-character password.
 Usernames are case-insensitive. There is no email or account/password recovery.
 
@@ -72,17 +75,39 @@ use `wrangler secret put NAME` and ignored `.dev.vars` locally.
   and character reading arrays. Array order is progression order; there are no
   position fields or curriculum tables. The unpublished revision fixture lives
   in `app/content/fixtures/revision.ts`.
-- `migrations/0001_accounts.sql`: accounts, expiring server-side sessions, and
-  per-user/per-lesson introduction progress. Completion milestones are reserved
-  but no operation can set them in this slice. Later attempt-state migrations
-  will add flashcard/story state; this is not a final lesson-engine schema.
+- `migrations/0001_accounts.sql` and `0002_flashcards.sql`: accounts, sessions,
+  and one current/latest attempt per user/lesson. The second migration preserves
+  existing introductions and completion milestones while adding attempt IDs,
+  phases, and an empty revealed-occurrence array reserved for the reader.
+- No row means not started. Starting from the lesson list saves an introduction;
+  directly visiting a lesson shows the same introduction without creating a row.
+  Start flashcards saves `flashcards`; passing the complete original deck in one
+  confirmation saves `story`. `revision-flashcards` and `complete` are reserved
+  for the next slices; no current action can complete a lesson.
+- `app/lib/flashcards.ts`: shared, arbitrary-size deck transitions. Practise
+  misses until none remain, then confirm the full original deck. Failed
+  confirmation requires missed-card practice and another full confirmation.
+- Within-deck state is optional localStorage, keyed by user + lesson + attempt
+  ID + deck purpose. Missing, malformed, stale-content, or inaccessible storage
+  restarts the current whole deck, not the lesson. There is no D1 answer history
+  or round checkpoint. D1 phase changes are explicit and errors are displayed
+  without claiming the lesson result was saved.
 - Native Workers `node:crypto` scrypt hashes passwords with random per-password
   salts (N=32768, r=8, p=3); raw passwords and session tokens are not stored.
 - Production cookies are Secure, HttpOnly, SameSite=Lax, host-only cookies.
   Only loopback HTTP development uses a non-Secure cookie. Logout revokes the
   database session. Mutations check origin and derive ownership from the session,
   never browser-supplied user IDs. Locked reads and writes are checked server-side.
+- Deck-passed claims are intentionally trusted self-assessment. The server checks
+  phase order and attempt ID but does not verify individual answers. This and
+  browser-local round progress supersede the original #1/#4 requirements; see
+  [the agreed amendment](https://github.com/clezhu/chinese-reading/issues/4#issuecomment-6719667579).
 
 No R2, content administration, email/recovery system, or runtime content generation.
 Sentence/occurrence IDs and authored contextual pinyin will be added with the
 story slice rather than guessed at runtime.
+That slice will persist revealed occurrence IDs in D1 and derive revision
+membership and context: use the earliest revealed occurrence in story order,
+not click order or an unrevealed first appearance. No duplicated deck is needed.
+Future explicit revisits must replace the attempt ID and clear reveals while
+preserving first/latest completion milestones; current actions cannot revisit.

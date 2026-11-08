@@ -55,3 +55,31 @@ test("mobile form, lesson controls and introduction remain usable with keyboard 
   await expect(page).toHaveURL(/\/login$/);
   await expectNoHorizontalOverflow(page);
 });
+
+test("flashcards work with keyboard controls and fit the mobile viewport", async ({ page }) => {
+  const credentials = account();
+  await page.goto("/register");
+  await page.getByLabel("Username", { exact: true }).fill(credentials.username);
+  await page.getByLabel("Password", { exact: true }).fill(credentials.password);
+  await page.getByRole("button", { name: "Create account", exact: true }).click();
+  await expect(page).toHaveURL(/\/lessons$/);
+  await page.goto(firstLesson);
+  const start = page.getByRole("button", { name: "Start flashcards", exact: true });
+  await start.focus();
+  await page.keyboard.press("Enter");
+  const reveal = page.getByRole("button", { name: "Reveal", exact: true });
+  const got = page.getByRole("button", { name: "Got it", exact: true });
+  for (let i = 0; i < 10; i++) {
+    await expect(reveal).toBeFocused();
+    expect((await reveal.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await page.keyboard.press("Enter");
+    await expect(got).toBeFocused();
+    await expectNoHorizontalOverflow(page);
+    await page.keyboard.press("Enter");
+  }
+  const next = page.getByRole("button", { name: "Continue to story", exact: true });
+  await expect(next).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});

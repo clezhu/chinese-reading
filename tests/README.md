@@ -1,4 +1,4 @@
-# Issue #3 tests
+# Issues #3–#4 tests
 
 ```sh
 npm ci
@@ -25,6 +25,15 @@ The mobile project checks narrow-screen overflow, touch-target heights, and
 keyboard focus/activation. Browser emulation does not simulate an OS virtual
 keyboard. The SSR project renders the shared lesson card using the unpublished
 revision fixture; it adds no route or curriculum entry.
+
+Flashcard browser tests exercise the real persisted introduction-to-story-phase
+journey, missed-card retries, failed/full-deck confirmation, localStorage resume,
+invalid/missing/blocked-storage fallback, another-device phase retention,
+ownership/attempt/phase guards, and an unsuccessful save followed by retry.
+Mobile tests exercise the whole deck using keyboard focus and activation, with
+overflow and touch-target checks. Focused public transition tests in the `ssr`
+project cover repeated misses, non-five-card decks, reveal gating, and restore
+validation without mocking browser or database operations.
 
 To run only one project: `npm test -- --project=chromium` (or `mobile`, `ssr`).
 The same isolated local Worker is started for each invocation.

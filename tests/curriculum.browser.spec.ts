@@ -35,8 +35,8 @@ test("starting the first lesson groups all five characters and every authored re
     await expect(characters.getByText(hanzi, { exact: true })).toBeVisible();
     await expect(characters.getByRole("list", { name: `Readings for ${hanzi}`, exact: true }).getByRole("listitem")).toHaveText([...readings]);
   }
-  await expect(page.getByText("Introduction only.", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: /complete|finish|flashcards/i })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /complete|finish/i })).toHaveCount(0);
   await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
   await expect(page).toHaveURL(/\/lessons$/);
   await page.reload();

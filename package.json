@@ -6,6 +6,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "predev": "npm run db:migrate",
     "dev": "react-router dev --host 127.0.0.1",
     "build": "react-router build",
     "preview": "vite preview --host 127.0.0.1",
