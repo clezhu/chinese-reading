@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Throwaway Chinese reader · Issue #2</title>
+  <link rel="stylesheet" href="/prototype/reader/reader.css">
+  <script type="module" src="/prototype/reader/reader.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <small>THROWAWAY · ISSUE #2 · LOCAL MEMORY ONLY</small>
+      <h1>Help above the text, not in its way</h1>
+      <p>Can occurrence-specific pinyin stay readable and stable as help is revealed?</p>
+    </header>
+    <section aria-label="Reader instructions" class="instructions">
+      <p><strong>Dotted underline:</strong> click, tap, or use Tab then Enter / Space for help. A solid underline means revealed; it stays visible.</p>
+      <p><strong>Double underline:</strong> permanent training wheels, not a button. <span lang="zh-Hans">今、银、窗、爽</span> always show pinyin.</p>
+      <p>Try the four <span lang="zh-Hans">行</span> occurrences: <span lang="zh-Hans">银行</span> háng (twice), <span lang="zh-Hans">两行字</span> háng, <span lang="zh-Hans">行走</span> xíng. Repeated <span lang="zh-Hans">我、妈</span> stay independent too.</p>
+    </section>
+    <h2 id="approach"></h2>
+    <p id="description"></p>
+    <article id="story" lang="zh-Hans" aria-label="Sample Chinese story"></article>
+    <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+    <section class="inspector" aria-labelledby="inspector-title">
+      <h2 id="inspector-title">Author view — in-memory state</h2>
+      <p>Switching approaches keeps reveals. Reload or “New attempt” clears them. No saving, revision deck, or lesson flow.</p>
+      <button id="reset" type="button">New attempt (clear reveals)</button>
+      <details open>
+        <summary>Full occurrence state (including fixture answers)</summary>
+        <pre id="state"></pre>
+      </details>
+    </section>
+  </main>
+  <nav id="switcher" aria-label="Throwaway layout variants">
+    <button id="previous" type="button" aria-label="Previous layout variant">←</button>
+    <span id="variant-label" aria-live="polite"></span>
+    <button id="next" type="button" aria-label="Next layout variant">→</button>
+  </nav>
+</body>
+</html>
