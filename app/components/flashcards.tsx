@@ -40,7 +40,7 @@ export function Flashcards({ cards, storageKey, attemptId }: { cards: readonly C
     <p className="input-hint">Practice progress is saved in this browser only. If it is cleared, this deck restarts; your lesson phase stays saved.</p>
     {progress.stage === "complete" ? <>
       <h2>Deck recognised</h2>
-      <p>You recognised the entire deck in one confirmation pass. Save this result to continue to the story.</p>
+      <p>You recognised the entire deck in one clean round. Save this result to continue to the story.</p>
       <fetcher.Form method="post">
         <input type="hidden" name="intent" value="deck-passed" />
         <input type="hidden" name="attempt_id" value={attemptId} />
@@ -52,7 +52,7 @@ export function Flashcards({ cards, storageKey, attemptId }: { cards: readonly C
         <h2>{progress.stage === "confirmation" ? "Full-deck confirmation" : "Practice round"}</h2>
         <p>Card {progress.index + 1} of {progress.round.length} · {progress.missed.length} missed this round</p>
       </div>
-      <p>{progress.stage === "confirmation" ? "Recognise every card in this pass. Any misses need practice, then another full-deck confirmation." : "Reveal each card, then assess your recall. Missed cards repeat before full-deck confirmation."}</p>
+      <p>{progress.stage === "confirmation" ? "Recognise every card in this pass. Any misses repeat before you try the full deck again." : progress.round.length === progress.deck.length ? "Reveal each card, then assess your recall. Recognise the whole deck in this round to move on; only missed cards repeat." : "Practise the missed cards. Once this smaller round is clear, try the full deck again."}</p>
       <div className="practice-card">
         <span className="hanzi" lang="zh-Hans">{card.hanzi}</span>
         {progress.revealed && <ul className="readings" aria-label={`Readings for ${card.hanzi}`}>{card.pinyin.map((reading) => <li key={reading} lang="zh-Latn-pinyin">{reading}</li>)}</ul>}

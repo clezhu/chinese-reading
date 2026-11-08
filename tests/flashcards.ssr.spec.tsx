@@ -18,20 +18,32 @@ function answerRound(state: Progress, answers: readonly boolean[]): Progress {
   return answers.reduce((next, got) => answer(next, got), state);
 }
 
-test("all-got practice requires a full confirmation round before completion", () => {
+test("a clean initial full-deck round completes without a redundant confirmation", () => {
   const deck = ["我", "你", "他"];
   const fresh = createDeckProgress(deck);
   expect(fresh).toEqual({
     deck, stage: "practice", round: deck, index: 0, missed: [], revealed: false,
   });
 
-  const confirmation = answerRound(fresh, [true, true, true]);
-  expect(confirmation).toEqual({
-    deck, stage: "confirmation", round: deck, index: 0, missed: [], revealed: false,
-  });
-  const complete = answerRound(confirmation, [true, true, true]);
-  expect(complete.stage).toBe("complete");
-  expect(complete.deck).toEqual(deck);
+  const complete = answerRound(fresh, [true, true, true]);
+  expect(complete).toEqual({ deck, stage: "complete", round: deck, index: 3, missed: [], revealed: false });
+  expect(restoreDeckProgress(JSON.parse(JSON.stringify(complete)), deck)).toEqual(complete);
+});
+
+test("a full-deck retry after missing every card also completes with one clean pass", () => {
+  const deck = ["一", "二", "三"];
+  const retry = answerRound(createDeckProgress(deck), [false, false, false]);
+  expect(retry.stage).toBe("practice");
+  expect(retry.round).toEqual(deck);
+  expect(answerRound(retry, [true, true, true]).stage).toBe("complete");
+});
+
+test("a one-card deck completes on its first successful round, including after misses", () => {
+  const fresh = createDeckProgress(["一"]);
+  expect(answer(fresh, true).stage).toBe("complete");
+  const retry = answer(answer(fresh, false), false);
+  expect(answer(retry, true).stage).toBe("complete");
+  expect(createDeckProgress([]).stage).toBe("complete");
 });
 
 test("repeated practice misses retry only the missed subset and retain the original non-five-card deck", () => {
@@ -57,7 +69,8 @@ test("repeated practice misses retry only the missed subset and retain the origi
 
 test("failed confirmation finishes the entire round, practises misses, then confirms the full deck", () => {
   const deck = ["日", "月", "水", "火"];
-  let state = answerRound(createDeckProgress(deck), [true, true, true, true]);
+  let state = answerRound(createDeckProgress(deck), [false, true, true, true]);
+  state = answerRound(state, [true]);
   state = answer(state, false);
   expect(state).toEqual({
     deck, stage: "confirmation", round: deck, index: 1, missed: ["日"], revealed: false,
@@ -90,9 +103,6 @@ test("answers require reveal on every card and cannot be submitted after complet
   expect(state.revealed).toBe(false);
   expect(() => answerCard(state, true)).toThrow();
   state = answer(state, true);
-  expect(state.stage).toBe("confirmation");
-  expect(() => answerCard(state, false)).toThrow();
-  state = answerRound(state, [true, true]);
   expect(state.stage).toBe("complete");
   expect(() => answerCard(state, true)).toThrow();
   expect(() => answerCard(state, false)).toThrow();

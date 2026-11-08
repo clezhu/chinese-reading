@@ -6,7 +6,11 @@
   "compatibility_flags": ["nodejs_compat"],
   "upload_source_maps": true,
   "assets": { "directory": "./build/client" },
-  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "traces": { "enabled": true, "head_sampling_rate": 0.01 }
+  },
   "d1_databases": [
     {
       "binding": "DB",

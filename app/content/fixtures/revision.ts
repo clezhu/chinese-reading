@@ -6,5 +6,6 @@ export const revisionLessonFixture = {
   title: "Foundations revision",
   description: "Revisit familiar characters without introducing new ones.",
   kind: "revision",
+  contentRevision: 1,
   newCharacters: [],
 } as const satisfies RevisionLesson;

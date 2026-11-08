@@ -69,14 +69,30 @@ test("flashcards work with keyboard controls and fit the mobile viewport", async
   await page.keyboard.press("Enter");
   const reveal = page.getByRole("button", { name: "Reveal", exact: true });
   const got = page.getByRole("button", { name: "Got it", exact: true });
-  for (let i = 0; i < 10; i++) {
+  const missed = page.getByRole("button", { name: "Didn't get it", exact: true });
+  // Miss one card, clear its retry, then complete a clean full-deck confirmation.
+  for (let i = 0; i < 11; i++) {
+    if (i === 5) {
+      await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+      await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();
+    }
+    if (i === 6) {
+      await expect(page.getByRole("heading", { name: "Full-deck confirmation", exact: true })).toBeVisible();
+      await expect(page.getByText("Card 1 of 5 · 0 missed this round", { exact: true })).toBeVisible();
+    }
     await expect(reveal).toBeFocused();
     expect((await reveal.boundingBox())!.height).toBeGreaterThanOrEqual(44);
     await page.keyboard.press("Enter");
     await expect(got).toBeFocused();
     await expectNoHorizontalOverflow(page);
+    if (i === 0) {
+      await page.keyboard.press("Tab");
+      await expect(missed).toBeFocused();
+      expect((await missed.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    }
     await page.keyboard.press("Enter");
   }
+  await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   const next = page.getByRole("button", { name: "Continue to story", exact: true });
   await expect(next).toBeFocused();
   await page.keyboard.press("Enter");

@@ -6,8 +6,16 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "authoring:frequency": "node authoring/scripts/frequency.mjs",
+    "authoring:frequency:import": "python3 authoring/scripts/import_frequency.py",
+    "authoring:bank": "node authoring/scripts/content.mjs bank",
+    "authoring:check": "node authoring/scripts/content.mjs check",
+    "authoring:check:drafts": "node authoring/scripts/content.mjs check --draft authoring/drafts/initial-stories.ts",
+    "authoring:typecheck": "tsc --noEmit -p authoring/tsconfig.json",
+    "authoring:test": "node --test authoring/tests/*.test.mjs",
     "predev": "npm run db:migrate",
     "dev": "react-router dev --host 127.0.0.1",
+    "prebuild": "npm run authoring:check",
     "build": "react-router build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "playwright test",

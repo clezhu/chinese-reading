@@ -1,12 +1,13 @@
 # Chinese Reading
 
 React Router 8 framework-mode, React, and TypeScript on Cloudflare Workers;
-D1 holds accounts, sessions, and learner progress. Issues #3–#4 implement
+D1 holds accounts, sessions, and learner progress. Issues #3–#5 implement
 accounts → ordered lesson list → character introduction → mastery flashcards
-→ a persisted story-phase placeholder. The reader and lesson completion are
-not implemented yet; passing flashcards does not unlock the next lesson.
-The three published learning fixtures are structural examples, not approved
-frequency-graded curriculum. The reader under `prototype/` is unrelated throwaway work.
+→ story reading → collected contextual revision. Finishing without reveals
+completes the lesson and unlocks the next one. Collected revision mastery and
+explicit revisits remain in #6. The three runtime stories are illustrative
+fixtures, not approved frequency-graded curriculum; actual story drafts await
+#7 review. The reader under `prototype/` remains unrelated throwaway work.
 
 ## Local development
 
@@ -35,6 +36,27 @@ Tests build and serve the real Worker with a separate local D1 store under
 `.wrangler/playwright`. They create unique accounts; no Cloudflare credentials
 are required. See `tests/README.md`. Stop other processes on port 4173 first.
 For a manual built-runtime check, run `npm run build && npm run preview`.
+
+## Authoring resources
+
+See [`authoring/README.md`](authoring/README.md) for the offline SUBTLEX-CH
+frequency guide, provenance/licence, reproducible UTF-8 conversion, and small
+candidate queries. The dataset is not imported by the runtime app.
+
+```sh
+npm run authoring:frequency -- --limit 30
+npm run authoring:bank -- people-and-places
+npm run authoring:check
+npm run authoring:check:drafts
+npm run authoring:test
+```
+
+Reimporting/verifying the upstream archive requires Python 3; normal queries
+and authoring tests use Node.js and the checked-in JSON without network access.
+The deployment-update browser tests also use Python 3 to seed old attempts in
+the isolated local test database. `npm run build` runs current-content validation
+first, so invalid introductions/story structures cannot silently ship. Draft
+checks stay separate; a passing check is not language approval.
 
 ## Deployment
 
@@ -72,21 +94,41 @@ use `wrangler secret put NAME` and ignored `.dev.vars` locally.
 ## Storage and security boundaries
 
 - `app/content/curriculum.ts`: typed authored module/lesson lists, stable IDs,
-  and character reading arrays. Array order is progression order; there are no
-  position fields or curriculum tables. The unpublished revision fixture lives
-  in `app/content/fixtures/revision.ts`.
-- `migrations/0001_accounts.sql` and `0002_flashcards.sql`: accounts, sessions,
-  and one current/latest attempt per user/lesson. The second migration preserves
-  existing introductions and completion milestones while adding attempt IDs,
-  phases, and an empty revealed-occurrence array reserved for the reader.
+  lesson-owned reading definitions, revisioned stories, and paragraph/sentence/
+  token arrays. Order defines progression; no curriculum database, global
+  dictionary or stored cumulative bank. See `app/content/README.md`.
+- `migrations/0001_accounts.sql` through `0003_reader.sql`: accounts, sessions,
+  and one latest attempt per user/lesson. Reader migration adds content revision,
+  monotonic response version, and first/latest completion revisions while
+  preserving milestones. Apply migrations before running the updated Worker.
 - No row means not started. Starting from the lesson list saves an introduction;
   directly visiting a lesson shows the same introduction without creating a row.
   Start flashcards saves `flashcards`; passing the complete original deck in one
-  confirmation saves `story`. `revision-flashcards` and `complete` are reserved
-  for the next slices; no current action can complete a lesson.
-- `app/lib/flashcards.ts`: shared, arbitrary-size deck transitions. Practise
-  misses until none remain, then confirm the full original deck. Failed
-  confirmation requires missed-card practice and another full confirmation.
+  clean round (including the first) saves `story`. Finish freezes reveals and enters
+  `revision-flashcards`, or completes directly if there are no reveals.
+- `app/lib/story.ts`: derive the taught bank and permanent help, enumerate
+  revision-scoped `paragraph:sentence:token` references, and derive one revision
+  card per character. Its context is the earliest revealed occurrence in story
+  order, with the selected sentence's final help state and all target readings.
+  No click order/history, snapshot deck, or runtime pronunciation guessing.
+- `app/routes/reader.ts`: authenticated no-store resource at
+  `/lessons/:lessonId/reader`. Atomic D1 JSON additions merge concurrent reveals;
+  idempotent Finish freezes the server set. Writes validate owner, access,
+  attempt, content revision, phase and revealable occurrence. Stale reveals
+  after Finish are rejected. The shared completion operation also supports #6.
+- `app/components/story-reader.tsx`: reserved two-row lanes flow through authored
+  paragraphs. Reveal immediately, retry transient failures automatically, keep
+  pending help in memory only, block Finish while unsaved, and refresh on focus
+  and successful saves. Server versions reject stale responses. Closing before
+  save may lose pending help; no localStorage backup or continuous live-sync.
+- Relevant content edits must bump revisions. Older unfinished attempts restart
+  the whole lesson with a fresh identity; completed milestones/revisions and
+  later access remain. Already-finished lessons stay complete. Older deployments
+  refuse to downgrade newer attempts; see the manual revision policy.
+- `app/lib/flashcards.ts`: shared, arbitrary-size deck transitions. Any clean
+  full-deck round completes, including the first. Otherwise repeat only misses;
+  clearing a smaller subset leads back to the full original deck. A failed
+  full-deck retry follows the same rule; no extra pass is required after success.
 - Within-deck state is optional localStorage, keyed by user + lesson + attempt
   ID + deck purpose. Missing, malformed, stale-content, or inaccessible storage
   restarts the current whole deck, not the lesson. There is no D1 answer history
@@ -104,10 +146,5 @@ use `wrangler secret put NAME` and ignored `.dev.vars` locally.
   [the agreed amendment](https://github.com/clezhu/chinese-reading/issues/4#issuecomment-6719667579).
 
 No R2, content administration, email/recovery system, or runtime content generation.
-Sentence/occurrence IDs and authored contextual pinyin will be added with the
-story slice rather than guessed at runtime.
-That slice will persist revealed occurrence IDs in D1 and derive revision
-membership and context: use the earliest revealed occurrence in story order,
-not click order or an unrevealed first appearance. No duplicated deck is needed.
 Future explicit revisits must replace the attempt ID and clear reveals while
 preserving first/latest completion milestones; current actions cannot revisit.

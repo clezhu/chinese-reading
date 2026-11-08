@@ -63,3 +63,33 @@ input { width: 100%; min-height: 46px; border: 1px solid #7d8b80; border-radius:
   .page-heading { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: no-preference) { button, .button { transition: background-color .12s; } }
+
+/* Reader B: every occurrence reserves BOTH lanes before any pinyin is shown.
+   Width follows the authored (even hidden) reading, never reveal state. */
+.story-reader { margin: 1.5rem 0; }
+.reader-instructions { max-width: 46rem; color: #526359; }
+.reader-passage { padding: clamp(.6rem, 2vw, 1.5rem); border: 1px solid #dce4d9; border-radius: .8rem; background: white; }
+.reader-paragraph { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .75rem .12rem; margin: 0 0 1.8rem; }
+.reader-paragraph:last-child { margin-bottom: 0; }
+.reader-unit { display: inline-flex; flex: 0 0 auto; align-items: flex-end; }
+.reader-cell { display: inline-flex; flex-direction: column; align-items: center; justify-content: flex-end; min-width: 44px; min-height: 78px; margin: 0; padding: .2rem .25rem .35rem; border: 0; border-radius: .25rem; background: transparent; color: #23362f; font-weight: 400; line-height: 1; vertical-align: bottom; }
+.reader-lanes { display: grid; grid-template-rows: 1.35rem 2.6rem; justify-items: center; align-items: center; }
+.reader-pinyin { display: block; white-space: nowrap; font-size: .85rem; line-height: 1.35rem; }
+.reader-hanzi { display: block; font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; font-size: 2rem; line-height: 2.6rem; text-decoration-line: underline; text-decoration-style: dotted; text-decoration-thickness: 1px; text-underline-offset: .25rem; }
+.reader-reveal:hover { background: #edf4ed; color: #23362f; }
+.reader-reveal[aria-disabled="true"] { cursor: default; }
+.reader-reveal[data-revealed="true"] .reader-hanzi { text-decoration-style: solid; }
+.reader-reveal[data-save-state="pending"] { outline: 1px dashed #8a641b; outline-offset: -1px; }
+.reader-reveal:focus-visible { outline: 3px solid #a15b10; outline-offset: 2px; }
+.reader-permanent .reader-hanzi { text-decoration-style: double; }
+.reader-punctuation { display: inline-block; align-self: flex-end; padding-bottom: .35rem; font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; font-size: 2rem; line-height: 2.6rem; }
+.reader-save-status { min-height: 3.5rem; margin: 1rem 0; font-size: .9rem; color: #526359; }
+.reader-finish { margin-top: .75rem; }
+@media (forced-colors: active) {
+  .reader-reveal[data-save-state="pending"] { outline-color: Highlight; }
+  .reader-reveal:hover { outline: 1px solid Highlight; }
+}
+/* Context previews are not the revision mastery interface (#6). */
+.revision-preview { list-style: none; padding: 0; display: grid; gap: 1rem; }
+.revision-sentence { display: flex; flex-wrap: wrap; align-items: end; font-size: 1.5rem; }
+.revision-token { display: inline-flex; flex-direction: column; align-items: center; min-width: 2.75rem; }

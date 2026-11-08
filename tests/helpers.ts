@@ -47,6 +47,26 @@ export function post(request: APIRequestContext, path: string, form: Record<stri
   });
 }
 
+// Enter the production reader through the native lesson action. Complete the
+// self-assessment locally so its real hidden attempt_id is available; do not
+// invent an attempt, seed D1, or depend on private localStorage key formats.
+export async function startReader(page: Page, lesson = firstLesson) {
+  await page.goto(lesson);
+  await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+  for (let i = 0; i < 5; i++) {
+    await page.getByRole("button", { name: "Reveal", exact: true }).click();
+    await page.getByRole("button", { name: "Got it", exact: true }).click();
+  }
+  await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
+  const attemptId = await page.locator('input[name="attempt_id"]').inputValue();
+  expect(attemptId).not.toBe("");
+  expect((await post(page.request, lesson, { intent: "deck-passed", attempt_id: attemptId })).status()).toBe(303);
+  await page.goto(lesson);
+  await expect(page.getByRole("region", { name: "Story reader", exact: true })).toBeVisible();
+  return attemptId;
+}
+
 export function expectLoginRedirect(response: { status(): number; headers(): Record<string, string> }) {
   expect([302, 303]).toContain(response.status());
   expect(response.headers().location).toBe("/login");

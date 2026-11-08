@@ -1,5 +1,11 @@
 # Agent instructions
 
+## Content authoring
+
+Read `authoring/README.md` before selecting characters or modifying frequency
+data. Query small candidate windows rather than loading the full dataset into
+context. Frequency guidance is not runtime curriculum or language approval.
+
 ## Agent skills
 
 ### Issue tracker

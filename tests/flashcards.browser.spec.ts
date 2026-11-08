@@ -36,6 +36,9 @@ test("real introduction → practice/retries → full confirmation → persisted
   await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();
+  await answer(page, false);
+  await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+  await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();
   await answer(page);
   await expect(page.getByRole("heading", { name: "Full-deck confirmation", exact: true })).toBeVisible();
   await answer(page, false);
@@ -62,10 +65,36 @@ test("real introduction → practice/retries → full confirmation → persisted
   await expect(lessonCard(page, "People and places").getByText("Locked", { exact: true })).toBeVisible();
 });
 
+test("a clean initial full-deck round completes without confirmation", async ({ page }) => {
+  await register(page);
+  await start(page);
+  await round(page, 4);
+  await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue to story", exact: true })).toHaveCount(0);
+  await answer(page);
+  await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Continue to story", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+});
+
+test("a clean full-deck practice round completes after every card was missed", async ({ page }) => {
+  await register(page);
+  await start(page);
+  for (let i = 0; i < 5; i++) await answer(page, false);
+  await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+  await expect(page.getByText("Card 1 of 5 · 0 missed this round", { exact: true })).toBeVisible();
+  await round(page);
+  await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Continue to story", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+});
+
 test("lost or malformed local state restarts the current deck; another device keeps the D1 phase", async ({ page, browser }) => {
   const credentials = await register(page);
   await start(page);
-  await round(page);
+  await answer(page, false);
+  await round(page, 4);
+  await answer(page);
   await expect(page.getByRole("heading", { name: "Full-deck confirmation", exact: true })).toBeVisible();
   const other = await browser.newContext();
   try {
@@ -98,11 +127,12 @@ test("unavailable localStorage does not block practice or phase saving", async (
   await page.goto(firstLesson);
   await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
   await expect(page.getByText(/Browser storage is unavailable/)).toBeVisible();
-  await round(page);
+  await round(page, 4);
   await page.reload();
   await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+  await expect(page.getByText("Card 1 of 5 · 0 missed this round", { exact: true })).toBeVisible();
   await round(page);
-  await round(page);
+  await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
 });
@@ -137,7 +167,7 @@ test("a failed phase save is visible and can be retried without repeating the de
   await register(page);
   await start(page);
   await round(page);
-  await round(page);
+  await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   await page.route("**/lessons/first-characters*", async (route) => {
     if (route.request().method() === "POST") {
       // Exercise the real action's conflict response, rather than manufacturing UI data.

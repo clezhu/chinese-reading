@@ -24,7 +24,9 @@ export function answerCard(state: DeckProgress, got: boolean): DeckProgress {
   const index = state.index + 1;
   if (index < state.round.length) return { ...state, index, missed, revealed: false };
   if (missed.length) return { ...state, stage: "practice", round: missed, index: 0, missed: [], revealed: false };
-  if (state.stage === "confirmation") return { ...state, stage: "complete", index, missed: [], revealed: false };
+  // Any clean round containing the whole deck proves recognition, including
+  // the initial practice round or a retry after every card was missed.
+  if (state.round.length === state.deck.length) return { ...state, stage: "complete", index, missed: [], revealed: false };
   return { ...state, stage: "confirmation", round: [...state.deck], index: 0, missed: [], revealed: false };
 }
 

@@ -29,7 +29,7 @@ test("starting the first lesson groups all five characters and every authored re
   const characters = page.getByRole("list", { name: "New characters", exact: true });
   await expect(characters.locator(":scope > li")).toHaveCount(5);
   for (const [hanzi, readings] of [
-    ["的", ["de", "dī", "dí", "dì"]], ["一", ["yī"]], ["是", ["shì"]],
+    ["的", ["de", "dī", "dí", "dì"]], ["一", ["yī", "yāo"]], ["是", ["shì"]],
     ["不", ["bù"]], ["了", ["le", "liǎo"]],
   ] as const) {
     await expect(characters.getByText(hanzi, { exact: true })).toBeVisible();

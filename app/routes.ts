@@ -7,4 +7,5 @@ export default [
   route("logout", "routes/logout.tsx"),
   route("lessons", "routes/lessons.tsx"),
   route("lessons/:lessonId", "routes/lesson.tsx"),
+  route("lessons/:lessonId/reader", "routes/reader.ts"),
 ] satisfies RouteConfig;
