@@ -24,6 +24,20 @@ function renderCard(props: Partial<ComponentProps<typeof LessonCard>> = {}) {
 
 const actionCount = (html: string) => (html.match(/<(?:a|button)\b/g) ?? []).length;
 
+test("unstarted lessons omit Available while preserving guidance and start actions", () => {
+  for (const lesson of [first, revisionLessonFixture]) {
+    for (const guidance of [undefined, "Start here", "Continue here"] as const) {
+      const html = renderCard({ lesson, status: "available", guidance });
+      expect(html).not.toContain("Available");
+      expect(html).toContain("Start lesson");
+      expect(html).toContain('name="intent" value="start"');
+      if (guidance) expect(html).toContain(guidance);
+      else expect(html).toContain('<span class="tile-status"></span>');
+      expect(actionCount(html)).toBe(1);
+    }
+  }
+});
+
 for (const phase of ["introduction", "flashcards", "story", "revision-flashcards"] as const) {
   test(`a completed lesson in ${phase} resumes its revisit without a reset action`, () => {
     const html = renderCard({ phase, attemptId: "active-attempt" });

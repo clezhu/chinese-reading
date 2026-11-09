@@ -8,8 +8,10 @@ test("modules/lessons render in authored order with every lesson available", asy
   await expect(page.getByRole("heading", { name: "Lessons", exact: true })).toBeVisible();
   await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(curriculum.modules.map((module, index) => `Module ${index + 1}: ${module.title}`));
   await expect(page.getByRole("main").locator("h2, h3")).toHaveText(curriculum.modules.flatMap((module, index) => [`Module ${index + 1}: ${module.title}`, ...module.lessons.map((lesson) => lesson.title)]));
+  await expect(page.getByText("Available", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("More lessons coming soon", { exact: true })).toBeVisible();
   const firstCard = lessonCard(page, firstTitle);
-  await expect(firstCard.getByText("Available", { exact: true })).toBeAttached();
+  await expect(firstCard.getByRole("button", { name: /^Start lesson\s*:/ })).toBeAttached();
   await expect(firstCard.getByText("Start here", { exact: true })).toBeVisible();
   await expect(page.getByText("Start here", { exact: true })).toHaveCount(1);
   await expect(page.getByText("Continue here", { exact: true })).toHaveCount(0);
@@ -18,7 +20,7 @@ test("modules/lessons render in authored order with every lesson available", asy
   for (const character of first.newCharacters) await expect(firstCard.getByText(character.hanzi, { exact: true })).toBeVisible();
   for (const lesson of lessons.slice(1)) {
     const card = lessonCard(page, lesson.title);
-    await expect(card.getByText("Available", { exact: true })).toBeVisible();
+    await expect(card.getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
     await expect(card.getByRole("link")).toHaveCount(0);
     await expect(card.getByRole("button", { name: /^Start lesson/ })).toBeVisible();
   }
@@ -48,7 +50,7 @@ test("starting first learning lesson groups every authored character/reading wit
   await expect(page.getByText("Start here", { exact: true })).toHaveCount(0);
   await expect(activeCard.getByRole("link", { name: /^Resume lesson/ })).toBeVisible();
   await expect(activeCard.getByRole("button")).toHaveCount(0);
-  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
 });
 
 test("later lessons accept direct access and starts but reject forged completion claims", async ({ page }) => {
@@ -79,11 +81,11 @@ test("saved introductions survive return and stay isolated between two accounts"
     await page.reload();
     await expect(lessonCard(page, firstTitle).getByText("In progress", { exact: true })).toBeVisible();
     await bobPage.reload();
-    await expect(lessonCard(bobPage, firstTitle).getByText("Available", { exact: true })).toBeVisible();
+    await expect(lessonCard(bobPage, firstTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
     await expect(bobPage.getByRole("link", { name: /^Resume lesson/ })).toHaveCount(0);
     await logout(page);
     await login(page, bob);
-    await expect(lessonCard(page, firstTitle).getByText("Available", { exact: true })).toBeVisible();
+    await expect(lessonCard(page, firstTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
     await logout(page);
     await login(page, alice);
     await lessonCard(page, firstTitle).getByRole("link", { name: /^Resume lesson/ }).click();

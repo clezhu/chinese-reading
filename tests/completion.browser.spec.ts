@@ -91,7 +91,7 @@ test("current-pass revision retries confirmations and reloads, but only a zero-r
   expect(await state(page)).toEqual(fresh);
   await page.goto("/lessons");
   await expect(lessonCard(page, firstTitle).getByText("In progress", { exact: true })).toBeVisible();
-  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
   await page.goto(firstLesson);
   await finish(page).click();
   await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
@@ -234,7 +234,7 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   await expect(page.getByText("Continue here", { exact: true })).toHaveCount(1);
   await expect(card.getByRole("button")).toHaveCount(0);
   await expect(card.getByRole("link")).toHaveCount(1);
-  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeAttached();
+  await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeAttached();
   await expect(lessonCard(page, nextTitle).getByText("Continue here", { exact: true })).toHaveCount(0);
   await card.getByRole("link", { name: /^Resume revisit/ }).click();
   expect((await state(page)).attemptId).toBe(revisit.attemptId);
@@ -263,9 +263,9 @@ test("all 11 published lessons complete through the UI, ending in direct-story a
   await register(page);
   for (const [index, lesson] of lessons.entries()) {
     await expect(page.getByText("Completed", { exact: true })).toHaveCount(index);
-    await expect(page.getByText("Available", { exact: true })).toHaveCount(lessons.length - index);
+    await expect(page.getByRole("button", { name: /^Start lesson\s*:/ })).toHaveCount(lessons.length - index);
     const card = lessonCard(page, lesson.title);
-    await expect(card.getByText("Available", { exact: true })).toBeVisible();
+    await expect(card.getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
     if (lesson.kind === "revision") {
       await expect(card.getByText("Revision", { exact: true })).toBeVisible();
       await expect(card.getByText("No new characters", { exact: true }).and(page.locator(":not(.sr-only)"))).toHaveCount(0);
@@ -342,6 +342,6 @@ test("revision/revisit writes enforce phase, identity, cross-lesson attempts and
     await page.reload();
     await expect(milestones(page)).toHaveCount(0);
     await page.goto("/lessons");
-    await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
+    await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
   } finally { await other.close(); }
 });

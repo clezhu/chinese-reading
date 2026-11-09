@@ -3,7 +3,7 @@ import type { Lesson } from "../content/curriculum";
 import type { LessonProgress, LessonStatus } from "../lib/progress.server";
 
 const statusLabels: Record<LessonStatus, string> = {
-  available: "Available", locked: "Locked", "in-progress": "In progress", completed: "Completed",
+  available: "", locked: "Locked", "in-progress": "In progress", completed: "Completed",
 };
 
 // A shared renderer accepts either lesson kind without publishing a revision.
@@ -21,7 +21,7 @@ export function LessonCard({ lesson, status, number, phase, attemptId, guidance 
     <span className="lesson-number" aria-hidden="true">{number}</span>
     {status === "completed" && <span className="completion-badge" aria-hidden="true">✓</span>}
     <span className={`tile-status${guidance ? " tile-guidance" : ""}`}>{guidance ?? statusLabels[status]}</span>
-    {guidance && <span className="sr-only">{statusLabels[status]}</span>}
+    {guidance && statusLabels[status] && <span className="sr-only">{statusLabels[status]}</span>}
     <span className="tile-characters" lang={lesson.kind === "learning" ? "zh-Hans" : undefined}>{lesson.kind === "learning" ? lesson.newCharacters.map((character) => <span key={character.id}>{character.hanzi}</span>) : "Revision"}</span>
     {lesson.kind === "revision" && <span className="sr-only">No new characters</span>}
   </>;

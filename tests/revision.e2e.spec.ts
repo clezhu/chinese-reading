@@ -42,7 +42,7 @@ test("fixture revision is immediately available; start/resume skips initial lear
   const card = lessonCard(page, title);
   await expect(card.getByText("Revision", { exact: true })).toBeVisible();
   await expect(card.getByText("No new characters", { exact: true }).and(page.locator(":not(.sr-only)"))).toHaveCount(0);
-  await expect(card.getByText("Available", { exact: true })).toBeVisible();
+  await expect(card.getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
   expect((await page.request.get(revision)).status()).toBe(200);
   const initial = await startRevision(page);
   for (const entry of candidates.occurrences) {
@@ -77,7 +77,7 @@ test("no-reveal revision completes across devices; explicit revision revisit sta
   try {
     const otherPage = await other.newPage();
     await login(otherPage, credentials);
-    await expect(lessonCard(otherPage, lessons[2].title).getByText("Available", { exact: true })).toBeVisible();
+    await expect(lessonCard(otherPage, lessons[2].title).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
     const completedCard = lessonCard(otherPage, title);
     await expect(completedCard.getByRole("link")).toHaveCount(0);
     await expect(completedCard.getByRole("button")).toHaveCount(1);
@@ -119,7 +119,7 @@ test("revision-kind current-pass practice requires a fresh reread and never earn
     expect(await snapshot(page)).toEqual(frozen);
     await page.goto("/lessons");
     await expect(lessonCard(page, title).getByText("In progress", { exact: true })).toBeVisible();
-    await expect(lessonCard(page, lessons[2].title).getByText("Available", { exact: true })).toBeVisible();
+    await expect(lessonCard(page, lessons[2].title).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
     await lessonCard(page, title).getByRole("link", { name: /^Resume lesson/ }).click();
     await expect(page.getByRole("heading", { name: "Collected revision", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Reveal", exact: true }).click();
@@ -142,5 +142,5 @@ test("revision-kind current-pass practice requires a fresh reread and never earn
   await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
   expect(await milestones(page)).toHaveLength(2);
   await page.goto("/lessons");
-  await expect(lessonCard(page, lessons[2].title).getByText("Available", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, lessons[2].title).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
 });

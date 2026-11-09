@@ -65,6 +65,7 @@ p { color: #5b5e59; }
 .module { margin-top: 0; }
 .module h2 { margin: 0 0 10px; }
 .completion-count { margin: 0 0 30px; font-size: 16px; }
+.lessons-coming-soon { margin: 32px 0 0; text-align: center; color: #535750; }
 .lesson-list { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; margin: 0; }
 .lesson-card { display: block; padding: 0; border: 1px solid #d8d8d2; border-radius: 20px; overflow: hidden; background: white; position: relative; }
 .lesson-card.locked { background: #f6f6f2; border-style: solid; }
@@ -77,6 +78,7 @@ button.tile-face:hover, a.tile-face:hover { color: #30343a; background: #f6f6f2;
 .locked .lesson-number { color: #777b75; }
 .completion-badge { position: absolute; right: 16px; top: 12px; font-size: 25px; font-weight: 700; }
 .tile-status { display: block; margin: auto 18px 15px; font-size: 14px; color: #535750; }
+.tile-status:empty { min-height: 1lh; }
 .tile-guidance { color: #30343a; font-weight: 700; }
 .tile-characters { width: 100%; display: block; background: #eeeee9; text-align: center; font-size: 21px; line-height: 1.4; padding: 7px 2px; white-space: nowrap; }
 .tile-characters > span + span { margin-left: .22em; }

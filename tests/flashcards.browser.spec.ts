@@ -64,7 +64,7 @@ test("real introduction → practice/retries → full confirmation → persisted
   await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Back to lessons", exact: true }).click();
   await expect(lessonCard(page, "First characters").getByText("In progress", { exact: true })).toBeVisible();
-  await expect(lessonCard(page, "People and places").getByText("Available", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, "People and places").getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
 });
 
 test("a clean initial full-deck round completes without confirmation", async ({ page }) => {
@@ -152,7 +152,7 @@ test("phase writes reject wrong attempts, wrong phases, another owner and cross-
     await register(bobPage);
     expect((await post(bobPage.request, firstLesson, { intent: "deck-passed", attempt_id: id })).status()).toBe(409);
     await bobPage.reload();
-    await expect(lessonCard(bobPage, "First characters").getByText("Available", { exact: true })).toBeVisible();
+    await expect(lessonCard(bobPage, "First characters").getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
   } finally { await bob.close(); }
   for (const path of laterLessons) {
     expect((await post(page.request, path, { intent: "deck-passed", attempt_id: id })).status()).toBe(409);

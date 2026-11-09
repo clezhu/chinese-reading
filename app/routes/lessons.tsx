@@ -30,6 +30,7 @@ export default function Lessons({ loaderData }: Route.ComponentProps) {
       <div className="lessons-account"><span className="sr-only">{loaderData.username}</span><Form method="post" action="/logout"><button className="text-button" type="submit">Log out</button></Form></div>
       <h1>Lessons</h1>
       {loaderData.modules.map((module, index) => <section className="module" key={module.id} aria-labelledby={`module-${module.id}`}><h2 id={`module-${module.id}`}>Module {index + 1}: {module.title}</h2><p className="completion-count">{module.lessons.filter(({ status }) => status === "completed").length} of {module.lessons.length} lessons completed</p><ol className="lesson-list" start={number + 1}>{module.lessons.map(({ lesson, status, phase, attemptId }) => <LessonCard key={lesson.id} lesson={lesson} status={status} phase={phase} attemptId={attemptId} number={++number} guidance={loaderData.guidanceId === lesson.id ? loaderData.brandNew ? "Start here" : "Continue here" : undefined} />)}</ol></section>)}
+      <p className="lessons-coming-soon">More lessons coming soon</p>
     </>
   );
 }

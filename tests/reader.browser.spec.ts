@@ -63,7 +63,7 @@ test("independent occurrences persist and freeze earliest story-order sentence h
   expect(new Set(saved.state.revealed)).toEqual(new Set([later.ref, earlier.ref, extra.ref]));
   expect(saved.cards).toEqual([]);
   await page.goto("/lessons");
-  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
   await page.goto(firstLesson);
   await page.evaluate(() => localStorage.clear());
   await page.reload();
@@ -115,8 +115,8 @@ test("no-click Finish completes directly, is idempotent, and leaves later lesson
   await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
   await page.goto("/lessons");
   await expect(lessonCard(page, firstTitle).getByText("Completed", { exact: true })).toBeVisible();
-  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
-  for (const lesson of lessons.slice(2)) await expect(lessonCard(page, lesson.title).getByText("Available", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
+  for (const lesson of lessons.slice(2)) await expect(lessonCard(page, lesson.title).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
   expect(await snapshot(page)).toEqual(completed);
 });
 
