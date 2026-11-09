@@ -1,4 +1,4 @@
-# Unpublished revision-kind end-to-end fixture
+# Isolated revision-kind end-to-end curriculum
 
 ```sh
 npm run test:revision:check
@@ -6,17 +6,11 @@ npm run test:revision
 npx tsc --noEmit -p tests/tsconfig.json
 ```
 
-Install Chromium with `npx playwright install chromium` if needed. To run only
-one scenario, use e.g. `npm run test:revision -- --grep 'fixture list'`.
-
-`test:revision` runs the separate `playwright.revision.config.ts`, validates
-current content and the fixture curriculum, builds with Vite mode
-`revision-fixture`, applies **local-only** D1 migrations, then serves the built
-Worker with workerd. No endpoint, authentication, progress operation, or database
-write is mocked. Accounts are random and prerequisites are completed through the
-browser. Tests do not seed progress or bypass the previous lesson.
-
-Isolation from the normal suite/developer server:
+Coordinate server-backed execution serially. `test:revision` uses the separate
+`playwright.revision.config.ts`, validates content, builds Vite mode
+`revision-fixture`, applies local-only D1 migrations and serves a built Worker.
+No application endpoint/progress operation is mocked and prerequisites are
+completed through the browser, not seeded success rows.
 
 | Resource | Revision fixture |
 | --- | --- |
@@ -26,30 +20,26 @@ Isolation from the normal suite/developer server:
 | Traces/screenshots | `.wrangler/playwright-revision-results/` |
 | Test collection | `tests/revision.e2e.spec.ts` only |
 
-The fixture spec intentionally does **not** end in `.browser.spec.ts` or
-`.ssr.spec.tsx`, so `npm test` does not collect it against production content.
-Normal tests remain on port 4173 with their existing build and D1 directory.
+The spec intentionally does not match normal `.browser.spec.ts` collection.
+Only this build redirects application curriculum imports to
+`tests/revision-curriculum.ts`. The adapter inserts a test-only revision lesson
+after the current first learning lesson; its story and content revision come
+from that published lesson. The real curriculum helpers still determine prior
+introductions. Validation checks inherited characters, a valid story, three
+unchanged published entries and one extra unpublished fixture entry.
 
-In this build mode only, a Vite resolver redirects application curriculum imports
-to `tests/revision-curriculum.ts` on both server and client. The adapter inserts
-`app/content/fixtures/revision.ts` immediately after “First characters” and calls
-the real curriculum helpers with that content. The fixture reuses the existing
-checked first story, introduces no characters, and inherits only the preceding
-five introductions. Validation asserts the normal curriculum still has exactly
-three lessons and cannot find this fixture ID.
+Tests derive refs/readings/help and list order from this checked adapter, not
+old story coordinates or module counts. Coverage includes:
 
-There is no runtime environment feature, special test route, production
-curriculum modification, remote migration, or deployment. Do not deploy the
-fixture build. It is checked illustrative content, not Mandarin/language approval.
+- Revision badge, no new characters, authored order, locked access.
+- Start/resume straight into story; inherited taught help starts hidden,
+  permanent help remains visible.
+- No-reveal completion, cross-device persistence, later access and an explicit
+  revision-kind revisit that starts a fresh story without initial learning.
+- Reveals freeze the current pass's contextual cards; **Reread story** creates a
+  new empty/version-zero attempt and does not earn milestones or unlock access.
+- Repeating the same reveal/deck after reload must start practice again, not
+  inherit the old browser's recognised deck. A later zero-reveal Finish completes.
 
-Browser coverage:
-
-- Revision badge / “No new characters,” authored list order, locked access.
-- Starting and resuming directly in the story, with no introduction/initial deck.
-- Earlier characters revealable; characters taught later retain permanent help.
-- No-reveal reading completes without collected practice and unlocks the next
-  learning lesson, with persistence in a fresh browser context.
-- Help generates a frozen inherited-reading deck; completion waits for practice.
-- Completed revisions revisit directly into a fresh story attempt, clear old
-  reveals/decks, preserve first/latest milestones and later-lesson access, and
-  resume without replacing the active revisit.
+There is no production feature flag, extra route or remote migration. Never
+deploy the fixture build. These tests do not constitute Mandarin approval.

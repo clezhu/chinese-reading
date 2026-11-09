@@ -162,13 +162,19 @@ export async function finishReading(db: D1Database, userId: string, lessonId: st
   throw new Response("This attempt is not in the story phase. Reload the lesson.", { status: 409 });
 }
 
-/** Complete only the current frozen contextual revision phase. */
+/** Start a clean reading pass only from the current frozen contextual deck.
+ * Pass identity isolates stale requests/responses and optional local decks.
+ * Practice never earns completion milestones; only a zero-reveal Finish does.
+ */
 export async function completeRevisionDeck(db: D1Database, userId: string, lessonId: string, attemptId: string, revision: number) {
   await currentAttempt(db, userId, lessonId, attemptId, revision);
-  const row = await db.prepare(`UPDATE lesson_progress SET phase = 'complete', ${completionFields("1")},
-    updated_at = ?1, state_version = state_version + 1
-    WHERE user_id = ?2 AND lesson_id = ?3 AND attempt_id = ?4 AND content_revision = ?5 AND phase = 'revision-flashcards'
-    RETURNING *`).bind(Date.now(), userId, lessonId, attemptId, revision).first<LessonProgress>();
+  const now = Date.now();
+  // One conditional D1 statement rotates identity, clears all saved help and
+  // enters story (never initial flashcards), leaving earned milestones intact.
+  const row = await db.prepare(`UPDATE lesson_progress SET phase = 'story', attempt_id = ?,
+    revealed_occurrence_ids = '[]', state_version = 0, started_at = ?, updated_at = ?
+    WHERE user_id = ? AND lesson_id = ? AND attempt_id = ? AND content_revision = ? AND phase = 'revision-flashcards'
+    RETURNING *`).bind(crypto.randomUUID(), now, now, userId, lessonId, attemptId, revision).first<LessonProgress>();
   if (!row) throw new Response("This attempt changed. Reload the lesson.", { status: 409 });
   return storyState(row);
 }

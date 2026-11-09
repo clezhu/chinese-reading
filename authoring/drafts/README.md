@@ -1,32 +1,35 @@
-# Initial story drafts — awaiting #7
+# Story drafts and #7 promotion
 
-The source of truth is [`initial-stories.ts`](initial-stories.ts). It exports
-`drafts`, each `{ status: "draft", title, lesson }`, with a complete replacement
-lesson and proposed content revision 3 (over current runtime revision 2).
-It imports the existing introductions,
-so changing an introduction requires rechecking all candidates together.
+#7's three original, author-self-reviewed candidates are now published locally
+in [`app/content/fundamentals-stories.ts`](../../app/content/fundamentals-stories.ts),
+under the single **Fundamentals** module. All three are revision 3 and retain
+stable lesson IDs. See [`REVIEW-7.md`](REVIEW-7.md) for the Chinese texts,
+self-review, source scope, tool-forced edit and actual validation results.
+No independent Mandarin reviewer or human approval is claimed.
 
-| Target lesson | Working story title | Story / deliberate reuse |
+| Stable lesson ID | Story | Hanzi occurrences |
 | --- | --- | --- |
-| first-characters | 一张旧照片 | A childhood photo is mistaken for a younger brother; repeats 的, 一, 是, 不, 了. |
-| people-and-places | 门口的客人 | Waiting for a friend, two people receive his book from a visitor; uses all five introductions and earlier 是/不/的/一/了. |
-| everyday-connections | 桌上的盒子 | A note and a box turn out to have been left in the wrong place; uses 有/这/个/上/中 and reuses people/location characters. |
+| first-characters | Our mother | 62 |
+| people-and-places | A quiet storyteller | 64 |
+| everyday-connections | One for each of us | 68 |
 
-These are new authored story drafts, not renamed disposable prototype text.
-Their introductions intentionally preserve the three existing fixture sets;
-frequency ranks support broad commonness, not this exact teaching order. Early
-texts still need substantial permanent help. Reviewer should assess that load
-and revise for naturalness rather than force a dictionary-free story from five
-characters or pad it to a target length.
+The older photo/visitor/box candidates were superseded, not promoted. Their
+tracked history is available in Git; no stale executable candidate remains
+capable of replacing revision 3. The illustrative reader stories remain only
+in `app/content/fixtures/`, separate from the actual published story module.
 
-Validation does not change status or publish anything:
+[`initial-stories.ts`](initial-stories.ts) is now an explicitly empty
+compatibility entry point (`drafts = []`) so the existing package command
+continues to work without package edits. It checks the published baseline with
+no proposed replacements; it does **not** claim three pending drafts were tested.
 
 ```sh
+npm run authoring:check
 npm run authoring:check:drafts
-npm run authoring:bank -- people-and-places --draft authoring/drafts/initial-stories.ts
+npm run authoring:typecheck
 ```
 
-Final Mandarin review, approval, promotion and hosted release are owned by #7.
-Record the actual reviewer/date and any outstanding questions in that issue;
-there is no final approval recorded for these drafts yet. Follow the promotion
-checklist in [`../README.md`](../README.md).
+New work belongs in a separately named candidate module, exporting `draft` or
+`drafts` with complete replacement lessons, revision greater than the current
+publication, and the existing stable IDs. Do not bump to revision 4 merely to
+keep an already-promoted draft active. Follow [`../README.md`](../README.md).

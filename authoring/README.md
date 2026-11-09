@@ -1,10 +1,21 @@
 # Authoring tools
 
-This space holds offline authoring resources, not runtime application content. Published content lives in `app/content/`; its current three lessons are illustrative checked reader fixtures, **not final language-approved lessons**. Actual first drafts live separately in [`drafts/`](drafts/README.md), awaiting #7. Do not import the frequency dataset or drafts into the app. Frequency guides character selection, not a learner's saved progress or an obligatory teaching sequence.
+This space holds offline authoring resources, not runtime application content.
+Published content lives in `app/content/`; keep **exactly three initial learning
+lessons**, not a fourth published revision/example. Candidates live separately in
+[`drafts/`](drafts/README.md). Never import authoring data, drafts or scheduling
+helpers into the app. #7's newly owner-approved rules below supersede the older
+frequency flexibility, unfamiliar-character allowance and separate-review gate.
+These are static authoring obligations, not per-user progress or runtime scheduling.
 
 ## Frequency guidance
 
-Use SUBTLEX-CH's character frequencies as the default guide. Read [data provenance and licence](data/README.md) before modifying or redistributing the table. Small changes among common characters are allowed for natural writing. This is a subtitle-based, simplified-oriented list, not a perfectly simplified-only list or a pedagogically validated teaching order. Review variants; do not silently merge them.
+Use SUBTLEX-CH's **exact source order**, five introductions per learning lesson:
+ranks 1–5, 6–10, 11–15, and so on. The initial sets are `我的你是了`,
+`不们这一他`, `么在有个好`. Do not reorder, skip, substitute, merge variants or
+rerank ties for natural writing. Read [data provenance and licence](data/README.md)
+before modifying or redistributing the table. This subtitle-based,
+simplified-oriented source is not a pedagogically validated teaching order.
 
 Request a small candidate window rather than reading the entire dataset into an agent's context:
 
@@ -36,12 +47,24 @@ npm run authoring:bank -- everyday-connections
 npm run authoring:bank -- people-and-places --draft authoring/drafts/initial-stories.ts
 ```
 
-JSON contains `prior`, `current`, and `combined` character definitions (including
-all authored lexical readings), derived from ordered module/lesson introductions.
-The target ID must exist. There is no manually maintained cumulative bank or
-global dictionary. Current lesson introductions count as taught during its story;
-mere appearances in earlier stories do not. Other Hanzi get permanent pinyin
-automatically, not a stored flag or exception list.
+JSON is a static writing brief, containing:
+
+- `prior`, `current`, `combined`: character definitions with authored readings,
+  derived from ordered module/lesson introductions; no hand-maintained bank.
+- `expectedIntroductions`: the exact next group of five in source order.
+- `trainingPool`: the fixed top 100 frequency Hanzi, including any already taught.
+- `allowed`: taught (prior + current) **union top 100**. No other story Hanzi.
+- `newTargets`, `due`, `revisionTargets`, `mandatory`: occurrence obligations.
+- `learningNumber`, `cumulativeIntroduced`, soft `guidance`, and workflow prompts.
+
+The target ID must exist; a candidate may omit its story while obtaining a brief.
+The bank command checks structure only, not publication policy. Its
+`expectedIntroductions` is authoritative if the proposed group is wrong.
+The brief supplies no prior story text: write without
+reading previous stories. Current introductions count as taught in their story;
+extra appearances do not introduce characters. Unintroduced allowed Hanzi still
+receive permanent pinyin automatically; the authoring pool is not a stored
+runtime flag, allowance list or global dictionary.
 
 The runtime exports and exact paragraph → sentence → token structure are
 documented in [`app/content/README.md`](../app/content/README.md). Read
@@ -52,8 +75,8 @@ for 有 yòu. Dictionary reference material is not imported into runtime content
 ## Check content and candidate drafts
 
 ```sh
-npm run authoring:check                 # current curriculum + revision-kind fixture
-npm run authoring:check:drafts          # current baseline, then all three candidates together
+npm run authoring:check                 # published policy + separate structural revision fixture
+npm run authoring:check:drafts          # current baseline + initial candidates, if still current
 npm run authoring:check -- --draft authoring/drafts/initial-stories.ts
 npm run authoring:typecheck             # includes draft TypeScript, not only app files
 npm run authoring:test                  # frequency + content/CLI tests
@@ -64,15 +87,18 @@ Draft modules export `draft` or `drafts` with records
 for an existing stable lesson ID, proposing a higher `contentRevision`.
 Repeated `--draft <path>` arguments validate several candidate modules together.
 Duplicate/unknown targets fail. Replacements keep existing module membership and
-position. The checker first validates current content, then validates the combined
-candidate-over-current curriculum, catching cross-lesson introduction conflicts.
+position. For replacements the checker first validates current content's
+structure, then applies full publication policy to the combined candidate-over-
+current curriculum, catching cross-lesson conflicts. This allows a replacement
+to repair older policy violations; it does not weaken the final candidate check.
+Without drafts, `check`/build apply full publication policy to current content.
 It never writes or promotes content. TS modules are executable **trusted repo
 code**, not an upload format or sandbox.
 
 Checks cover:
 
 - Unique slug module/lesson IDs and nonempty ordered membership; no duplicate
-  lesson membership or character introductions. Five introductions per initial
+  lesson membership or character introductions. Five introductions per
   learning lesson, none per revision lesson. Character compatibility `id` equals
   `hanzi`, and each has a nonempty, unique, correctly spelled pinyin list.
 - Positive authored revisions and nested nonempty paragraphs/sentences/token
@@ -89,12 +115,23 @@ Checks cover:
   and tests. The server owns its wire format and additional authorization,
   attempt, phase and revealability checks.
 
-Reports include Hanzi occurrence count, taught occurrences and distinct
-permanent-help characters for language review. Unfamiliar characters are **not
-validity errors**. A checker cannot prove complete dictionary coverage,
-naturalness, correct sentence meaning or appropriate polyphonic/neutral choices.
-It does not imply Mandarin approval, progression correctness or learner testing.
-See the exact scope and outstanding approval in `PRONUNCIATION.md`.
+Publication checks additionally enforce exact frequency groups, revision
+placement, **at least one occurrence of every new/due/revision target**, and no
+Hanzi outside taught + top 100. Meaningful reuse is **self-review only**: a tool
+cannot prove naturalness, sentence meaning, complete dictionary coverage or
+appropriate polyphonic/neutral choices. Reports include occurrence/taught counts,
+permanent-help characters, coverage targets, soft warnings and future `pending`
+obligations. A passing check is mechanical evidence, not a claim of language
+quality or learner testing.
+
+API: `validatePublishedCurriculum(content)` (or
+`validateCurriculum(content, { policy: "published" })`) requires stories and all
+canonical rules. CLI checks and the build gate use this API. Generic, small or
+storyless fixtures use `validateCurriculum(content, { policy: "structural" })`;
+this is the backward-compatible default, **not publication validation**.
+`requireStories: true` by itself checks structure, not the canonical policy.
+Structural fixtures may model early revision behaviour without falsely failing
+the real checkpoint schedule. They must never be promoted as published content.
 
 Tools/tests run on the project's Node >=22.12 with the existing `typescript`
 dependency. A tiny authoring-only transpilation loader handles the app's
@@ -102,58 +139,83 @@ extensionless TS imports, rather than requiring a new TS runner, changing app
 imports, or relying on a newer Node's type-stripping behaviour. No network access
 is needed for normal validation/tests; upstream source rechecks are separate.
 
+## Static reuse and revision schedule
+
+Count **learning lessons only**, across module boundaries. A character introduced
+at learning lesson `n` is due at `n + {1, 2, 4, 7, 12, 20, 33, …}`: successive gaps
+are Fibonacci `1, 1, 2, 3, 5, 8, 13, …`, not offsets `1, 1, 2, 3, …`.
+Every learning story must contain its new characters and all characters due at
+that learning number. Extra/early appearances never reset or satisfy a later
+due obligation. Revision appearances do not advance or reset this clock.
+
+After each 10 learning lessons / 50 introductions, place one revision checkpoint
+before the next learning lesson. Introduce zero characters; cover every one of
+the **latest 50 introductions** at least once. It does not acquire the next
+learning lesson's Fibonacci targets. No early or duplicate checkpoints.
+
+The helper reports each introduced character's next Fibonacci obligation and
+the next checkpoint as `pending` beyond the authored sequence. A curriculum
+ending at a checkpoint boundary may leave that checkpoint pending; omission
+becomes an error only if the next learning lesson is already present. The three
+published lessons have future obligations, **not missing lessons or errors**.
+Do not manufacture a fourth lesson to clear these reports. This schedule is an
+authoring heuristic, not a claim that research establishes these exact gaps.
+
 ## Soft passage-length guidance
 
-For 1-based **learning lesson level** `n` in curriculum order:
+Interpolate linearly between these anchors, by **cumulative introductions**:
 
-```text
-target = min(200, 60 + 20 × (n − 1)) Hanzi occurrences
-suggested range = floor(0.75 × target) … ceil(1.25 × target)
-```
+| Introduced | 5 | 50 | 100 | 250 | 500 | 1000 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Learning target (Hanzi) | 60 | 75 | 90 | 145 | 230 | 400 |
 
-Thus initial ranges are 45–75, 60–100, and 75–125 Hanzi. Count every occurrence
-of a Hanzi token, including permanent-help characters and repeats; exclude
-punctuation, pinyin, spaces and metadata. Revision-kind stories use the preceding
-learning level (at least 1) and do not advance it. Six short sentences at the
-first target allow a tiny narrative; modest growth offers more reuse without
-turning early practice into an essay. The 200 target cap remains short even as
-the bank grows. This is a drafting heuristic, not an empirical reading-speed or
-curriculum claim. It is deliberately **soft**: shorter/longer texts only get a
-warning, and stories need not grow monotonically. Never pad a natural story to
-satisfy the formula. Review permanent-help load separately from length.
+Cap the learning target at 400 (use 60 below the first anchor). Interpolated
+targets need not be integers. Suggested range is `floor(0.75 × target)` through
+`ceil(1.25 × target)`. A revision target is **5 × the preceding learning target**
+(up to 2000), with the same ±25% range. The first three targets are 60, 61⅔,
+63⅓, with integer ranges 45–75, 46–78, 47–80.
+
+Count every Hanzi token occurrence, including repeats and permanent-help
+characters; exclude punctuation, pinyin and metadata. Length is **warning only**,
+not a coverage exemption, empirical reading-speed claim or forced monotonic
+increase. Never pad a natural story to meet a soft range.
 
 ## Agent workflow and promotion
 
-1. Read these instructions and provenance notes; inspect the target and prior/
-   current/combined bank. Query a small frequency window, excluding already
-   introduced Hanzi if choosing future introductions. Current three sets and
-   stable lesson IDs are preserved for compatibility; frequency does not certify
-   their exact ordering as final curriculum.
-2. Choose five introductions with complete authored reading lists and source
-   checks. Avoid duplicate introductions. Revision lessons introduce none.
-3. Create/edit candidate records in `drafts/`. Draft a natural, coherent story,
-   deliberately reusing earlier introductions and using each current character.
-   Author every occurrence's pinyin, sentence boundary and paragraph boundary.
-   No IDs, help flags, stored cumulative bank or dictionary inference on tokens.
-4. Run candidate-over-current validation, inspect length/permanent-help reports,
-   run authoring tests/typecheck, and resolve structural/pronunciation conflicts.
-5. Obtain a separate Mandarin review of all readings, contextual pinyin,
-   naturalness and help load. Record actual reviewer/date/outstanding questions in
-   #7. Do **not** relabel a draft approved because a validator passed. Revise and
-   rerun checks after review changes.
-6. Only after approval, manually move the reviewed story/introductions into its
-   existing `app/content/` lesson. Do not import `authoring/` from the app or add
-   the draft as a fourth lesson. Replace illustrative fixtures rather than
-   retaining multiple active story versions; archive/remove stale drafts so an
-   obsolete candidate cannot silently overwrite a future published revision.
-7. Apply the **manual revision policy**: bump the lesson for changed token indexes,
+1. Read these rules and source notes. Let `authoring:bank` supply the static brief
+   and prompt; inspect only small frequency/reference windows. Do not read
+   previous stories to construct the next one.
+2. Write freely in `drafts/` from that brief: a coherent, natural story using the
+   allowed bank and every mandatory target. Use exact introductions and complete
+   authored reading lists. Author per-occurrence pinyin, sentences and paragraphs;
+   no token IDs, help flags, stored cumulative bank or dictionary inference.
+   Aim for enjoyable reading for an orally fluent Mandarin speaker: a complete
+   small situation, natural dialogue where useful, not disconnected textbook
+   sentences or forced childish exchanges. Repeat new characters often where
+   natural, without a fixed count or padding. Change an unworkable premise
+   rather than break the character constraints. No theme, continuity, inherited
+   style or enforced uniqueness; accidental similarity to another story is fine.
+3. **Author self-review**: check meaningful use of every target, naturalness,
+   intended meanings, contextual pinyin, reading-list completeness, boundaries
+   and permanent-help load. Consult pronunciation references as needed.
+4. **Tool check**: validate candidate-over-current, inspect hard errors and soft
+   reports, run tests/typechecks. Revise, self-review and rerun until hard checks
+   pass. No separate reviewer, mandatory fluent-speaker approval or human gate.
+   Do not describe a tool pass as proof of meaningfulness or Mandarin quality.
+5. Promote the self-reviewed, checked candidate manually into its existing
+   `app/content/` lesson, preserving stable IDs. Do not import authoring files or
+   add a fourth published lesson. Archive/remove stale drafts so an obsolete
+   candidate cannot overwrite a newer publication; the checker rejects stale
+   proposed revisions rather than silently accepting them.
+6. Apply the **manual revision policy**: bump the lesson for changed token indexes,
    story/context pinyin, introductions or flashcard readings. If earlier
    introductions/order alter later taught banks, bump all affected lessons too.
    Cosmetic title/description edits alone need not bump. Keep lesson IDs stable.
    A candidate's proposed revision is not permission to reuse a number already
    published. Old stories need not be retained for attempts; server reset and
    milestone preservation are separate responsibilities.
-8. Rerun `authoring:check`, `authoring:typecheck`, `authoring:test`, app/test
+7. Rerun `authoring:check`, `authoring:typecheck`, `authoring:test`, app/test
    typechecks and the reader/browser suite. Audit that only the intended three
-   lessons are published and the app cannot import dataset/draft files. #7 owns
-   final approval and hosted release validation; this toolkit does not deploy.
+   lessons are published and the app cannot import dataset/draft files. Record
+   actual self-review and validation results in #7; hosted release verification
+   is separate from this toolkit. Do not invent an independent reviewer.

@@ -24,7 +24,7 @@ export default function Lessons({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <div className="page-heading"><div><p className="eyebrow">Your reading path</p><h1>Your lessons</h1><p>Welcome, <strong>{loaderData.username}</strong>. Build your character bank in order.</p></div><Form method="post" action="/logout"><button className="secondary" type="submit">Log out</button></Form></div>
-      <aside className="notice">Early preview: these are illustrative curriculum fixtures, not final approved lessons. Read stories and practise characters you reveal. Revisiting a completed lesson preserves your completion and later lesson access.</aside>
+      <aside className="notice">Three agent-authored, self-reviewed Fundamentals lessons. Practise characters you reveal, then reread until you need no reveals. Permanent pinyin help stays visible. Revisiting preserves your completion and later lesson access.</aside>
       {loaderData.modules.map((module) => <section className="module" key={module.id} aria-labelledby={`module-${module.id}`}><h2 id={`module-${module.id}`}>{module.title}</h2><ol className="lesson-list" start={number + 1}>{module.lessons.map(({ lesson, status, phase, attemptId }) => <LessonCard key={lesson.id} lesson={lesson} status={status} phase={phase} attemptId={attemptId} number={++number} />)}</ol></section>)}
     </>
   );

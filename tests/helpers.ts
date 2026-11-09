@@ -1,8 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { expect, type APIRequestContext, type Page } from "@playwright/test";
+import { first, lessonPath, lessons } from "./content-helpers";
 
-export const firstLesson = "/lessons/first-characters";
-export const lockedLessons = ["/lessons/people-and-places", "/lessons/everyday-connections"];
+export const firstLesson = lessonPath(first);
+export const lockedLessons = lessons.slice(1).map(lessonPath);
 export const origin = "http://127.0.0.1:4173";
 
 export function account() {
@@ -51,10 +52,17 @@ export function post(request: APIRequestContext, path: string, form: Record<stri
 // self-assessment locally so its real hidden attempt_id is available; do not
 // invent an attempt, seed D1, or depend on private localStorage key formats.
 export async function startReader(page: Page, lesson = firstLesson) {
+  const authored = lessons.find((entry) => lessonPath(entry) === lesson)!;
   await page.goto(lesson);
+  if (authored.kind === "revision") {
+    expect((await post(page.request, lesson, { intent: "start" })).status()).toBe(303);
+    await page.goto(lesson);
+    await expect(page.getByRole("region", { name: "Story reader", exact: true })).toBeVisible();
+    return (await (await page.request.get(`${lesson}/reader`)).json()).state.attemptId as string;
+  }
   await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < authored.newCharacters.length; i++) {
     await page.getByRole("button", { name: "Reveal", exact: true }).click();
     await page.getByRole("button", { name: "Got it", exact: true }).click();
   }

@@ -1,3 +1,5 @@
+import { lengthForIntroductions, validateAuthoringPolicy } from "./authoring-policy.mjs";
+
 const hanziPattern = /^\p{Script=Han}$/u;
 const punctuationPattern = /^\p{Punctuation}+$/u;
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -53,10 +55,9 @@ export function availableBank(content, lessonId) {
 }
 
 /** Soft target only: learning level is 1-based, revision uses preceding level. */
-export function lengthGuidance(level) {
+export function lengthGuidance(level, { revision = false } = {}) {
   if (!Number.isInteger(level) || level < 1) throw new Error("Level must be a positive integer");
-  const target = Math.min(200, 60 + 20 * (level - 1));
-  return { target, min: Math.floor(target * 0.75), max: Math.ceil(target * 1.25), unit: "Hanzi occurrences" };
+  return lengthForIntroductions(level * 5, { revision });
 }
 
 function consistentReading(hanzi, reading, readings) {
@@ -68,14 +69,18 @@ function consistentReading(hanzi, reading, readings) {
   return hanzi === "不" && readings.includes("bù") && reading === "bú";
 }
 
-export function validateCurriculum(content, { requireStories = false } = {}) {
+// Structural mode is for generic fixtures, not publication. Use the named
+// publication API below (also used by CLI/build) for the canonical policy.
+export function validateCurriculum(content, { requireStories = false, policy = "structural" } = {}) {
+  if (!["structural", "published"].includes(policy)) throw new Error("Unknown validation policy");
+  if (policy === "published") requireStories = true;
   const errors = [], warnings = [], reports = [];
   const fail = (path, message) => errors.push(`${path}: ${message}`);
   const keys = (value, allowed, path) => {
     for (const key of Object.keys(value)) if (!allowed.includes(key)) fail(path, `unexpected field ${key}`);
   };
   if (!record(content) || !Array.isArray(content.modules) || !content.modules.length) {
-    return { errors: ["curriculum: expected nonempty ordered modules array"], warnings, reports };
+    return { errors: ["curriculum: expected nonempty ordered modules array"], warnings, reports, policy };
   }
   keys(content, ["modules"], "curriculum");
   const ids = new Set(), introductions = new Map(), lessons = [];
@@ -129,7 +134,7 @@ export function validateCurriculum(content, { requireStories = false } = {}) {
   for (const { lesson, chars, path } of lessons) {
     chars.forEach((c) => taught.add(c.hanzi));
     if (lesson.kind === "learning") level++;
-    const report = { lessonId: lesson.id, hanziCount: 0, taughtCount: 0, permanentHelp: [], guidance: lengthGuidance(Math.max(1, level)) };
+    const report = { lessonId: lesson.id, hanziCount: 0, taughtCount: 0, permanentHelp: [], guidance: lengthGuidance(Math.max(1, level), { revision: lesson.kind === "revision" }) };
     reports.push(report);
     if (lesson.story === undefined) {
       if (requireStories) fail(path, "published/candidate lesson requires a story");
@@ -178,7 +183,20 @@ export function validateCurriculum(content, { requireStories = false } = {}) {
       warnings.push(`${lesson.id}: ${report.hanziCount} Hanzi; soft range ${report.guidance.min}–${report.guidance.max} (not a validity error)`);
     }
   }
-  return { errors, warnings, reports };
+  if (policy === "published" && !errors.length) {
+    const authoring = validateAuthoringPolicy(content);
+    errors.push(...authoring.errors);
+    for (const [index, report] of reports.entries()) {
+      const { newTargets, due, revisionTargets, mandatory, expectedIntroductions } = authoring.plans[index];
+      Object.assign(report, { newTargets, due, revisionTargets, mandatory, expectedIntroductions });
+    }
+    return { errors, warnings, reports, policy, pending: authoring.pending };
+  }
+  return { errors, warnings, reports, policy };
+}
+
+export function validatePublishedCurriculum(content) {
+  return validateCurriculum(content, { policy: "published" });
 }
 
 /** Candidate lessons REPLACE matching stable IDs in their existing positions. */

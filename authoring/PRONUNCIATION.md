@@ -25,27 +25,63 @@ remainder. That reading is absent from the consulted CC-CEDICT single-character
 有 entries. This is a reference link, not a redistributed 汉典 database or
 definition; no licence to copy its database is assumed.
 
+Rechecked the same CC-CEDICT archive on 2026-11-09 for #7 (same SHA-256 above),
+including single-character entries and relevant compounds, without importing
+the full dictionary into the app. Supplemental references consulted that day:
+[汉典 么](https://www.zdic.net/hans/%E4%B9%88) and
+[汉典 麼](https://www.zdic.net/hans/%E9%BA%BC). Only authored reading spellings
+and reference links are retained here, not copied dictionary definitions.
+
 ## Introductions checked against the reference
 
 | Lesson | Authored lexical Mandarin reading lists |
 | --- | --- |
-| first-characters | 的 de / dī / dí / dì; 一 yī / yāo; 是 shì; 不 bù; 了 le / liǎo |
-| people-and-places | 我 wǒ; 你 nǐ; 他 tā; 在 zài; 人 rén |
-| everyday-connections | 有 yǒu / yòu; 这 zhè / zhèi; 个 gè / gě; 上 shàng / shǎng; 中 zhōng / zhòng |
+| first-characters | 我 wǒ; 的 de / dī / dí / dì; 你 nǐ; 是 shì; 了 le / liǎo |
+| people-and-places | 不 bù; 们 men / mén; 这 zhè / zhèi; 一 yī / yāo; 他 tā |
+| everyday-connections | 么 me / mó / ma / má / yāo; 在 zài; 有 yǒu / yòu; 个 gè / gě; 好 hǎo / hào |
 
 CC-CEDICT explicitly mentions 一 **yāo** for spelling digits; it must not be
 dropped just to keep an old test's one-reading expectation. 的 **dī** is used
 for taxis, **dí** for “really”, **dì** for a target. 个 **gě** appears in
-自个儿; 上 **shǎng** in 上声. These are not surface tone changes.
+自个儿. These are not surface tone changes. 好 **hǎo** and **hào** are both
+explicit CC-CEDICT single-character entries; compounds such as 好学 and 好吃
+contrast the two lexical readings. The stories use hǎo only. 们 normally has
+neutral **men**, but the same archive's 图们 / 图们江 entries attest **mén**;
+that proper-name reading is included, not inferred from a neutral-tone rule.
+
+### The exceptional spelling 么
+
+Do not claim that CC-CEDICT directly lists `么 mó` or `么 yāo`: it does not in
+this archive's simplified-character field. Its exact records include
+`麼 么 [me5]`, `麼 么 [ma2]`, `麼 么 [ma5]`, and `麽 么 [me5]`;
+the literary record is `麼 麽 [mo2]`, while `么 幺 [yao1]` maps the old
+traditional glyph to simplified **幺**, not to simplified 么.
+
+For this authored **么** card the supplemental scope includes the Mandarin
+readings of its documented 麼/幺 variant uses as well as modern suffix **me**.
+汉典's 么 page explicitly gives **me / ma / yāo**, identifies the 幺 use,
+and its page title also lists **má / mó**. The linked 麼 page independently
+supplies the literary **mó**, interrogative **má / ma**, and suffix **me**,
+and lists 么 among its variants. This supports the authored five-reading list
+`me / mó / ma / má / yāo`; **má** must not be silently dropped when retaining
+the source's interrogative readings. There is no extra `mǎ` entry established
+for this card merely because 吗 has a separate mǎ reading.
+
+The references partition historical/variant glyphs differently; the list is
+complete **within this explicitly broader variant scope**, not evidence that
+all five are common modern pronunciations of 什么. Only **me** is used in
+the actual stories. Rare variant scope remains a reference/teaching caveat,
+not an unresolved choice of contextual pronunciation in these scenes.
 
 “Complete” here means the lexical Mandarin readings for the standard simplified
-character, including the listed colloquial/literary readings. It does not mean
+character, including the listed colloquial/literary and proper-name readings,
+with the explicit broader variant scope for 么 above. It does not mean
 every dialect reading, singing pronunciation, Unicode variant merger or surname
 capitalization is a separate card reading. For example, CC-CEDICT's note about
 的 di in songs does not add a neutral `di` card reading; the unofficial mapping
 of 瞭 liào to 了 does not add liào. Revisit this scope in #7 if the owner wants
 those variants. Automated validation cannot prove a reading list complete;
-the reviewer must consult both single-character entries and relevant compounds.
+the author must consult both single-character entries and relevant compounds.
 
 ## Per-occurrence convention
 
@@ -62,20 +98,24 @@ the reviewer must consult both single-character entries and relevant compounds.
 - Keep conventional underlying third-tone spelling, e.g. nǐ, rather than
   rewriting every third-tone sandhi sequence. This is a spelling convention,
   not a claim that speech has no sandhi.
-- Neutral examples in these texts include 姐姐 jiě jie, 妈妈 mā ma, 弟弟 dì di,
-  认识 rèn shi, 明白 míng bai, 盒子 hé zi, and 一个 yí ge. The fixture deliberately
-  contrasts 了 **le** with 了解 **liǎo jiě**, then repeats 了 later.
+- Neutral examples in the published texts include 妈妈 mā ma, 儿子 ér zi,
+  看看 kàn kan, 点心 diǎn xin, 什么 shén me, and 一个 yí ge. In 说不好,
+  potential-complement 不 is neutral **bu**; the standalone refusal 不 is **bù**.
+  The separate illustrative reader fixture contrasts 了 **le** with
+  了解 **liǎo jiě**; it is not a fourth published story.
 - The checker compares occurrence readings to all lesson-owned definitions
   where available, allowing the documented 一/不 changes and matching neutral
   syllables. It cannot decide whether that neutral tone or a polyphonic choice
   is appropriate in a sentence. Unintroduced characters still need dictionary
-  and Mandarin review; lack of an authored definition is not a validation error.
+  and author self-review; lack of an authored definition is not a validation error.
 
 ## Status
 
-The three runtime stories are **illustrative checked reader fixtures**. The
-three separate texts in `drafts/initial-stories.ts` are **actual first drafts**
-for #7, not approved replacements. Source comparison and structural checks are
-not independent fluent-speaker approval or learner testing. #7 must check
-naturalness, intended meanings, every contextual pronunciation, completeness
-of reading lists, and the amount of permanent help before promotion/release.
+The three runtime stories in `app/content/fundamentals-stories.ts` are #7's
+original, **author-self-reviewed** texts, promoted at revision 3. The exact
+review and mechanical results are in [`drafts/REVIEW-7.md`](drafts/REVIEW-7.md).
+The author reviewed Chinese, meanings, meaningful mandatory reuse, per-token
+pinyin, sentence/paragraph boundaries, reading lists and permanent-help load
+before checks and after the tool-forced edit. No separate human review,
+independent Mandarin approval or learner testing is claimed. Source comparison
+and mechanical validation do not establish language quality or learning efficacy.

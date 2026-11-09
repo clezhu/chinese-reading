@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { firstLesson, lessonCard, lockedLessons, login, origin, post, register, startReader } from "./helpers";
-import type { StoryState } from "../app/lib/story";
+import { candidates, first, firstRef, firstTitle, lessons, nextTitle } from "./content-helpers";
+import { revisionCards, type StoryState } from "../app/lib/story";
 
 async function state(page: Page, lesson = firstLesson): Promise<StoryState> {
   return (await (await page.request.get(`${lesson}/reader`)).json()).state;
@@ -10,22 +11,52 @@ async function answer(page: Page, got = true) {
   await page.getByRole("button", { name: got ? "Got it" : "Didn't get it", exact: true }).click();
 }
 const milestones = (page: Page) => page.locator('[aria-label="Completion milestones"] time');
+const dates = (page: Page) => milestones(page).evaluateAll((nodes) => nodes.map((node) => node.getAttribute("datetime")));
+const cell = (page: Page, ref: string) => page.locator(`[data-occurrence="${ref}"]`);
+const finish = (page: Page) => page.getByRole("button", { name: "Finish reading", exact: true });
+const reread = (page: Page) => page.getByRole("button", { name: "Reread story", exact: true });
+const passed = (saved: StoryState) => ({ intent: "revision-passed", attempt_id: saved.attemptId, content_revision: String(saved.contentRevision) });
 
-test("revision mastery gates completion, retries failed confirmations, and resumes frozen help", async ({ page, browser }) => {
-  const credentials = await register(page);
-  const attempt = await startReader(page);
-  for (const ref of ["0:2:3", "0:2:4"]) {
-    await page.locator(`[data-occurrence="${ref}"]`).click();
-    await expect(page.locator(`[data-occurrence="${ref}"]`)).toHaveAttribute("data-save-state", "saved");
+async function collect(page: Page, refs: string[]) {
+  for (const ref of refs) {
+    await cell(page, ref).click();
+    await expect(cell(page, ref)).toHaveAttribute("data-save-state", "saved");
   }
-  await page.getByRole("button", { name: "Finish reading", exact: true }).click();
+  await finish(page).click();
   await expect(page.getByRole("heading", { name: "Collected revision", exact: true })).toBeVisible();
+  const frozen = await state(page);
+  expect(frozen.phase).toBe("revision-flashcards");
+  expect(new Set(frozen.revealed)).toEqual(new Set(refs));
+  return frozen;
+}
+
+async function freshStory(page: Page, previous: StoryState) {
+  await expect(page.getByRole("region", { name: "Story reader", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toHaveCount(0);
+  const fresh = await state(page);
+  expect(fresh).toMatchObject({ phase: "story", contentRevision: previous.contentRevision, revealed: [], version: 0 });
+  expect(fresh.attemptId).not.toBe(previous.attemptId);
+  expect((await (await page.request.get(`${firstLesson}/reader`)).json()).cards).toEqual([]);
+  for (const entry of candidates.occurrences) {
+    await expect(cell(page, entry.ref)).toHaveAttribute("data-revealed", String(entry.permanent));
+    if (entry.permanent) await expect(cell(page, entry.ref).locator(".reader-pinyin")).toBeVisible();
+    else await expect(cell(page, entry.ref).locator(".reader-pinyin")).toBeHidden();
+  }
+  return fresh;
+}
+
+test("current-pass revision retries confirmations and reloads, but only a zero-reveal reread earns completion", async ({ page, browser }) => {
+  const credentials = await register(page);
+  await startReader(page);
+  const refs = candidates.distinct.slice(0, 2).map((entry) => entry.ref);
+  const frozen = await collect(page, refs);
+  await expect(milestones(page)).toHaveCount(0);
   await expect(page.getByLabel("Saved sentence context")).toHaveCount(0);
+  await expect(reread(page)).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Complete lesson", exact: true })).toHaveCount(0);
   await answer(page, false);
   await answer(page);
-  await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();
-  await page.reload(); // Saved subset, not initial learning or story.
+  await page.reload();
   await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();
   await answer(page);
   await expect(page.getByRole("heading", { name: "Full-deck confirmation", exact: true })).toBeVisible();
@@ -39,122 +70,220 @@ test("revision mastery gates completion, retries failed confirmations, and resum
     await login(otherPage, credentials);
     await otherPage.goto(firstLesson);
     await expect(otherPage.getByText("Card 1 of 2 · 0 missed this round", { exact: true })).toBeVisible();
-    expect((await state(otherPage)).attemptId).toBe(attempt);
+    expect(await state(otherPage)).toEqual(frozen);
     await otherPage.getByRole("button", { name: "Reveal", exact: true }).click();
-    await expect(otherPage.getByRole("list", { name: "Readings for 了", exact: true }).getByRole("listitem")).toHaveText(["le", "liǎo"]);
-    await expect(otherPage.locator('[data-context-occurrence="0:2:4"] .reader-pinyin')).toBeVisible();
+    const card = revisionCards(first, refs)[0];
+    await expect(otherPage.getByRole("list", { name: `Readings for ${card.character.hanzi}`, exact: true }).getByRole("listitem")).toHaveText([...card.character.pinyin]);
+    for (const token of card.sentence) if (typeof token !== "string") {
+      const pinyin = otherPage.locator(`[data-context-occurrence="${token.ref}"] .reader-pinyin`);
+      if (token.showPinyin) await expect(pinyin).toBeVisible();
+      else await expect(pinyin).toBeHidden();
+    }
   } finally { await other.close(); }
   await answer(page);
   await answer(page);
-  await expect(page.getByRole("button", { name: "Complete lesson", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Complete lesson", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
-  const dates = await milestones(page).evaluateAll((nodes) => nodes.map((node) => node.getAttribute("datetime")));
-  expect(dates[0]).toBe(dates[1]);
+  await expect(reread(page)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue to story", exact: true })).toHaveCount(0);
+  await reread(page).click();
+  const fresh = await freshStory(page, frozen);
+  await expect(milestones(page)).toHaveCount(0);
   await page.reload();
+  expect(await state(page)).toEqual(fresh);
+  await page.goto("/lessons");
+  await expect(lessonCard(page, firstTitle).getByText("In progress", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
+  await page.goto(firstLesson);
+  await finish(page).click();
   await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
+  const earned = await dates(page);
+  expect(earned).toHaveLength(2);
+  expect(earned[0]).toBe(earned[1]);
+  await page.reload();
+  expect(await dates(page)).toEqual(earned);
   await page.getByRole("link", { name: "Next lesson", exact: true }).click();
   await expect(page).toHaveURL(lockedLessons[0]);
 });
 
-test("narrow revision cards wrap their context and retain an unsaved result for retry", async ({ page }, testInfo) => {
+test("repeated passes use only current help, ignore old local decks, and atomically reject stale/concurrent writes", async ({ page, context }) => {
+  await register(page);
+  await startReader(page);
+  const staleTab = await context.newPage();
+  await staleTab.goto(firstLesson);
+  const identities = new Set<string>();
+  try {
+    for (let pass = 0; pass < 3; pass++) {
+      const current = await state(page);
+      identities.add(current.attemptId);
+      // First two passes use different characters; the third deliberately reuses
+      // the second deck's IDs, so an old recognised local deck must not auto-pass.
+      const ref = candidates.distinct[pass === 0 ? 0 : 1].ref;
+      const frozen = await collect(page, [ref]);
+      const resource = await (await page.request.get(`${firstLesson}/reader`)).json();
+      expect(resource.cards).toEqual(revisionCards(first, [ref]));
+      await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+      await expect(reread(page)).toHaveCount(0);
+      await answer(page);
+      await page.reload();
+      await expect(reread(page)).toBeVisible(); // Current local deck survives reload.
+      // Preserve previous local decks intentionally: fresh identity, not clearing
+      // the entire browser, must protect the next pass even with identical IDs.
+      const oldStorage = await page.evaluate(() => Object.entries(localStorage));
+      expect(oldStorage.length).toBeGreaterThan(0);
+      const responses = await Promise.all(Array.from({ length: 3 }, () => post(page.request, firstLesson, passed(frozen))));
+      expect(responses.filter((response) => response.status() === 303)).toHaveLength(1);
+      expect(responses.filter((response) => response.status() === 409)).toHaveLength(2);
+      await page.reload();
+      const fresh = await freshStory(page, frozen);
+      expect(identities.has(fresh.attemptId)).toBe(false);
+      for (const intent of ["reveal", "finish-reading"]) {
+        expect((await post(page.request, `${firstLesson}/reader`, { ...passed(frozen), intent, occurrence: ref })).status()).toBe(409);
+      }
+      expect((await post(page.request, firstLesson, passed(frozen))).status()).toBe(409);
+      expect((await post(page.request, firstLesson, { intent: "deck-passed", attempt_id: frozen.attemptId })).status()).toBe(409);
+      expect(await state(page)).toEqual(fresh);
+      await expect(milestones(page)).toHaveCount(0);
+    }
+    expect(identities.size).toBe(3);
+    // A genuinely stale story tab may not reveal into the newest pass.
+    const response = staleTab.waitForResponse((response) => response.url().endsWith(`${firstLesson}/reader`) && response.request().method() === "POST");
+    await cell(staleTab, firstRef).evaluate((element) => (element as HTMLButtonElement).click());
+    expect((await response).status()).toBe(409);
+    await expect(staleTab.getByRole("button", { name: "Reload lesson", exact: true })).toBeVisible();
+    await staleTab.getByRole("button", { name: "Reload lesson", exact: true }).click();
+    expect(await state(staleTab)).toEqual(await state(page));
+    await expect(cell(staleTab, firstRef).locator(".reader-pinyin")).toBeHidden();
+    await finish(page).click();
+    await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
+  } finally { await staleTab.close(); }
+});
+
+test("a delayed old-pass snapshot cannot restore help or a frozen deck after identity rotates", async ({ page }) => {
+  await register(page);
+  await startReader(page);
+  const frozen = await collect(page, [firstRef]);
+  const oldSnapshot = await (await page.request.get(`${firstLesson}/reader`)).json();
+  await answer(page);
+  await reread(page).click();
+  const fresh = await freshStory(page, frozen);
+  let sentOld = false;
+  await page.route(`**${firstLesson}/reader?reader-state=1`, async (route) => {
+    if (sentOld) return route.continue();
+    sentOld = true;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(oldSnapshot) });
+  });
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(page.getByRole("alert")).toContainText("attempt or story content changed");
+  await expect(cell(page, firstRef).locator(".reader-pinyin")).toBeHidden();
+  await expect(page.getByRole("heading", { name: "Collected revision", exact: true })).toHaveCount(0);
+  await expect(finish(page)).toBeDisabled();
+  expect(await state(page)).toEqual(fresh);
+  await page.unroute(`**${firstLesson}/reader?reader-state=1`);
+  await page.getByRole("button", { name: "Reload lesson", exact: true }).click();
+  await freshStory(page, frozen);
+  await expect(finish(page)).toBeEnabled();
+});
+
+test("narrow revision wraps context and retains an unsaved result for retry", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await register(page);
   await startReader(page);
-  await page.locator('[data-occurrence="0:2:3"]').click();
-  await expect(page.locator('[data-occurrence="0:2:3"]')).toHaveAttribute("data-save-state", "saved");
-  await page.getByRole("button", { name: "Finish reading", exact: true }).click();
+  const frozen = await collect(page, [firstRef]);
   await page.getByRole("button", { name: "Reveal", exact: true }).click();
   await expect(page.getByLabel("Saved sentence context")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath("revision-mobile.png"), fullPage: true });
   await page.getByRole("button", { name: "Got it", exact: true }).click();
-  // A real rejected save must not be presented as a durable success.
-  await page.route("**/lessons/first-characters.data", async (route) => {
+  const action = `**${firstLesson}.data`;
+  await page.route(action, async (route) => {
     if (route.request().method() === "POST") {
-      const response = await route.fetch({ postData: new URLSearchParams({ intent: "revision-passed", attempt_id: "stale-attempt", content_revision: "2" }).toString() });
+      const response = await route.fetch({ postData: new URLSearchParams({ ...passed(frozen), attempt_id: "stale-attempt" }).toString() });
       await route.fulfill({ response });
     } else await route.continue();
   });
-  await page.getByRole("button", { name: "Complete lesson", exact: true }).click();
+  await reread(page).click();
   await expect(page.getByRole("alert")).toContainText("Your result has not been saved");
-  expect((await state(page)).phase).toBe("revision-flashcards");
-  await page.unroute("**/lessons/first-characters.data");
-  await page.getByRole("button", { name: "Complete lesson", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
+  expect(await state(page)).toEqual(frozen);
+  await page.unroute(action);
+  await reread(page).click();
+  await freshStory(page, frozen);
+  await expect(milestones(page)).toHaveCount(0);
 });
 
-test("revisits reset only the latest attempt, resume safely, and preserve first completion and later access", async ({ page }) => {
+test("explicit learning revisit starts introduction, rereads skip it, and only a clean Finish updates latest milestone", async ({ page }) => {
   await register(page);
   const original = await startReader(page);
-  await page.getByRole("button", { name: "Finish reading", exact: true }).click();
+  await finish(page).click();
   await expect(milestones(page)).toHaveCount(2);
-  const first = await milestones(page).first().getAttribute("datetime");
+  const earned = await dates(page);
   await page.goto("/lessons");
-  await lessonCard(page, "First characters").getByRole("button", { name: /^Revisit lesson/ }).click();
+  await lessonCard(page, firstTitle).getByRole("button", { name: /^Revisit lesson/ }).click();
   await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toBeVisible();
-  const fresh = await state(page);
-  expect(fresh.attemptId).not.toBe(original);
-  expect(fresh.revealed).toEqual([]);
-  expect((await post(page.request, firstLesson, { intent: "revisit", attempt_id: original })).status()).toBe(409);
-  expect((await post(page.request, firstLesson, { intent: "revisit", attempt_id: fresh.attemptId })).status()).toBe(409);
+  const revisit = await state(page);
+  expect(revisit).toMatchObject({ phase: "introduction", revealed: [], version: 0 });
+  expect(revisit.attemptId).not.toBe(original);
+  for (const attempt_id of [original, revisit.attemptId]) expect((await post(page.request, firstLesson, { intent: "revisit", attempt_id })).status()).toBe(409);
   await page.goto("/lessons");
-  const card = lessonCard(page, "First characters");
+  const card = lessonCard(page, firstTitle);
   await expect(card.getByText("Completed", { exact: true })).toBeVisible();
   await expect(card.getByRole("button", { name: /^Revisit lesson/ })).toHaveCount(0);
-  await expect(lessonCard(page, "People and places").getByText("Available", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
   await card.getByRole("link", { name: /^Resume revisit/ }).click();
-  expect((await state(page)).attemptId).toBe(fresh.attemptId);
+  expect((await state(page)).attemptId).toBe(revisit.attemptId);
   await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
-  for (let i = 0; i < 5; i++) await answer(page);
+  for (let i = 0; i < first.newCharacters.length; i++) await answer(page);
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
-  await page.locator('[data-occurrence="0:0:1"]').click();
-  await expect(page.locator('[data-occurrence="0:0:1"]')).toHaveAttribute("data-save-state", "saved");
-  await page.reload();
-  expect((await state(page)).attemptId).toBe(fresh.attemptId);
-  await page.getByRole("button", { name: "Finish reading", exact: true }).click();
+  const frozen = await collect(page, [firstRef]);
+  expect(await dates(page)).toEqual(earned);
   await answer(page);
-  await page.getByRole("button", { name: "Complete lesson", exact: true }).click();
+  await reread(page).click();
+  await freshStory(page, frozen);
+  expect(await dates(page)).toEqual(earned); // Practice is not a new completion.
+  await page.reload();
+  expect(await dates(page)).toEqual(earned);
+  await finish(page).click();
   await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
-  await expect(milestones(page).first()).toHaveAttribute("datetime", first!);
-  expect(Date.parse((await milestones(page).last().getAttribute("datetime"))!)).toBeGreaterThan(Date.parse(first!));
-  await page.goto("/lessons");
-  await lessonCard(page, "First characters").getByRole("button", { name: /^Revisit lesson/ }).click();
-  await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toBeVisible();
-  expect((await state(page)).revealed).toEqual([]);
+  const latest = await dates(page);
+  expect(latest[0]).toBe(earned[0]);
+  expect(Date.parse(latest[1]!)).toBeGreaterThan(Date.parse(earned[1]!));
 });
 
-test("all three lessons complete in order with a clean end of curriculum", async ({ page }) => {
+test("all published lessons complete in order with a clean end of curriculum", async ({ page }) => {
   await register(page);
   for (const lesson of [firstLesson, ...lockedLessons]) {
     await startReader(page, lesson);
-    await page.getByRole("button", { name: "Finish reading", exact: true }).click();
+    await finish(page).click();
     await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
   }
   await expect(page.getByRole("link", { name: "Next lesson", exact: true })).toHaveCount(0);
   await expect(page.getByText("You reached the end of the current curriculum.", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
-  await expect(page.getByText("Completed", { exact: true })).toHaveCount(3);
+  await expect(page.getByText("Completed", { exact: true })).toHaveCount(lessons.length);
 });
 
-test("revision and revisit writes enforce phase, identity, locks and account isolation", async ({ page, browser }) => {
+test("revision/revisit writes enforce phase, identity, locks and account isolation across fresh passes", async ({ page, browser }) => {
   await register(page);
-  const attempt = await startReader(page);
+  await startReader(page);
   const current = await state(page);
-  const passed = { intent: "revision-passed", attempt_id: attempt, content_revision: String(current.contentRevision) };
-  expect((await post(page.request, firstLesson, passed)).status()).toBe(409);
-  expect((await post(page.request, firstLesson, { intent: "revisit", attempt_id: attempt })).status()).toBe(409);
-  for (const intent of ["revision-passed", "revisit"]) {
-    expect((await post(page.request, lockedLessons[0], { ...passed, intent })).status()).toBe(403);
-  }
+  expect((await post(page.request, firstLesson, passed(current))).status()).toBe(409);
+  expect((await post(page.request, firstLesson, { intent: "revisit", attempt_id: current.attemptId })).status()).toBe(409);
+  const frozen = await collect(page, [firstRef]);
+  for (const intent of ["revision-passed", "revisit"]) expect((await post(page.request, lockedLessons[0], { ...passed(frozen), intent })).status()).toBe(403);
   const other = await browser.newContext({ baseURL: origin });
   try {
-    const otherPage = await other.newPage();
-    await register(otherPage);
-    for (const intent of ["revision-passed", "revisit"]) {
-      expect((await post(otherPage.request, firstLesson, { ...passed, intent })).status()).toBe(409);
-    }
+    const bob = await other.newPage();
+    await register(bob);
+    await startReader(bob);
+    const bobInitial = await state(bob);
+    for (const intent of ["revision-passed", "revisit"]) expect((await post(bob.request, firstLesson, { ...passed(frozen), intent })).status()).toBe(409);
+    expect((await post(page.request, firstLesson, { ...passed(frozen), user_id: "other", phase: "complete", first_completed_at: "1" })).status()).toBe(303);
+    const fresh = await state(page);
+    expect(fresh).toMatchObject({ phase: "story", revealed: [], version: 0 });
+    expect(fresh.attemptId).not.toBe(frozen.attemptId);
+    expect((await post(bob.request, `${firstLesson}/reader`, { ...passed(fresh), intent: "finish-reading" })).status()).toBe(409);
+    expect(await state(bob)).toEqual(bobInitial);
+    await page.reload();
+    await expect(milestones(page)).toHaveCount(0);
+    await page.goto("/lessons");
+    await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
   } finally { await other.close(); }
-  expect((await state(page)).phase).toBe("story");
-  expect((await state(page)).attemptId).toBe(attempt);
 });

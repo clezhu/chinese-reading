@@ -79,11 +79,11 @@ export default function Lesson({ loaderData, actionData }: Route.ComponentProps)
       </> : phase === "flashcards" && lesson.kind === "learning" && progress ?
         <Flashcards key={progress.attempt_id} cards={lesson.newCharacters} attemptId={progress.attempt_id} storageKey={`chinese-reading:flashcards:${userId}:${lesson.id}:${progress.attempt_id}:initial`} /> : phase === "story" && state && lesson.story ? <>
           <h2>Story phase</h2>
-          <aside className="notice">Illustrative reader fixture, not final language-approved curriculum. First story drafts are awaiting review.</aside>
+          <p>Read without revealing taught pinyin to complete the lesson. If you need help, practise this pass’s collected characters, then reread. Permanent help stays visible.</p>
           <StoryReader lesson={lesson} state={state} />
         </> : phase === "revision-flashcards" ? <>
           <h2>Collected revision</h2>
-          <p>Reading is saved. Your {cards.length} collected character{cards.length === 1 ? "" : "s"} and sentence help are frozen for this attempt.</p>
+          <p>This reading pass is saved. Your {cards.length} collected character{cards.length === 1 ? "" : "s"} and final sentence help are frozen for this pass. Recognise the deck, then reread with taught pinyin hidden again. Repeat as often as you need; a reading pass without reveals completes the lesson.</p>
           {progress && <Flashcards key={`${progress.attempt_id}:revision`} cards={revisionCharacters} contextCards={cards} contentRevision={progress.content_revision} attemptId={progress.attempt_id} storageKey={`chinese-reading:flashcards:${userId}:${lesson.id}:${progress.attempt_id}:revision`} />}
         </> : phase === "complete" ? <>
           <h2>Lesson complete</h2>

@@ -37,13 +37,13 @@ export function Flashcards({ cards, storageKey, attemptId, contextCards, content
   if (!progress) return <p role="status">Loading flashcards…</p>;
   const card = cards.find((entry) => entry.id === progress.round[progress.index]);
   const context = contextCards?.find((entry) => entry.character.id === card?.id);
-  const continueLabel = contextCards ? "Complete lesson" : "Continue to story";
+  const continueLabel = contextCards ? "Reread story" : "Continue to story";
   return <section className="flashcard-panel panel" aria-label="Flashcard practice">
     {!storageAvailable && <p className="notice" role="status">Browser storage is unavailable. You can practise, but returning will restart this deck.</p>}
     <p className="input-hint">Practice progress is saved in this browser only. If it is cleared, this deck restarts; your lesson phase stays saved.</p>
     {progress.stage === "complete" ? <>
       <h2>Deck recognised</h2>
-      <p>You recognised the entire deck in one clean round. Save this result to {contextCards ? "complete the lesson" : "continue to the story"}.</p>
+      <p>You recognised the entire deck in one clean round. Save this result to {contextCards ? "reread the story with taught pinyin hidden again" : "continue to the story"}.</p>
       <fetcher.Form method="post">
         <input type="hidden" name="intent" value={contextCards ? "revision-passed" : "deck-passed"} />
         <input type="hidden" name="attempt_id" value={attemptId} />

@@ -3,12 +3,16 @@
 React Router 8 framework-mode, React, and TypeScript on Cloudflare Workers;
 D1 holds accounts, sessions, and learner progress. Issues #3–#6 implement
 accounts → ordered lesson list → character introduction → mastery flashcards
-→ story reading → contextual revision mastery → completion. Finishing without
-reveals completes directly; otherwise recognise the collected deck to unlock
-the next lesson. Explicit revisits reset practice without undoing milestones
-or later access. The three runtime stories are illustrative
-fixtures, not approved frequency-graded curriculum; actual story drafts await
-#7 review. The reader under `prototype/` remains unrelated throwaway work.
+→ story reading → contextual practice → fresh rereading. A reading pass without
+reveals completes the lesson; otherwise recognise that pass's collected deck,
+then reread with taught pinyin hidden again. Repeat as needed. Explicit revisits
+reset practice without undoing milestones or later access. #7 supplies three
+agent-authored, self-reviewed stories in **Fundamentals**, introducing characters
+in exact frequency order. This is not independent human language approval.
+The reader under `prototype/` remains unrelated throwaway work.
+
+See [`docs/release-7.md`](docs/release-7.md) for the deployed version and local/
+hosted verification evidence.
 
 ## Local development
 
@@ -58,7 +62,10 @@ and authoring tests use Node.js and the checked-in JSON without network access.
 The deployment-update browser tests also use Python 3 to seed old attempts in
 the isolated local test database. `npm run build` runs current-content validation
 first, so invalid introductions/story structures cannot silently ship. Draft
-checks stay separate; a passing check is not language approval.
+checks stay separate; a passing check does not replace author self-review.
+The writing brief supplies the top-100 training pool, mandatory Fibonacci reuse,
+and interpolated length guidance without previous story text. See
+[`docs/authoring.md`](docs/authoring.md) for the agreed policy.
 
 ## Deployment
 
@@ -107,7 +114,9 @@ use `wrangler secret put NAME` and ignored `.dev.vars` locally.
   directly visiting a lesson shows the same introduction without creating a row.
   Start flashcards saves `flashcards`; passing the complete original deck in one
   clean round (including the first) saves `story`. Finish freezes reveals and enters
-  `revision-flashcards`, or completes directly if there are no reveals.
+  `revision-flashcards`, or completes directly if there are no reveals. Passing
+  contextual cards atomically starts a fresh story pass with a new attempt ID
+  and empty reveal set, without repeating initial flashcards or earning milestones.
 - `app/lib/story.ts`: derive the taught bank and permanent help, enumerate
   revision-scoped `paragraph:sentence:token` references, and derive one revision
   card per character. Its context is the earliest revealed occurrence in story

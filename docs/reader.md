@@ -1,4 +1,4 @@
-# Reader implementation (#5)
+# Persisted reader loop (#5–#7)
 
 ## Content and identity
 
@@ -15,11 +15,10 @@ reveal set, not Hanzi, pinyin, interaction order, sentence snapshots or a deck.
 Reading definitions belong to the introducing lesson; cumulative taught sets,
 permanent help and revision cards are derived.
 
-The current illustrative reader fixtures use revision 2; revision 1 is the
-pre-reader fixture baseline used for migrated rows. Actual story drafts propose
-revision 3 but are not yet approved or published. Changing preceding
-introductions/order can affect later stories' taught sets: bump every affected
-lesson, not just the edited one.
+The current curriculum has three revision-3 learning lessons in one Foundations
+module. Content review status belongs to the authoring review records, not runtime
+checks. Changing preceding introductions/order can affect later stories' taught
+sets: bump every affected lesson, not just the edited one.
 
 ## Server boundary
 
@@ -48,10 +47,29 @@ in [D1 SQL statements](https://developers.cloudflare.com/d1/sql-api/sql-statemen
 
 Finish uses one conditional statement to freeze the current server set and
 change phase. Nonempty sets enter `revision-flashcards`; an empty set completes
-and records first/latest completion dates and content revisions. Retrying a lost
-Finish response does not update milestones again. Late reveals get 409. Revision
-cards use each character's earliest **revealed** occurrence in story order and
-that sentence's final saved/permanent pinyin, plus all target readings separately.
+immediately and records first/latest completion dates and content revisions.
+Retrying a lost Finish response does not update milestones again. Late reveals
+get 409. Revision cards use only the current pass: each character's earliest
+**revealed** occurrence in story order and that sentence's final saved/permanent
+pinyin, plus all target readings separately.
+
+Learning has two core stages: initial flashcards, then story (the introduction
+may precede them). Revision-kind lessons start directly in story. Passing the
+contextual deck sends the guarded lesson action `intent=revision-passed`,
+`attempt_id`, `content_revision`. A single conditional D1 `UPDATE … RETURNING`
+changes `revision-flashcards` to `story`, rotates to a new random attempt ID,
+clears the reveal set, and resets the version to zero. It never changes earned
+completion milestones or returns to initial flashcards. All taught pinyin is
+hidden again; permanent help remains visible. This loop has no pass limit. Only
+a zero-reveal reading pass completes the lesson.
+
+No new migration is needed: migration 0003 already supplies attempt identity,
+reveal-set, phase, version and milestone fields. Existing complete rows remain
+complete; existing frozen decks now lead to a reread. An attempt ID identifies a
+reading pass rather than an immutable whole-lesson history. No history is stored.
+Only one concurrent revision confirmation wins; other old-pass requests return
+409. If a confirmation response is lost, reload to see the new story instead of
+replaying the old deck. Phase and identity guards prevent double resets.
 
 Relevant newer content resets the whole unfinished attempt to introduction
 (story for a revision-kind lesson), with a fresh ID, cleared reveals and version
@@ -73,9 +91,14 @@ explicit and Finish stays blocked until saves/refreshes settle. Leaving before
 success can lose pending refs: this is the agreed no-localStorage trade-off.
 
 Focus/visibility refresh and successful saves retrieve server state, combining it
-with local pending help. Version guards ignore stale responses. No continuous
-live-sync is used. Finish includes other tabs' saved refs, not their unreceived
-requests. A stale tab receives actionable reload feedback after the freeze.
+with local pending help. Version guards ignore stale responses within a pass.
+A changed identity freezes an old reader with reload feedback; a newly loaded
+pass remounts the reader and aborts old requests. Attempt-scoped flashcard keys
+include account, lesson and initial/revision kind, so a recognised local deck
+cannot auto-pass the next reading pass, even if the same character needs help.
+No continuous live-sync is used. Finish includes other tabs' saved refs, not
+their unreceived requests. A stale tab receives actionable reload feedback after
+the freeze or pass replacement.
 
 ## Verification and limits
 
@@ -89,18 +112,43 @@ milestone preservation, and no-click completion/unlocking.
 Desktop (1280px) and narrow (320px) checks compare every occurrence rectangle
 before, during and after reveal, verify reserved lane geometry and no page
 overflow, and save mixed/all-revealed screenshots under
-`.wrangler/playwright-results/reader.browser-*`. Both mixed screenshots were
-visually inspected during implementation. Pure/SSR tests cover public deck
-derivation and accessible rendering; offline authoring checks cover data/CLI
-validation and candidate-over-current composition.
+`.wrangler/playwright-results/reader.browser-*`. These are automated geometry
+checks, not a claim of manual visual review of the current stories. Pure/SSR
+tests cover public deck derivation and accessible rendering; offline authoring
+checks cover data/CLI validation and candidate-over-current composition.
 
 No claim is made for physical phones, Safari/Firefox, screen-reader testing or
-final Mandarin approval. Revision mastery now uses the shared flashcard loop:
+final Mandarin approval. Contextual revision uses the shared flashcard loop:
 fronts show only the target character; backs add all readings and the frozen
-sentence help. A passed revision deck completes through the guarded lesson
-action. Explicit revisits replace only the latest attempt, retaining earned
-milestones; the list offers Resume revisit while that attempt is unfinished.
+sentence help. Its “Reread story” action starts a clean reading pass, not lesson
+completion. Explicit revisits replace only the latest finished attempt, retaining
+earned milestones; learning revisits begin with introduction/initial cards,
+revision-kind revisits begin in story. Rereads within either kind skip initial
+cards. The list offers Resume revisit while that attempt is unfinished and
+retains later access based on the first completion milestone.
+
+`tests/progress.ssr.spec.tsx` executes the actual progress operations and SQL with
+repository migrations against ephemeral SQLite/JSON1. Together with pure/SSR
+checks it runs without a server via
+`npx playwright test --config tests/playwright.noserver.config.ts`. It covers
+repeated pass identity rotation, cleared help, stale/foreign/wrong-phase writes,
+no-click completion, and preserved revisit milestones. This does not substitute
+for real Worker/D1 concurrency and browser tests. Run server-backed suites
+serially (see `tests/README.md`); never start competing test servers.
 An isolated checked revision-kind build tests story-first entry without adding
-a published lesson (see `tests/revision-README.md`). #7 owns final
-story review/promotion and complete hosted release verification. This change
-does not deploy or apply remote migrations.
+a published lesson (see `tests/revision-README.md`). #7 owns complete hosted
+release verification; see [the release record](release-7.md). No new schema
+migration is required for the reread loop.
+
+### Local verification for the reread loop
+
+Against the current revision-3 curriculum, serial focused runs passed all 50
+Chromium browser cases (completion, reader, updates, auth, curriculum and initial
+flashcards), two mobile cases, three isolated revision-kind cases and 28
+no-server pure/SSR/SQLite cases. App typecheck and test typecheck also passed.
+The integrated run also passed all 80 app cases and 3 isolated revision cases.
+The first browser run exposed missing test navigation/phase waits; those waits
+were fixed and the affected suites rerun successfully. Hosted release smoke,
+remote migration status and local visual inspection are recorded separately
+in [release-7.md](release-7.md). Language self-review, not independent human
+approval, is the owner-approved workflow.

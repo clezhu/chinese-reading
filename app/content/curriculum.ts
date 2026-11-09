@@ -1,4 +1,4 @@
-import { readerStories } from "./fixtures/reader-stories";
+import { fundamentalsStories } from "./fundamentals-stories";
 
 export type Character = {
   /** Compatibility key for flashcards; equal to hanzi, not a second identity. */
@@ -24,59 +24,53 @@ export type Lesson = LearningLesson | RevisionLesson;
 export type Module = { readonly id: string; readonly title: string; readonly lessons: readonly Lesson[] };
 export type Curriculum = { readonly modules: readonly Module[] };
 
-// Checked illustrative reader fixtures, NOT final language-approved curriculum.
-// Authored reading lists include dictionary Mandarin readings (not contextual
-// tone sandhi). Reference: CC-CEDICT https://www.mdbg.net/chinese/dictionary?page=cedict
-// Final character-frequency selection and human language review belong to the
-// later content ticket (#7). Never guess occurrence pronunciation at runtime.
+// #7's original stories, author self-reviewed (not independent human approval).
+// Exact SUBTLEX-CH introduction order; dictionary Mandarin reading lists exclude
+// contextual tone sandhi. Sources/scope: authoring/PRONUNCIATION.md.
+// Review record: authoring/drafts/REVIEW-7.md. Never infer pinyin at runtime.
 export const curriculum = {
   modules: [
     {
       id: "foundations",
-      title: "Foundations",
+      title: "Fundamentals",
       lessons: [
         {
           id: "first-characters", title: "First characters", kind: "learning",
-          description: "Five familiar sounds, five written characters.",
-          contentRevision: 2,
-          story: readerStories["first-characters"],
+          description: "Two siblings discover that their mother belongs to both of them.",
+          contentRevision: 3,
+          story: fundamentalsStories["first-characters"],
           newCharacters: [
+            { id: "我", hanzi: "我", pinyin: ["wǒ"] },
             { id: "的", hanzi: "的", pinyin: ["de", "dī", "dí", "dì"] },
-            { id: "一", hanzi: "一", pinyin: ["yī", "yāo"] },
+            { id: "你", hanzi: "你", pinyin: ["nǐ"] },
             { id: "是", hanzi: "是", pinyin: ["shì"] },
-            { id: "不", hanzi: "不", pinyin: ["bù"] },
             { id: "了", hanzi: "了", pinyin: ["le", "liǎo"] },
           ],
         },
         {
           id: "people-and-places", title: "People and places", kind: "learning",
-          description: "Connect people to the world around them.",
-          contentRevision: 2,
-          story: readerStories["people-and-places"],
+          description: "A quiet storyteller finds the courage to join the conversation.",
+          contentRevision: 3,
+          story: fundamentalsStories["people-and-places"],
           newCharacters: [
-            { id: "我", hanzi: "我", pinyin: ["wǒ"] },
-            { id: "你", hanzi: "你", pinyin: ["nǐ"] },
+            { id: "不", hanzi: "不", pinyin: ["bù"] },
+            { id: "们", hanzi: "们", pinyin: ["men", "mén"] },
+            { id: "这", hanzi: "这", pinyin: ["zhè", "zhèi"] },
+            { id: "一", hanzi: "一", pinyin: ["yī", "yāo"] },
             { id: "他", hanzi: "他", pinyin: ["tā"] },
-            { id: "在", hanzi: "在", pinyin: ["zài"] },
-            { id: "人", hanzi: "人", pinyin: ["rén"] },
           ],
         },
-      ],
-    },
-    {
-      id: "connections", title: "Building connections",
-      lessons: [
         {
           id: "everyday-connections", title: "Everyday connections", kind: "learning",
-          description: "Build on the characters you already know.",
-          contentRevision: 2,
-          story: readerStories["everyday-connections"],
+          description: "A second pastry turns a possessive moment into a chance to share.",
+          contentRevision: 3,
+          story: fundamentalsStories["everyday-connections"],
           newCharacters: [
+            { id: "么", hanzi: "么", pinyin: ["me", "mó", "ma", "má", "yāo"] },
+            { id: "在", hanzi: "在", pinyin: ["zài"] },
             { id: "有", hanzi: "有", pinyin: ["yǒu", "yòu"] },
-            { id: "这", hanzi: "这", pinyin: ["zhè", "zhèi"] },
             { id: "个", hanzi: "个", pinyin: ["gè", "gě"] },
-            { id: "上", hanzi: "上", pinyin: ["shàng", "shǎng"] },
-            { id: "中", hanzi: "中", pinyin: ["zhōng", "zhòng"] },
+            { id: "好", hanzi: "好", pinyin: ["hǎo", "hào"] },
           ],
         },
       ],

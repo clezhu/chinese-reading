@@ -4,7 +4,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { LessonCard } from "../app/components/lesson-card";
 import { curriculum } from "../app/content/curriculum";
-import { revisionLessonFixture } from "../app/content/fixtures/revision";
+import { revisionLessonFixture } from "./revision-curriculum";
+import { first, lessons } from "./content-helpers";
 import type { ComponentProps } from "react";
 
 function renderCard(props: Partial<ComponentProps<typeof LessonCard>> = {}) {
@@ -26,7 +27,7 @@ for (const phase of ["introduction", "flashcards", "story", "revision-flashcards
     const html = renderCard({ phase, attemptId: "active-attempt" });
     expect(html).toContain('class="lesson-card completed"');
     expect(html).toContain(">Completed</span>");
-    expect(html).toContain('href="/lessons/first-characters"');
+    expect(html).toContain(`href="/lessons/${first.id}"`);
     expect(html).toContain(">Resume revisit<span");
     expect(html).not.toContain("View lesson");
     expect(html).not.toContain("<form");
@@ -82,7 +83,7 @@ test("the real list renderer distinguishes a revision fixture without publishing
   try {
     const html = renderToStaticMarkup(createElement(RouterProvider, { router }));
     expect(html).toContain(">Learning</span>");
-    expect(html).toContain("5 new characters");
+    expect(html).toContain(`${first.newCharacters.length} new characters`);
     expect(html).toContain(">Revision</span>");
     expect(html).toContain("Foundations revision</h3>");
     expect(html).toContain("No new characters");
@@ -90,7 +91,7 @@ test("the real list renderer distinguishes a revision fixture without publishing
     expect(html).toContain("Complete the previous lesson to unlock.");
     expect(html).not.toContain(`/lessons/${revisionLessonFixture.id}`);
     expect(curriculum.modules.flatMap((module) => module.lessons.map((lesson) => lesson.id)))
-      .toEqual(["first-characters", "people-and-places", "everyday-connections"]);
+      .toEqual(lessons.map((lesson) => lesson.id));
   } finally {
     router.dispose();
   }

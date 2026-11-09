@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { firstLesson, lessonCard, lockedLessons, login, logout, post, register } from "./helpers";
+import { first } from "./content-helpers";
+const firstCharacter = first.newCharacters[0];
 
 async function start(page: Page) {
   await page.getByRole("button", { name: /^Start lesson\s*:\s*First characters$/ }).click();
@@ -12,7 +14,7 @@ async function answer(page: Page, got = true) {
   await page.getByRole("button", { name: got ? "Got it" : "Didn't get it", exact: true }).click();
 }
 
-async function round(page: Page, size = 5) {
+async function round(page: Page, size = first.newCharacters.length) {
   for (let i = 0; i < size; i++) await answer(page);
 }
 
@@ -28,9 +30,9 @@ test("real introduction → practice/retries → full confirmation → persisted
   const credentials = await register(page);
   await start(page);
   await expect(page.getByRole("button", { name: "Got it", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("list", { name: "Readings for 的", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("list", { name: `Readings for ${firstCharacter.hanzi}`, exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Reveal", exact: true }).click();
-  await expect(page.getByRole("list", { name: "Readings for 的", exact: true }).getByRole("listitem")).toHaveText(["de", "dī", "dí", "dì"]);
+  await expect(page.getByRole("list", { name: `Readings for ${firstCharacter.hanzi}`, exact: true }).getByRole("listitem")).toHaveText([...firstCharacter.pinyin]);
   await page.getByRole("button", { name: "Didn't get it", exact: true }).click();
   await round(page, 4);
   await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();

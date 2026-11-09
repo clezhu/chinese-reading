@@ -5,6 +5,7 @@ import { createMemoryRouter, RouterProvider } from "react-router";
 import { StoryReader } from "../app/components/story-reader";
 import { curriculum, type Curriculum, type Lesson } from "../app/content/curriculum";
 import { enumerateStory, revisionCards, type StoryState } from "../app/lib/story";
+import { candidates, first, firstRef } from "./content-helpers";
 
 // Small token/ordering fixtures, not proposed curriculum or language approval.
 const lesson: Lesson = {
@@ -84,21 +85,36 @@ test("wire round-tripping durable reveals reconstructs identical contextual card
   expect(revisionCards(lesson, restored.revealed, content)).toEqual(revisionCards(lesson, state.revealed, content));
 });
 
+test("fresh reread SSR hides every taught occurrence while permanent help remains visible", () => {
+  const state: StoryState = { attemptId: "fresh-pass", contentRevision: first.contentRevision, phase: "story", revealed: [], updatedAt: 2, version: 0 };
+  const router = createMemoryRouter([{
+    path: "/lessons/:id", element: createElement(StoryReader, { lesson: first, state }),
+  }], { initialEntries: [`/lessons/${first.id}`] });
+  try {
+    const html = renderToStaticMarkup(createElement(RouterProvider, { router }));
+    for (const entry of candidates.taught) expect(html).toContain(`data-occurrence="${entry.ref}" data-revealed="false" data-permanent="false" data-save-state="hidden"`);
+    for (const entry of candidates.permanent) expect(html).toContain(`data-occurrence="${entry.ref}" data-revealed="true" data-permanent="true" data-save-state="permanent"`);
+    expect(html).toContain("No reveals yet.");
+    expect(html).toContain(">Finish reading</button>");
+  } finally { router.dispose(); }
+});
+
 test("reader SSR exposes independent controls, permanent non-controls and both reserved lanes", () => {
-  const published = curriculum.modules[0].lessons[0];
-  const state: StoryState = { attemptId: "ssr", contentRevision: published.contentRevision, phase: "story", revealed: ["0:0:1"], updatedAt: 1, version: 1 };
+  const published = first;
+  const state: StoryState = { attemptId: "ssr", contentRevision: published.contentRevision, phase: "story", revealed: [firstRef], updatedAt: 1, version: 1 };
   const router = createMemoryRouter([{
     path: "/lessons/:id",
     element: createElement(StoryReader, { lesson: published, state }),
   }], { initialEntries: [`/lessons/${published.id}`] });
   try {
     const html = renderToStaticMarkup(createElement(RouterProvider, { router }));
-    expect(html).toContain('data-occurrence="0:0:1" data-revealed="true" data-permanent="false" data-save-state="saved"');
-    expect(html).toContain('data-occurrence="0:0:4" data-revealed="false"');
-    expect(html).toContain('data-occurrence="0:0:0" data-revealed="true" data-permanent="true" data-save-state="permanent"');
-    expect(html).toContain('aria-label="Reveal pinyin for 的, paragraph 1, sentence 1, token 5"');
+    expect(html).toContain(`data-occurrence="${firstRef}" data-revealed="true" data-permanent="false" data-save-state="saved"`);
+    const hidden = candidates.taught[1];
+    expect(html).toContain(`data-occurrence="${hidden.ref}" data-revealed="false"`);
+    for (const entry of candidates.permanent) expect(html).toContain(`data-occurrence="${entry.ref}" data-revealed="true" data-permanent="true" data-save-state="permanent"`);
+    expect(html).toContain(`aria-label="Reveal pinyin for ${hidden.hanzi}, paragraph ${hidden.paragraphIndex + 1}, sentence ${hidden.sentenceIndex + 1}, token ${hidden.tokenIndex + 1}"`);
     expect(html).toContain('class="reader-pinyin" lang="zh-Latn-pinyin" style="visibility:hidden"');
-    expect(html.match(/class="reader-paragraph"/g)).toHaveLength(published.story.paragraphs.length);
+    expect(html.match(/class="reader-paragraph"/g)).toHaveLength(published.story!.paragraphs.length);
     expect(html).toContain("All reveals saved.");
     expect(html).toContain(">Finish reading</button>");
   } finally { router.dispose(); }
