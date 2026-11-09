@@ -5,7 +5,7 @@ const punctuationPattern = /^\p{Punctuation}+$/u;
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const pinyinPattern = /^[a-züê]+$/u;
 const syllables = new Set((
-  "a ai an ang ao ba bai ban bang bao bei ben beng bi bian biao bie bin bing bo bu " +
+  "a ai an ang ao ba bai ban bang bao bei ben beng bi bia bian biao bie bin bing bo bu " +
   "ca cai can cang cao ce cen ceng cha chai chan chang chao che chen cheng chi chong chou chu chua chuai chuan chuang chui chun chuo ci cong cou cu cuan cui cun cuo " +
   "da dai dan dang dao de dei den deng di dia dian diao die ding diu dong dou du duan dui dun duo " +
   "e ei en eng er ê fa fan fang fei fen feng fo fou fu " +

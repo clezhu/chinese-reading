@@ -6,13 +6,17 @@ accounts → ordered lesson list → character introduction → mastery flashcar
 → story reading → contextual practice → fresh rereading. A reading pass without
 reveals completes the lesson; otherwise recognise that pass's collected deck,
 then reread with taught pinyin hidden again. Repeat as needed. Explicit revisits
-reset practice without undoing milestones or later access. #7 supplies three
-agent-authored, self-reviewed stories in **Fundamentals**, introducing characters
-in exact frequency order. This is not independent human language approval.
+reset practice without undoing milestones or later access. **Fundamentals** now
+contains 11 lessons: learning 1–10 in exact frequency order plus an all-50
+revision. The user-requested expansion supersedes the former three-lesson cap;
+there is no unit logic. #7's first three remain unchanged at revision 3; the
+eight new lessons at revision 1 are integrated from `app/content/extended-fundamentals.ts`.
+See [`REVIEW-expansion.md`](authoring/drafts/REVIEW-expansion.md) for new-content
+sources/self-review. This is not independent human approval or a deployment claim.
 The reader under `prototype/` remains unrelated throwaway work.
 
-See [`docs/release-7.md`](docs/release-7.md) for the deployed version and local/
-hosted verification evidence.
+See [`docs/release-7.md`](docs/release-7.md) for historical #7 local/hosted
+verification evidence, not verification of the expansion.
 
 ## Local development
 
@@ -165,7 +169,8 @@ Stale/repeated revisit requests cannot replace an active attempt.
 
 Revision-kind lessons enter the story directly with no new characters or initial
 deck. `npm run test:revision` validates an unpublished fixture in a separate
-build/D1 store; it does not add a fourth production lesson. See
+build/D1 store. That fixture has the first three lessons plus an early revision
+(four total), separate from production's 11 lessons. See
 [`tests/revision-README.md`](tests/revision-README.md).
 
 No R2, content administration, email/recovery system, or runtime content generation.

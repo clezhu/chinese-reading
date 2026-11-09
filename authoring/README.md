@@ -1,9 +1,15 @@
 # Authoring tools
 
 This space holds offline authoring resources, not runtime application content.
-Published content lives in `app/content/`; keep **exactly three initial learning
-lessons**, not a fourth published revision/example. Candidates live separately in
-[`drafts/`](drafts/README.md). Never import authoring data, drafts or scheduling
+Published content lives in `app/content/`. The user-requested expansion explicitly
+supersedes the former three-lesson cap and fourth-lesson prohibition: the existing
+**Fundamentals** module now contains 10 learning lessons and an all-50 revision
+checkpoint (11 lessons), with no unit logic. The first three remain unchanged at
+revision 3; learning lessons 4–10 and the checkpoint start at revision 1 in
+`app/content/extended-fundamentals.ts`, now integrated by `curriculum.ts`.
+See [`drafts/REVIEW-expansion.md`](drafts/REVIEW-expansion.md) for new-content
+sources/self-review; integration does not establish deployment. Candidates live
+separately in [`drafts/`](drafts/README.md). Never import authoring data, drafts or scheduling
 helpers into the app. #7's newly owner-approved rules below supersede the older
 frequency flexibility, unfamiliar-character allowance and separate-review gate.
 These are static authoring obligations, not per-user progress or runtime scheduling.
@@ -82,7 +88,7 @@ npm run authoring:typecheck             # includes draft TypeScript, not only ap
 npm run authoring:test                  # frequency + content/CLI tests
 ```
 
-Draft modules export `draft` or `drafts` with records
+Replacement draft modules export `draft` or `drafts` with records
 `{ status: "draft", title, lesson }`. Each lesson is a **complete replacement**
 for an existing stable lesson ID, proposing a higher `contentRevision`.
 Repeated `--draft <path>` arguments validate several candidate modules together.
@@ -94,6 +100,10 @@ to repair older policy violations; it does not weaken the final candidate check.
 Without drafts, `check`/build apply full publication policy to current content.
 It never writes or promotes content. TS modules are executable **trusted repo
 code**, not an upload format or sandbox.
+
+New lessons may also be authored in `drafts/`, then manually appended to the
+runtime curriculum and checked as a whole publication. The replacement CLI is
+not an append interface: unknown target IDs still fail.
 
 Checks cover:
 
@@ -156,9 +166,9 @@ learning lesson's Fibonacci targets. No early or duplicate checkpoints.
 The helper reports each introduced character's next Fibonacci obligation and
 the next checkpoint as `pending` beyond the authored sequence. A curriculum
 ending at a checkpoint boundary may leave that checkpoint pending; omission
-becomes an error only if the next learning lesson is already present. The three
-published lessons have future obligations, **not missing lessons or errors**.
-Do not manufacture a fourth lesson to clear these reports. This schedule is an
+becomes an error only if the next learning lesson is already present. The current
+11-lesson publication includes the first all-50 checkpoint; later obligations
+remain pending, **not missing lessons or errors**. This schedule is an
 authoring heuristic, not a claim that research establishes these exact gaps.
 
 ## Soft passage-length guidance
@@ -198,13 +208,14 @@ increase. Never pad a natural story to meet a soft range.
 3. **Author self-review**: check meaningful use of every target, naturalness,
    intended meanings, contextual pinyin, reading-list completeness, boundaries
    and permanent-help load. Consult pronunciation references as needed.
-4. **Tool check**: validate candidate-over-current, inspect hard errors and soft
+4. **Tool check**: validate replacements candidate-over-current, or append new
+   lessons and validate the whole publication; inspect hard errors and soft
    reports, run tests/typechecks. Revise, self-review and rerun until hard checks
    pass. No separate reviewer, mandatory fluent-speaker approval or human gate.
    Do not describe a tool pass as proof of meaningfulness or Mandarin quality.
-5. Promote the self-reviewed, checked candidate manually into its existing
-   `app/content/` lesson, preserving stable IDs. Do not import authoring files or
-   add a fourth published lesson. Archive/remove stale drafts so an obsolete
+5. Promote replacements manually into their existing `app/content/` lessons,
+   preserving stable IDs; append new lessons in authored order with new stable
+   IDs and revision 1. Do not import authoring files. Archive/remove stale drafts so an obsolete
    candidate cannot overwrite a newer publication; the checker rejects stale
    proposed revisions rather than silently accepting them.
 6. Apply the **manual revision policy**: bump the lesson for changed token indexes,
@@ -215,7 +226,7 @@ increase. Never pad a natural story to meet a soft range.
    published. Old stories need not be retained for attempts; server reset and
    milestone preservation are separate responsibilities.
 7. Rerun `authoring:check`, `authoring:typecheck`, `authoring:test`, app/test
-   typechecks and the reader/browser suite. Audit that only the intended three
-   lessons are published and the app cannot import dataset/draft files. Record
-   actual self-review and validation results in #7; hosted release verification
+   typechecks and the reader/browser suite. Audit the intended 11-lesson
+   publication and that the app cannot import dataset/draft files. Record
+   actual self-review and validation results with the relevant review; hosted release verification
    is separate from this toolkit. Do not invent an independent reviewer.

@@ -6,6 +6,16 @@
 - [Frequency dataset source/licence](../authoring/data/README.md)
 - [Frequency source comparison](research/character-frequency-sources.md)
 - [Candidate drafts and archival status](../authoring/drafts/README.md)
+- [Expansion sources and author self-review](../authoring/drafts/REVIEW-expansion.md)
+
+The user-requested expansion explicitly supersedes the former three-lesson cap
+and fourth-lesson prohibition. Production now has 11 lessons in the existing
+Fundamentals module, with no unit logic: learning 1–10 plus an all-50 revision.
+The unchanged first three stay revision 3; learning 4–10 and the checkpoint are
+revision 1, integrated from `app/content/extended-fundamentals.ts`. This is not
+a hosted deployment claim. Replacements still use candidate-over-current checks;
+new lessons can be authored in drafts, then appended and the whole publication
+checked. The isolated revision fixture remains a separate four-lesson curriculum.
 
 #7's newly owner-approved authoring decisions supersede older conflicting #1/#5
 and #7 wording. The canonical rules and commands are in the toolkit README:
@@ -17,7 +27,7 @@ and #7 wording. The canonical rules and commands are in the toolkit README:
   Only learning lessons count; extra appearances/revisions never reset the clock.
 - Revision checkpoints every 10 learning lessons / 50 introductions cover the
   latest50, introduce none and do not advance Fibonacci. Future obligations are
-  pending, not missing-story errors; keep only three initial lessons published.
+  pending, not missing-story errors; the current publication includes the first checkpoint.
 - Hard checks require all mandatory targets at least once and prohibit Hanzi
   outside taught + top100. Meaningful use and language quality are self-review.
 - Soft length interpolates cumulative-introduction anchors

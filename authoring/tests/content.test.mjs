@@ -6,7 +6,7 @@ import { join } from "node:path";
 import test from "node:test";
 import { loadContent, repoRoot } from "../scripts/load-content.mjs";
 import { availableBank, lengthGuidance, validateCurriculum, validatePublishedCurriculum, validateOccurrenceReference, validPinyin, withDrafts } from "../scripts/content-tools.mjs";
-import { frequencyGroup } from "../scripts/authoring-policy.mjs";
+import { authoringPlan, frequencyGroup } from "../scripts/authoring-policy.mjs";
 
 const { curriculum, taughtCharacters, orderedLessons } = await loadContent("app/content/curriculum.ts");
 // Exercise replacement mechanics independently of archived/proposed real drafts.
@@ -19,14 +19,57 @@ const checkMutation = (mutate, pattern) => {
   assert.match(validateCurriculum(candidate).errors.join("\n"), pattern);
 };
 
-test("published curriculum keeps three stable lesson IDs and satisfies canonical policy", () => {
-  assert.deepEqual(orderedLessons().map((l) => l.id), ["first-characters", "people-and-places", "everyday-connections"]);
+test("published curriculum has ten ordered frequency groups and a final all-50 revision", () => {
+  const published = orderedLessons();
+  assert.equal(published.length, 11);
+  assert.deepEqual(published.slice(0, 3).map((l) => l.id), ["first-characters", "people-and-places", "everyday-connections"]);
+  assert.deepEqual(published.slice(0, 3).map((l) => l.contentRevision), [3, 3, 3]);
+  assert.deepEqual(published.map((l) => l.kind), [...Array(10).fill("learning"), "revision"]);
   assert.deepEqual(validatePublishedCurriculum(curriculum).errors, []);
-  for (const lesson of orderedLessons()) {
-    assert.equal(lesson.newCharacters.length, 5);
+  for (const [index, lesson] of published.slice(0, 10).entries()) {
+    assert.deepEqual(lesson.newCharacters.map((c) => c.hanzi), frequencyGroup(index + 1));
     assert.ok(lesson.contentRevision > 0);
     lesson.newCharacters.forEach((c) => assert.equal(c.id, c.hanzi));
   }
+  const revision = published.at(-1);
+  assert.deepEqual(revision.newCharacters, []);
+  const bank = taughtCharacters(revision.id);
+  assert.equal(bank.length, 50);
+  assert.equal(new Set(bank.map((c) => c.hanzi)).size, 50);
+  const occurrences = new Set(revision.story.paragraphs.flat(2).filter((t) => typeof t !== "string").map((t) => t.hanzi));
+  for (const { hanzi } of bank) assert.ok(occurrences.has(hanzi), `revision must cover ${hanzi}`);
+  const brief = availableBank(curriculum, revision.id);
+  assert.equal(brief.prior.length, 50);
+  assert.deepEqual(brief.current, []);
+  assert.deepEqual(brief.combined, bank);
+});
+
+test("published stories satisfy actual Fibonacci due groups and revision does not advance the schedule", () => {
+  const { plans, pending, errors } = authoringPlan(curriculum);
+  assert.deepEqual(errors, []);
+  const dueGroups = [[], [1], [1, 2], [2, 3], [1, 3, 4], [2, 4, 5], [3, 5, 6], [1, 4, 6, 7], [2, 5, 7, 8], [3, 6, 8, 9]];
+  for (const [index, groups] of dueGroups.entries()) {
+    const plan = plans[index], lesson = orderedLessons()[index];
+    assert.equal(plan.learningNumber, index + 1);
+    assert.equal(plan.cumulativeIntroduced, (index + 1) * 5);
+    assert.deepEqual(plan.due, groups.flatMap(frequencyGroup));
+    const occurrences = new Set(lesson.story.paragraphs.flat(2).filter((t) => typeof t !== "string").map((t) => t.hanzi));
+    for (const hanzi of [...frequencyGroup(index + 1), ...groups.flatMap(frequencyGroup)]) {
+      assert.ok(occurrences.has(hanzi), `${lesson.id} must cover new/due ${hanzi}`);
+    }
+  }
+  const revision = plans.at(-1);
+  assert.equal(revision.learningNumber, 10);
+  assert.equal(revision.cumulativeIntroduced, 50);
+  assert.deepEqual(revision.due, []);
+  assert.deepEqual(revision.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(i + 1)).flat());
+  assert.deepEqual(revision.mandatory, revision.revisionTargets);
+  assert.equal(revision.guidance.target, 375);
+  const beforeRevision = { modules: curriculum.modules.map((module) => ({ ...module, lessons: module.lessons.filter((lesson) => lesson.kind === "learning") })) };
+  assert.deepEqual(pending.filter((entry) => entry.type === "fibonacci"), authoringPlan(beforeRevision).pending.filter((entry) => entry.type === "fibonacci"));
+  assert.equal(pending.filter((entry) => entry.type === "fibonacci").length, 50);
+  assert.deepEqual(pending.filter((entry) => entry.type === "revision"), [{ type: "revision", afterLearningNumber: 20, introductions: 50, status: "pending" }]);
+  assert.ok(pending.every((entry) => entry.status === "pending" && (entry.type !== "fibonacci" || entry.learningNumber > 10)));
 });
 
 test("available bank derives prior/current/combined readings across module boundaries", () => {
@@ -49,11 +92,11 @@ test("available bank derives prior/current/combined readings across module bound
   assert.throws(() => availableBank(curriculum, "missing"), /Unknown lesson/);
 });
 
-test("revision lesson introduces nothing, inherits prior bank, and stays outside published lessons", () => {
-  const content = copy(); content.modules.at(-1).lessons.push(revisionLessonFixture);
+test("isolated structural revision introduces nothing, inherits the first-three bank, and stays unpublished", () => {
+  const content = { modules: [{ ...copy().modules[0], lessons: [...structuredClone(orderedLessons().slice(0, 3)), revisionLessonFixture] }] };
   assert.deepEqual(validateCurriculum(content).errors, []);
   assert.equal(taughtCharacters(revisionLessonFixture.id, content).length, 15);
-  assert.equal(orderedLessons().length, 3);
+  assert.ok(!orderedLessons().some((lesson) => lesson.id === revisionLessonFixture.id));
   const invalid = structuredClone(content); invalid.modules.at(-1).lessons.at(-1).newCharacters = first(content).newCharacters;
   assert.match(validateCurriculum(invalid).errors.join("\n"), /zero characters/);
 });
@@ -69,10 +112,12 @@ test("published stories have paragraphs, individual occurrences and derived perm
 });
 
 test("candidate drafts replace lessons together, reuse the taught bank, and remain unpublished", () => {
-  assert.equal(drafts.length, 3);
+  assert.equal(drafts.length, 11);
   const candidate = withDrafts(curriculum, drafts);
   assert.deepEqual(validateCurriculum(candidate).errors, []);
-  assert.equal(orderedLessons(candidate).length, 3);
+  assert.equal(orderedLessons(candidate).length, 11);
+  assert.equal(orderedLessons(candidate).at(-1).kind, "revision");
+  assert.deepEqual(orderedLessons(candidate).at(-1).newCharacters, []);
   assert.ok(orderedLessons(candidate).every((l, i) => l.contentRevision === orderedLessons()[i].contentRevision + 1));
   for (const lesson of orderedLessons(candidate)) {
     const storyHanzi = new Set(lesson.story.paragraphs.flat(2).filter((t) => typeof t !== "string").map((t) => t.hanzi));
@@ -134,8 +179,8 @@ test("validator rejects malformed stories and checks authored reading consistenc
 });
 
 test("pinyin accepts canonical tone positions, ü/ê and syllabic consonants", () => {
-  const bases = ["a", "ai", "ao", "ei", "ou", "xiao", "yao", "jie", "liu", "gui", "lü", "nüe", "ê", "m", "n", "ng", "hm", "hng"];
-  const marked = ["ā", "āi", "āo", "ēi", "ōu", "xiāo", "yāo", "jiē", "liū", "guī", "lǖ", "nüē", "ê\u0304", "m\u0304", "n\u0304", "n\u0304g", "hm\u0304", "hn\u0304g"];
+  const bases = ["a", "ai", "ao", "ei", "ou", "bia", "xiao", "yao", "jie", "liu", "gui", "lü", "nüe", "ê", "m", "n", "ng", "hm", "hng"];
+  const marked = ["ā", "āi", "āo", "ēi", "ōu", "biā", "xiāo", "yāo", "jiē", "liū", "guī", "lǖ", "nüē", "ê\u0304", "m\u0304", "n\u0304", "n\u0304g", "hm\u0304", "hn\u0304g"];
   for (const p of bases) assert.ok(validPinyin(p), p);
   for (const p of marked) {
     for (const tone of ["\u0304", "\u0301", "\u030c", "\u0300"]) {
@@ -186,13 +231,19 @@ test("length guidance counts Hanzi occurrences, excludes punctuation and remains
 test("CLI candidates repair older policy violations but cannot bypass hard checks; briefs allow unwritten stories", () => {
   const directory = mkdtempSync(join(tmpdir(), "authoring-candidate-"));
   const path = join(directory, "drafts.ts");
-  const candidates = orderedLessons().map((lesson, index) => ({
-    status: "draft", lesson: {
-      ...structuredClone(lesson), contentRevision: lesson.contentRevision + 1,
-      newCharacters: frequencyGroup(index + 1).map((hanzi) => ({ id: hanzi, hanzi, pinyin: ["a"] })),
-      story: { paragraphs: [[[...Array.from({ length: index + 1 }, (_, i) => frequencyGroup(i + 1)).flat().map((hanzi) => ({ hanzi, pinyin: "a" })), "。"]]] },
-    },
-  }));
+  let learningNumber = 0;
+  const candidates = orderedLessons().map((lesson) => {
+    const introductions = lesson.kind === "learning" ? frequencyGroup(++learningNumber) : [];
+    return {
+      status: "draft", lesson: {
+        ...structuredClone(lesson), contentRevision: lesson.contentRevision + 1,
+        newCharacters: introductions.map((hanzi) => ({ id: hanzi, hanzi, pinyin: ["a"] })),
+        story: { paragraphs: [[[...Array.from({ length: learningNumber }, (_, i) => frequencyGroup(i + 1)).flat().map((hanzi) => ({ hanzi, pinyin: "a" })), "。"]]] },
+      },
+    };
+  });
+  assert.equal(candidates.at(-1).lesson.kind, "revision");
+  assert.deepEqual(candidates.at(-1).lesson.newCharacters, []);
   const run = (command = "check", ...args) => {
     writeFileSync(path, `export const drafts = ${JSON.stringify(candidates)};`);
     return spawnSync(process.execPath, ["authoring/scripts/content.mjs", command, ...args, "--draft", path], { cwd: repoRoot, encoding: "utf8" });
@@ -202,6 +253,10 @@ test("CLI candidates repair older policy violations but cannot bypass hard check
     assert.equal(valid.status, 0, valid.stderr);
     assert.equal(JSON.parse(valid.stdout).baselinePolicy, "structural");
     assert.equal(JSON.parse(valid.stdout).policy, "published");
+    const revisionSentence = candidates.at(-1).lesson.story.paragraphs[0][0];
+    const removedRevisionTarget = revisionSentence.shift();
+    assert.match(run().stderr, new RegExp(`${candidates.at(-1).lesson.id}: missing mandatory target`));
+    revisionSentence.unshift(removedRevisionTarget);
     const illegal = { hanzi: frequencyGroup(21)[0], pinyin: "a" };
     candidates[0].lesson.story.paragraphs[0][0].unshift(illegal);
     assert.match(run().stderr, /illegal Hanzi/);

@@ -1,4 +1,5 @@
 import { fundamentalsStories } from "./fundamentals-stories";
+import { extendedFundamentalsLessons } from "./extended-fundamentals";
 
 export type Character = {
   /** Compatibility key for flashcards; equal to hanzi, not a second identity. */
@@ -73,6 +74,7 @@ export const curriculum = {
             { id: "好", hanzi: "好", pinyin: ["hǎo", "hào"] },
           ],
         },
+        ...extendedFundamentalsLessons,
       ],
     },
   ],

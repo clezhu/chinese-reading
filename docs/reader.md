@@ -15,8 +15,13 @@ reveal set, not Hanzi, pinyin, interaction order, sentence snapshots or a deck.
 Reading definitions belong to the introducing lesson; cumulative taught sets,
 permanent help and revision cards are derived.
 
-The current curriculum has three revision-3 learning lessons in one Foundations
-module. Content review status belongs to the authoring review records, not runtime
+The current production curriculum has 11 lessons in the existing Fundamentals
+module (`foundations`), with no unit logic: learning 1–10 plus an all-50 revision.
+The user-requested expansion supersedes the former three-lesson cap. The first
+three remain unchanged at revision 3; learning 4–10 and the checkpoint are
+revision 1, integrated from `app/content/extended-fundamentals.ts`. See
+[`REVIEW-expansion.md`](../authoring/drafts/REVIEW-expansion.md) for new-content
+sources/self-review, not deployment evidence. Content review status belongs to the authoring review records, not runtime
 checks. Changing preceding introductions/order can affect later stories' taught
 sets: bump every affected lesson, not just the edited one.
 
@@ -135,14 +140,15 @@ repeated pass identity rotation, cleared help, stale/foreign/wrong-phase writes,
 no-click completion, and preserved revisit milestones. This does not substitute
 for real Worker/D1 concurrency and browser tests. Run server-backed suites
 serially (see `tests/README.md`); never start competing test servers.
-An isolated checked revision-kind build tests story-first entry without adding
-a published lesson (see `tests/revision-README.md`). #7 owns complete hosted
-release verification; see [the release record](release-7.md). No new schema
+An isolated checked four-lesson build (first three plus an early revision) tests
+story-first entry separately from production's 11 lessons (see
+`tests/revision-README.md`). Historical #7 hosted verification is in
+[the release record](release-7.md), not evidence of expansion deployment. No new schema
 migration is required for the reread loop.
 
 ### Local verification for the reread loop
 
-Against the current revision-3 curriculum, serial focused runs passed all 50
+Against the earlier three-lesson revision-3 curriculum, serial focused runs passed all 50
 Chromium browser cases (completion, reader, updates, auth, curriculum and initial
 flashcards), two mobile cases, three isolated revision-kind cases and 28
 no-server pure/SSR/SQLite cases. App typecheck and test typecheck also passed.

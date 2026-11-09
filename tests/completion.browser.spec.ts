@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { firstLesson, lessonCard, lockedLessons, login, origin, post, register, startReader } from "./helpers";
-import { candidates, first, firstRef, firstTitle, lessons, nextTitle } from "./content-helpers";
+import { candidates, first, firstRef, firstTitle, lessonPath, lessons, nextTitle } from "./content-helpers";
 import { revisionCards, type StoryState } from "../app/lib/story";
 
 async function state(page: Page, lesson = firstLesson): Promise<StoryState> {
@@ -247,17 +247,63 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   expect(Date.parse(latest[1]!)).toBeGreaterThan(Date.parse(earned[1]!));
 });
 
-test("all published lessons complete in order with a clean end of curriculum", async ({ page }) => {
+test("all 11 published lessons complete through the UI, ending in direct-story all-50 revision", async ({ page }) => {
+  test.setTimeout(120_000);
+  expect(lessons).toHaveLength(11);
+  expect(lessons.map((lesson) => lesson.kind)).toEqual([...Array(10).fill("learning"), "revision"]);
   await register(page);
-  for (const lesson of [firstLesson, ...lockedLessons]) {
-    await startReader(page, lesson);
+  for (const [index, lesson] of lessons.entries()) {
+    await expect(page.getByText("Completed", { exact: true })).toHaveCount(index);
+    await expect(page.getByText("Locked", { exact: true })).toHaveCount(lessons.length - index - 1);
+    const card = lessonCard(page, lesson.title);
+    await expect(card.getByText("Available", { exact: true })).toBeVisible();
+    if (lesson.kind === "revision") {
+      await expect(card.getByText("Revision", { exact: true })).toBeVisible();
+      await expect(card.getByText("No new characters", { exact: true })).toBeVisible();
+    }
+    await card.getByRole("button", { name: /^Start lesson/ }).click();
+    await expect(page).toHaveURL(lessonPath(lesson));
+    await expect(page.getByRole("heading", { name: lesson.title, exact: true })).toBeVisible();
+    if (lesson.kind === "learning") {
+      await expect(page.getByRole("list", { name: "New characters", exact: true }).locator(":scope > li")).toHaveCount(5);
+      await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+      for (const _ of lesson.newCharacters) await answer(page);
+      await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
+      await page.getByRole("button", { name: "Continue to story", exact: true }).click();
+    } else {
+      await expect(page.getByRole("list", { name: "New characters", exact: true })).toHaveCount(0);
+      await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toHaveCount(0);
+      await expect(page.getByRole("button", { name: "Continue to story", exact: true })).toHaveCount(0);
+      const saved = await state(page, lessonPath(lesson));
+      expect(saved).toMatchObject({ phase: "story", contentRevision: lesson.contentRevision, revealed: [], version: 0 });
+      expect(saved.attemptId).not.toBe("");
+      await expect(page.locator('[data-occurrence][data-permanent="false"][data-revealed="true"]')).toHaveCount(0);
+      const taughtHanzi = await page.locator('[data-occurrence][data-permanent="false"] .reader-hanzi').allTextContents();
+      expect(new Set(taughtHanzi)).toEqual(new Set(lessons.flatMap((entry) => entry.newCharacters.map((character) => character.hanzi))));
+      await page.reload();
+      expect(await state(page, lessonPath(lesson))).toEqual(saved);
+    }
+    await expect(page.getByRole("region", { name: "Story reader", exact: true })).toBeVisible();
+    await expect(milestones(page)).toHaveCount(0);
     await finish(page).click();
     await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
+    expect(await state(page, lessonPath(lesson))).toMatchObject({ phase: "complete", revealed: [] });
+    await expect(milestones(page)).toHaveCount(2);
+    if (index < lessons.length - 1) {
+      await expect(page.getByRole("link", { name: "Next lesson", exact: true })).toHaveAttribute("href", lessonPath(lessons[index + 1]));
+      await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
+    }
   }
   await expect(page.getByRole("link", { name: "Next lesson", exact: true })).toHaveCount(0);
   await expect(page.getByText("You reached the end of the current curriculum.", { exact: true })).toBeVisible();
+  const completedRevision = await state(page, lessonPath(lessons.at(-1)!));
+  const earned = await dates(page);
+  await page.reload();
+  expect(await state(page, lessonPath(lessons.at(-1)!))).toEqual(completedRevision);
+  expect(await dates(page)).toEqual(earned);
   await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
-  await expect(page.getByText("Completed", { exact: true })).toHaveCount(lessons.length);
+  await expect(page.getByText("Completed", { exact: true })).toHaveCount(11);
+  await expect(page.getByText("Locked", { exact: true })).toHaveCount(0);
 });
 
 test("revision/revisit writes enforce phase, identity, locks and account isolation across fresh passes", async ({ page, browser }) => {

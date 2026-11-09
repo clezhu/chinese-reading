@@ -102,16 +102,17 @@ the author must consult both single-character entries and relevant compounds.
   看看 kàn kan, 点心 diǎn xin, 什么 shén me, and 一个 yí ge. In 说不好,
   potential-complement 不 is neutral **bu**; the standalone refusal 不 is **bù**.
   The separate illustrative reader fixture contrasts 了 **le** with
-  了解 **liǎo jiě**; it is not a fourth published story.
+  了解 **liǎo jiě**; it remains separate from production content.
 - The checker compares occurrence readings to all lesson-owned definitions
   where available, allowing the documented 一/不 changes and matching neutral
   syllables. It cannot decide whether that neutral tone or a polyphonic choice
-  is appropriate in a sentence. Unintroduced characters still need dictionary
+  is appropriate in a sentence. The syllable allowlist includes `bia` for the
+  authored lexical reading **biā** of 吧. Unintroduced characters still need dictionary
   and author self-review; lack of an authored definition is not a validation error.
 
 ## Status
 
-The three runtime stories in `app/content/fundamentals-stories.ts` are #7's
+The first three runtime stories in `app/content/fundamentals-stories.ts` are #7's
 original, **author-self-reviewed** texts, promoted at revision 3. The exact
 review and mechanical results are in [`drafts/REVIEW-7.md`](drafts/REVIEW-7.md).
 The author reviewed Chinese, meanings, meaningful mandatory reuse, per-token
@@ -119,3 +120,12 @@ pinyin, sentence/paragraph boundaries, reading lists and permanent-help load
 before checks and after the tool-forced edit. No separate human review,
 independent Mandarin approval or learner testing is claimed. Source comparison
 and mechanical validation do not establish language quality or learning efficacy.
+
+The requested expansion supersedes the former three-lesson cap: production now
+has 11 lessons in Fundamentals, with no unit logic. Learning lessons 4–10 and
+the all-50 revision are integrated from `app/content/extended-fundamentals.ts`
+at revision 1; the first three remain unchanged at revision 3. See
+[`drafts/REVIEW-expansion.md`](drafts/REVIEW-expansion.md) for the new reading
+lists, source comparisons and author self-review. Its pre-integration blocker
+notes are historical: the validator now accepts `bia` for **biā**. Integration
+does not establish hosted deployment or independent language approval.

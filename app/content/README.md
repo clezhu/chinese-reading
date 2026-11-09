@@ -3,14 +3,20 @@
 `curriculum.ts` is the only ordered curriculum. Each learning lesson owns its
 five `newCharacters`; revision lessons own none. There is no global character
 dictionary, stored cumulative bank, or duplicated module membership on a story.
-The three current lessons are #7's original **author-self-reviewed** stories in
-`fundamentals-stories.ts`, published locally in the single `foundations` module
-named **Fundamentals**. There is no `connections` module. Stable lesson IDs are
+The current curriculum has 11 lessons in the single `foundations` module named
+**Fundamentals**: learning lessons 1–10, then an all-50 revision checkpoint.
+There is no unit logic or `connections` module. The user-requested expansion
+explicitly supersedes the former three-lesson cap/fourth-lesson prohibition.
+The first three are #7's original **author-self-reviewed** stories in
+`fundamentals-stories.ts`, unchanged. Their stable lesson IDs are
 `first-characters`, `people-and-places`, and `everyday-connections`; all have
-`contentRevision: 3`. This is not independent human approval. Hosted deployment
-and smoke evidence are recorded separately in [`docs/release-7.md`](../../docs/release-7.md).
+`contentRevision: 3`. Learning lessons 4–10 and the revision are integrated from
+`extended-fundamentals.ts`, all at revision 1. New-content sources/self-review
+are in [`REVIEW-expansion.md`](../../authoring/drafts/REVIEW-expansion.md).
+This is not independent human approval or a claim that the expansion is deployed.
+Historical #7 deployment evidence is in [`docs/release-7.md`](../../docs/release-7.md).
 
-The exact introduction groups are `我的你是了`, `不们这一他`, `么在有个好`,
+The first three introduction groups are `我的你是了`, `不们这一他`, `么在有个好`,
 in SUBTLEX-CH source order. Story lengths are 62/64/68 Hanzi occurrences.
 Each story meaningfully uses every introduction, and later stories reuse all
 Fibonacci-due characters: group 1 in lesson 2; groups 1 and 2 in lesson 3.
@@ -23,7 +29,9 @@ Future candidates belong outside runtime in `authoring/drafts/`; the old
 `initial-stories.ts` path exports an empty list after promotion, keeping its
 existing CLI command usable without stale candidates. The earlier illustrative
 `fixtures/reader-stories.ts` remains separate, used only by the isolated
-structural revision fixture; it is not imported by the published curriculum.
+structural tests; it is not imported by the published curriculum. The isolated
+revision browser curriculum has four lessons: the unchanged first three plus
+an early revision copied from the first story, separate from production's 11.
 
 Exports from `curriculum.ts`:
 
@@ -67,8 +75,9 @@ not hashes or multiple simultaneously active versions. Keep stable lesson IDs.
 Existing unversioned fixtures establish revision 1; the illustrative reader
 fixtures use revision 2. The actual #7 publication uses revision 3 for all three
 lessons, covering new stories, contextual readings, introductions and affected
-later taught banks. Future candidates must propose a higher revision, not reuse
-3. The server handles stale-attempt reset and preserved completion
+later taught banks. Replacements must propose a revision higher than their
+target's current revision; new lessons start at 1. New lessons can be authored
+in drafts, then appended and the whole publication checked. The server handles stale-attempt reset and preserved completion
 milestones; this content package does not store attempts or old story versions.
 
 See [`authoring/README.md`](../../authoring/README.md) for checks/promotion and
