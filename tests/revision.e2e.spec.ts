@@ -22,12 +22,12 @@ async function snapshot(page: Page): Promise<{ state: StoryState; cards: Revisio
 }
 async function noIntroduction(page: Page) {
   await expect(page.getByRole("list", { name: "New characters", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Continue", exact: true })).toHaveCount(0);
 }
 async function unlockRevision(page: Page, existing?: Awaited<ReturnType<typeof register>>) {
   const credentials = existing ?? await register(page);
   await lessonCard(page, first.title).getByRole("button", { name: /^Start lesson/ }).click();
-  await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   for (let i = 0; i < first.newCharacters.length; i++) {
     await page.getByRole("button", { name: "Reveal", exact: true }).click();
     await page.getByRole("button", { name: "Got it", exact: true }).click();
@@ -55,10 +55,10 @@ const milestones = (page: Page) => page.locator('[aria-label="Completion milesto
 
 test("fixture list distinguishes revision; start/resume skips initial learning and derives inherited help", async ({ page }) => {
   const credentials = await register(page);
-  await expect(page.getByRole("main").locator("h2, h3")).toHaveText(curriculum.modules.flatMap((module) => [module.title, ...module.lessons.map((lesson) => lesson.title)]));
+  await expect(page.getByRole("main").locator("h2, h3")).toHaveText(curriculum.modules.flatMap((module, index) => [`Module ${index + 1}: ${module.title}`, ...module.lessons.map((lesson) => lesson.title)]));
   const card = lessonCard(page, title);
   await expect(card.getByText("Revision", { exact: true })).toBeVisible();
-  await expect(card.getByText("No new characters", { exact: true })).toBeVisible();
+  await expect(card.getByText("No new characters", { exact: true }).and(page.locator(":not(.sr-only)"))).toHaveCount(0);
   await expect(card.getByText("Locked", { exact: true })).toBeVisible();
   expect((await page.request.get(revision)).status()).toBe(403);
   await unlockRevision(page, credentials);
@@ -96,10 +96,12 @@ test("no-reveal revision completes across devices; explicit revision revisit sta
     const otherPage = await other.newPage();
     await login(otherPage, credentials);
     await expect(lessonCard(otherPage, lessons[2].title).getByText("Available", { exact: true })).toBeVisible();
-    await lessonCard(otherPage, title).getByRole("link", { name: /^View lesson/ }).click();
+    const completedCard = lessonCard(otherPage, title);
+    await expect(completedCard.getByRole("link")).toHaveCount(0);
+    await expect(completedCard.getByRole("button")).toHaveCount(1);
+    // Merely opening the list must not replace the completed attempt.
     expect(await snapshot(otherPage)).toEqual(complete);
-    await otherPage.goto("/lessons");
-    await lessonCard(otherPage, title).getByRole("button", { name: /^Revisit lesson/ }).click();
+    await completedCard.getByRole("button", { name: /^Revisit lesson/ }).click();
     await expect(reader(otherPage)).toBeVisible();
     await noIntroduction(otherPage);
     const revisit = await snapshot(otherPage);
@@ -137,7 +139,7 @@ test("revision-kind current-pass practice requires a fresh reread and never earn
     await expect(lessonCard(page, title).getByText("In progress", { exact: true })).toBeVisible();
     await expect(lessonCard(page, lessons[2].title).getByText("Locked", { exact: true })).toBeVisible();
     await lessonCard(page, title).getByRole("link", { name: /^Resume lesson/ }).click();
-    await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Collected revision", exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Reveal", exact: true }).click();
     await page.getByRole("button", { name: "Got it", exact: true }).click();
     await expect(page.getByRole("button", { name: "Continue to story", exact: true })).toHaveCount(0);

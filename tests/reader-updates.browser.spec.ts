@@ -45,14 +45,14 @@ for (const phase of ["flashcards", "story", "revision-flashcards"]) {
     expect((await post(page.request, endpoint, revealForm(old))).status()).toBe(200);
     previousDeployment(credentials.username, phase);
     await page.reload();
-    await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Continue", exact: true })).toBeVisible();
     await expect(page.locator("[data-occurrence]")).toHaveCount(0);
     const reset = await state(page);
     expect(reset).toMatchObject({ contentRevision: first.contentRevision, phase: "introduction", revealed: [], version: 0 });
     expect(reset.attemptId).not.toBe(old.attemptId);
     for (const intent of ["reveal", "finish-reading"]) expect((await post(page.request, endpoint, { ...revealForm(old), intent, content_revision: String(priorRevision) })).status()).toBe(409);
     expect((await post(page.request, firstLesson, { intent: "revision-passed", attempt_id: old.attemptId, content_revision: String(priorRevision) })).status()).toBe(409);
-    await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(page.getByText(`Card 1 of ${first.newCharacters.length} · 0 missed this round`, { exact: true })).toBeVisible();
     await page.goto("/lessons");
     await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
@@ -65,7 +65,7 @@ for (const phase of ["complete", "story"]) {
     const old = await state(page);
     previousDeployment(credentials.username, phase, true);
     await page.reload();
-    await expect(page.getByRole("heading", { name: phase === "complete" ? "Lesson complete" : firstTitle, exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: phase === "complete" ? "Lesson complete" : "Meet your new characters", exact: true })).toBeVisible();
     const reset = await state(page);
     expect(reset.phase).toBe(phase === "complete" ? "complete" : "introduction");
     expect(reset.contentRevision).toBe(first.contentRevision);
@@ -77,7 +77,7 @@ for (const phase of ["complete", "story"]) {
       `${new Date(lastCompleted).toISOString()} · content revision 1`,
     ]);
     if (phase === "story") {
-      await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+      await page.getByRole("button", { name: "Continue", exact: true }).click();
       await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
       expect((await post(page.request, firstLesson, { intent: "deck-passed", attempt_id: reset.attemptId })).status()).toBe(303);
       expect((await post(page.request, endpoint, { intent: "finish-reading", attempt_id: reset.attemptId, content_revision: String(first.contentRevision) })).status()).toBe(200);

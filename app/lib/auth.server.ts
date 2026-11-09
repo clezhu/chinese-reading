@@ -31,16 +31,11 @@ async function verifyPassword(password: string, encoded: string): Promise<boolea
   return timingSafeEqual(key, Buffer.from(match[2], "hex"));
 }
 
-export function validateCredentials(form: URLSearchParams) {
-  const username = (form.get("username") ?? "").trim();
-  const password = form.get("password") ?? "";
-  if (form.getAll("username").length !== 1 || !/^[a-zA-Z0-9_]{3,32}$/.test(username)) {
-    return { error: "Use a username of 3–32 letters, numbers, or underscores." } as const;
-  }
-  if (form.getAll("password").length !== 1 || password.length < 12 || password.length > 128) {
-    return { error: "Use a password between 12 and 128 characters." } as const;
-  }
-  return { username, password } as const;
+export async function usernameAvailable(db: D1Database, username: string): Promise<boolean> {
+  // The schema's NOCASE unique collation is shared by this lookup and INSERT.
+  const account = await db.prepare("SELECT id FROM users WHERE username = ? LIMIT 1")
+    .bind(username).first<{ id: string }>();
+  return account === null;
 }
 
 export async function register(db: D1Database, username: string, password: string): Promise<User | null> {
@@ -91,7 +86,7 @@ export async function getUser(request: Request, db: D1Database): Promise<User | 
 
 export async function requireUser(request: Request, db: D1Database): Promise<User> {
   const user = await getUser(request, db);
-  if (!user) throw redirect("/login");
+  if (!user) throw redirect("/register");
   return user;
 }
 

@@ -17,8 +17,11 @@ test("mobile form, lesson controls and introduction remain usable with keyboard 
   await page.keyboard.press("Tab");
   await expect(password).toBeFocused();
   await page.keyboard.type(credentials.password);
-  await page.keyboard.press("Tab");
   const create = page.getByRole("button", { name: "Create account", exact: true });
+  // Availability is debounced: wait for the current username before tabbing
+  // to a submit button which is intentionally disabled while checking.
+  await expect(create).toBeEnabled();
+  await page.keyboard.press("Tab");
   await expect(create).toBeFocused();
   expect((await create.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   await page.keyboard.press("Enter");
@@ -45,7 +48,7 @@ test("mobile form, lesson controls and introduction remain usable with keyboard 
     expect(box.x).toBeGreaterThanOrEqual(0);
     expect(box.x + box.width).toBeLessThanOrEqual(page.viewportSize()!.width);
   }
-  const back = page.getByRole("link", { name: "Return to lesson list", exact: true });
+  const back = page.getByRole("link", { name: "Back to lessons", exact: true });
   await back.focus();
   await expect(back).toBeFocused();
   await page.keyboard.press("Enter");
@@ -64,12 +67,12 @@ test("flashcards work with keyboard controls and fit the mobile viewport", async
   await page.getByRole("button", { name: "Create account", exact: true }).click();
   await expect(page).toHaveURL(/\/lessons$/);
   await page.goto(firstLesson);
-  const start = page.getByRole("button", { name: "Start flashcards", exact: true });
+  const start = page.getByRole("button", { name: "Continue", exact: true });
   await start.focus();
   await page.keyboard.press("Enter");
   const reveal = page.getByRole("button", { name: "Reveal", exact: true });
   const got = page.getByRole("button", { name: "Got it", exact: true });
-  const missed = page.getByRole("button", { name: "Didn't get it", exact: true });
+  const missed = page.getByRole("button", { name: "Have not got it", exact: true });
   // Miss one card, clear its retry, then complete a clean full-deck confirmation.
   for (let i = 0; i < 11; i++) {
     if (i === 5) {
@@ -96,6 +99,6 @@ test("flashcards work with keyboard controls and fit the mobile viewport", async
   const next = page.getByRole("button", { name: "Continue to story", exact: true });
   await expect(next).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

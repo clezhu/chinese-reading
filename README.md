@@ -1,4 +1,4 @@
-# Chinese Reading
+# Hanzi Garden
 
 React Router 8 framework-mode, React, and TypeScript on Cloudflare Workers;
 D1 holds accounts, sessions, and learner progress. Issues #3–#6 implement
@@ -14,6 +14,10 @@ eight new lessons at revision 1 are integrated from `app/content/extended-fundam
 See [`REVIEW-expansion.md`](authoring/drafts/REVIEW-expansion.md) for new-content
 sources/self-review. This is not independent human approval or a deployment claim.
 The reader under `prototype/` remains unrelated throwaway work.
+
+Issue #9 adds the approved Hanzi Garden interface without changing curriculum,
+mastery or progression. See [`docs/qa/hanzi-garden.md`](docs/qa/hanzi-garden.md)
+for implementation/verification evidence and final runtime screenshots.
 
 See [`docs/release-7.md`](docs/release-7.md) for historical #7 local/hosted
 verification evidence, not verification of the expansion.
@@ -32,7 +36,10 @@ Vite. You can also run `npm run db:migrate` explicitly against an already-runnin
 development server. D1 persists under `.wrangler/`; local migrations do not
 affect Cloudflare's database. Open the local URL printed by Vite.
 Register with a 3–32-character
-ASCII letters/numbers/underscore username and a 12–128-character password.
+ASCII letters/numbers/underscore username and an 8–128-character password with
+ASCII uppercase, lowercase, number and punctuation symbol. Username availability
+is checked before signup; the database remains authoritative under races.
+Existing passwords still work at login, without the new creation policy.
 Usernames are case-insensitive. There is no email or account/password recovery.
 
 ```sh
@@ -116,7 +123,7 @@ use `wrangler secret put NAME` and ignored `.dev.vars` locally.
   preserving milestones. Apply migrations before running the updated Worker.
 - No row means not started. Starting from the lesson list saves an introduction;
   directly visiting a lesson shows the same introduction without creating a row.
-  Start flashcards saves `flashcards`; passing the complete original deck in one
+  Continue from the introduction saves `flashcards`; passing the complete original deck in one
   clean round (including the first) saves `story`. Finish freezes reveals and enters
   `revision-flashcards`, or completes directly if there are no reveals. Passing
   contextual cards atomically starts a fresh story pass with a new attempt ID

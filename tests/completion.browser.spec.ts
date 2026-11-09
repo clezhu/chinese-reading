@@ -8,7 +8,7 @@ async function state(page: Page, lesson = firstLesson): Promise<StoryState> {
 }
 async function answer(page: Page, got = true) {
   await page.getByRole("button", { name: "Reveal", exact: true }).click();
-  await page.getByRole("button", { name: got ? "Got it" : "Didn't get it", exact: true }).click();
+  await page.getByRole("button", { name: got ? "Got it" : "Have not got it", exact: true }).click();
 }
 const milestones = (page: Page) => page.locator('[aria-label="Completion milestones"] time');
 const dates = (page: Page) => milestones(page).evaluateAll((nodes) => nodes.map((node) => node.getAttribute("datetime")));
@@ -32,7 +32,7 @@ async function collect(page: Page, refs: string[]) {
 
 async function freshStory(page: Page, previous: StoryState) {
   await expect(page.getByRole("region", { name: "Story reader", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Continue", exact: true })).toHaveCount(0);
   const fresh = await state(page);
   expect(fresh).toMatchObject({ phase: "story", contentRevision: previous.contentRevision, revealed: [], version: 0 });
   expect(fresh.attemptId).not.toBe(previous.attemptId);
@@ -120,7 +120,7 @@ test("repeated passes use only current help, ignore old local decks, and atomica
       const frozen = await collect(page, [ref]);
       const resource = await (await page.request.get(`${firstLesson}/reader`)).json();
       expect(resource.cards).toEqual(revisionCards(first, [ref]));
-      await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Collected revision", exact: true })).toBeVisible();
       await expect(reread(page)).toHaveCount(0);
       await answer(page);
       await page.reload();
@@ -216,20 +216,29 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   await expect(milestones(page)).toHaveCount(2);
   const earned = await dates(page);
   await page.goto("/lessons");
-  await lessonCard(page, firstTitle).getByRole("button", { name: /^Revisit lesson/ }).click();
-  await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toBeVisible();
+  const completedCard = lessonCard(page, firstTitle);
+  await expect(completedCard.getByText("Completed", { exact: true })).toBeAttached();
+  await expect(completedCard.getByRole("link")).toHaveCount(0);
+  await expect(completedCard.getByRole("button")).toHaveCount(1);
+  await expect(lessonCard(page, nextTitle).getByText("Continue here", { exact: true })).toBeVisible();
+  await completedCard.getByRole("button", { name: /^Revisit lesson/ }).click();
+  await expect(page.getByRole("button", { name: "Continue", exact: true })).toBeVisible();
   const revisit = await state(page);
   expect(revisit).toMatchObject({ phase: "introduction", revealed: [], version: 0 });
   expect(revisit.attemptId).not.toBe(original);
   for (const attempt_id of [original, revisit.attemptId]) expect((await post(page.request, firstLesson, { intent: "revisit", attempt_id })).status()).toBe(409);
   await page.goto("/lessons");
   const card = lessonCard(page, firstTitle);
-  await expect(card.getByText("Completed", { exact: true })).toBeVisible();
-  await expect(card.getByRole("button", { name: /^Revisit lesson/ })).toHaveCount(0);
-  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
+  await expect(card.getByText("Completed", { exact: true })).toBeAttached();
+  await expect(card.getByText("Continue here", { exact: true })).toBeVisible();
+  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(1);
+  await expect(card.getByRole("button")).toHaveCount(0);
+  await expect(card.getByRole("link")).toHaveCount(1);
+  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeAttached();
+  await expect(lessonCard(page, nextTitle).getByText("Continue here", { exact: true })).toHaveCount(0);
   await card.getByRole("link", { name: /^Resume revisit/ }).click();
   expect((await state(page)).attemptId).toBe(revisit.attemptId);
-  await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   for (let i = 0; i < first.newCharacters.length; i++) await answer(page);
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
   const frozen = await collect(page, [firstRef]);
@@ -247,7 +256,7 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   expect(Date.parse(latest[1]!)).toBeGreaterThan(Date.parse(earned[1]!));
 });
 
-test("all 11 published lessons complete through the UI, ending in direct-story all-50 revision", async ({ page }) => {
+test("all 11 published lessons complete through the UI, ending in direct-story all-50 revision", async ({ page }, testInfo) => {
   test.setTimeout(120_000);
   expect(lessons).toHaveLength(11);
   expect(lessons.map((lesson) => lesson.kind)).toEqual([...Array(10).fill("learning"), "revision"]);
@@ -259,20 +268,21 @@ test("all 11 published lessons complete through the UI, ending in direct-story a
     await expect(card.getByText("Available", { exact: true })).toBeVisible();
     if (lesson.kind === "revision") {
       await expect(card.getByText("Revision", { exact: true })).toBeVisible();
-      await expect(card.getByText("No new characters", { exact: true })).toBeVisible();
+      await expect(card.getByText("No new characters", { exact: true }).and(page.locator(":not(.sr-only)"))).toHaveCount(0);
     }
     await card.getByRole("button", { name: /^Start lesson/ }).click();
     await expect(page).toHaveURL(lessonPath(lesson));
-    await expect(page.getByRole("heading", { name: lesson.title, exact: true })).toBeVisible();
+    await expect(page.locator(".lesson-title")).toHaveText(`Lesson ${index + 1} · ${lesson.kind === "learning" ? lesson.newCharacters.map((character) => character.hanzi).join(" ") : "Revision"}`);
     if (lesson.kind === "learning") {
       await expect(page.getByRole("list", { name: "New characters", exact: true }).locator(":scope > li")).toHaveCount(5);
-      await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+      await expect(page.getByRole("heading", { name: "Meet your new characters", exact: true })).toBeVisible();
+      await page.getByRole("button", { name: "Continue", exact: true }).click();
       for (const _ of lesson.newCharacters) await answer(page);
       await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
       await page.getByRole("button", { name: "Continue to story", exact: true }).click();
     } else {
       await expect(page.getByRole("list", { name: "New characters", exact: true })).toHaveCount(0);
-      await expect(page.getByRole("button", { name: "Start flashcards", exact: true })).toHaveCount(0);
+      await expect(page.getByRole("button", { name: "Continue", exact: true })).toHaveCount(0);
       await expect(page.getByRole("button", { name: "Continue to story", exact: true })).toHaveCount(0);
       const saved = await state(page, lessonPath(lesson));
       expect(saved).toMatchObject({ phase: "story", contentRevision: lesson.contentRevision, revealed: [], version: 0 });
@@ -291,17 +301,19 @@ test("all 11 published lessons complete through the UI, ending in direct-story a
     await expect(milestones(page)).toHaveCount(2);
     if (index < lessons.length - 1) {
       await expect(page.getByRole("link", { name: "Next lesson", exact: true })).toHaveAttribute("href", lessonPath(lessons[index + 1]));
-      await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
+      await page.locator('.completion-actions').getByRole("link", { name: "Back to lessons", exact: true }).click();
     }
   }
   await expect(page.getByRole("link", { name: "Next lesson", exact: true })).toHaveCount(0);
-  await expect(page.getByText("You reached the end of the current curriculum.", { exact: true })).toBeVisible();
+  await expect(page.getByText("You reached the end of the available lessons.", { exact: true })).toBeVisible();
+  await expect(page.locator(".confetti-particle")).toHaveCount(0);
+  await page.screenshot({ path: testInfo.outputPath("completion-final-desktop.png"), fullPage: true });
   const completedRevision = await state(page, lessonPath(lessons.at(-1)!));
   const earned = await dates(page);
   await page.reload();
   expect(await state(page, lessonPath(lessons.at(-1)!))).toEqual(completedRevision);
   expect(await dates(page)).toEqual(earned);
-  await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
+  await page.locator('.completion-actions').getByRole("link", { name: "Back to lessons", exact: true }).click();
   await expect(page.getByText("Completed", { exact: true })).toHaveCount(11);
   await expect(page.getByText("Locked", { exact: true })).toHaveCount(0);
 });

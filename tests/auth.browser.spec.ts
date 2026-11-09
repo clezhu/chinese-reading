@@ -1,14 +1,33 @@
 import { test, expect } from "@playwright/test";
-import { account, expectLoginRedirect, firstLesson, login, logout, post, register } from "./helpers";
+import { account as baseAccount, firstLesson, login, logout, post } from "./helpers";
+import type { Page } from "@playwright/test";
+
+function account() { return { ...baseAccount(), password: "Garden1!" }; }
+
+async function register(page: Page, credentials = account()) {
+  await page.goto("/register");
+  await page.getByLabel("Username", { exact: true }).fill(credentials.username);
+  await page.getByLabel("Password", { exact: true }).fill(credentials.password);
+  await page.getByRole("button", { name: "Create account", exact: true }).click();
+  await expect(page).toHaveURL(/\/lessons$/);
+  return credentials;
+}
+
+function expectLoginRedirect(response: { status(): number; headers(): Record<string, string> }) {
+  expect([302, 303]).toContain(response.status());
+  expect(response.headers().location).toBe("/register");
+}
 
 test("register with username/password only; logout revokes a copied cookie, then login restores access", async ({ page, context, request }) => {
   await page.goto("/lessons");
-  await expect(page).toHaveURL(/\/login$/);
-  await expect(page.getByText("No account recovery.", { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/\/register$/);
+  await page.getByRole("link", { name: "Log in", exact: true }).click();
+  await expect(page.getByText("Contact admin at chloe.chenge.zhu@gmail.com for help.", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Create an account", exact: true }).click();
   await expect(page.locator("input")).toHaveCount(2);
   await expect(page.getByLabel("Email", { exact: true })).toHaveCount(0);
-  await expect(page.getByText(/There is no password reset or account recovery/)).toBeVisible();
+  await expect(page.getByText(/No account recovery. We do not collect email addresses./)).toBeVisible();
+  await expect(page.getByText(/Keep your username and password safe./)).toBeVisible();
 
   const credentials = await register(page);
   const cookies = await context.cookies();
@@ -26,7 +45,7 @@ test("register with username/password only; logout revokes a copied cookie, then
   await logout(page);
   expect(await context.cookies()).toHaveLength(0);
   await page.goto(firstLesson);
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/register$/);
   expectLoginRedirect(await request.get("/lessons", { headers: { Cookie: stolenCookie }, maxRedirects: 0 }));
   expectLoginRedirect(await post(request, firstLesson, { intent: "start" }, { Cookie: stolenCookie }));
   await login(page, { ...credentials, username: credentials.username.toUpperCase() });
@@ -40,9 +59,10 @@ test("duplicate usernames and incorrect login attempts give useful, password-fre
   await page.goto("/register");
   await page.getByLabel("Username", { exact: true }).fill(credentials.username.toUpperCase());
   await page.getByLabel("Password", { exact: true }).fill(credentials.password);
-  await page.getByRole("button", { name: "Create account", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("That username is already taken");
-  await expect(page.getByRole("alert")).not.toContainText(credentials.password);
+  await expect(page.locator("#username-message")).toHaveText("Username taken");
+  await expect(page.getByRole("button", { name: "Create account", exact: true })).toBeDisabled();
+  await expect(page.locator("#username")).toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#username-message")).not.toContainText(credentials.password);
 
   await page.getByRole("link", { name: "Log in", exact: true }).click();
   await expect(page).toHaveURL(/\/login$/);
@@ -65,16 +85,16 @@ test("duplicate usernames and incorrect login attempts give useful, password-fre
 
 test("both credential endpoints validate forged forms on the server", async ({ request }) => {
   const { username, password } = account();
-  const invalid: { name: string; form: Record<string, string> | string; feedback: "username" | "password" }[] = [
-    { name: "missing username", form: { password }, feedback: "username" },
-    { name: "short username", form: { username: "ab", password }, feedback: "username" },
-    { name: "invalid username", form: { username: "bad name!", password }, feedback: "username" },
-    { name: "long username", form: { username: "a".repeat(33), password }, feedback: "username" },
-    { name: "missing password", form: { username }, feedback: "password" },
-    { name: "short password", form: { username, password: "short" }, feedback: "password" },
-    { name: "long password", form: { username, password: "x".repeat(129) }, feedback: "password" },
-    { name: "duplicate username", form: `username=${username}&username=other&password=${encodeURIComponent(password)}`, feedback: "username" },
-    { name: "duplicate password", form: `username=${username}&password=${encodeURIComponent(password)}&password=other`, feedback: "password" },
+  const invalid: { name: string; form: Record<string, string> | string; feedback: string }[] = [
+    { name: "missing username", form: { password }, feedback: "Enter a username." },
+    { name: "short username", form: { username: "ab", password }, feedback: "Use 3–32 characters." },
+    { name: "invalid username", form: { username: "bad name!", password }, feedback: "No spaces." },
+    { name: "long username", form: { username: "a".repeat(33), password }, feedback: "Use 3–32 characters." },
+    { name: "missing password", form: { username }, feedback: "Enter a password." },
+    { name: "short password", form: { username, password: "short" }, feedback: "Use at least 8 characters." },
+    { name: "long password", form: { username, password: "x".repeat(129) }, feedback: "Use at most 128 characters." },
+    { name: "duplicate username", form: `username=${username}&username=other&password=${encodeURIComponent(password)}`, feedback: "Use letters, numbers or _." },
+    { name: "duplicate password", form: `username=${username}&password=${encodeURIComponent(password)}&password=other`, feedback: "Enter a password." },
   ];
   for (const endpoint of ["/register", "/login"]) {
     for (const { name, form, feedback } of invalid) {
@@ -82,7 +102,8 @@ test("both credential endpoints validate forged forms on the server", async ({ r
         const response = await post(request, endpoint, form);
         expect(response.status()).toBe(400);
         const body = await response.text();
-        expect(body).toContain(feedback === "username" ? "Use a username of 3–32 letters, numbers, or underscores." : "Use a password between 12 and 128 characters.");
+        if (endpoint === "/login") expect(body).toContain("Incorrect username or password.");
+        else expect(body).toContain(feedback);
         expect(body).not.toContain(password);
         expect(response.headers()["set-cookie"]).toBeUndefined();
       });
@@ -122,6 +143,6 @@ test("mutations require same-origin POST; GET logout cannot log a learner out", 
   }
   expect((await page.request.get("/logout")).status()).toBe(405);
   await page.reload();
-  await expect(page.getByRole("button", { name: /^Start lesson\s*:\s*First characters$/ })).toBeVisible();
+  await expect(page).toHaveURL(/\/lessons$/);
   await expect(page.getByText(credentials.username, { exact: true })).toBeVisible();
 });

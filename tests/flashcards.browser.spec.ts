@@ -5,13 +5,13 @@ const firstCharacter = first.newCharacters[0];
 
 async function start(page: Page) {
   await page.getByRole("button", { name: /^Start lesson\s*:\s*First characters$/ }).click();
-  await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
 }
 
 async function answer(page: Page, got = true) {
   await page.getByRole("button", { name: "Reveal", exact: true }).click();
-  await page.getByRole("button", { name: got ? "Got it" : "Didn't get it", exact: true }).click();
+  await page.getByRole("button", { name: got ? "Got it" : "Have not got it", exact: true }).click();
 }
 
 async function round(page: Page, size = first.newCharacters.length) {
@@ -33,7 +33,7 @@ test("real introduction → practice/retries → full confirmation → persisted
   await expect(page.getByRole("list", { name: `Readings for ${firstCharacter.hanzi}`, exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Reveal", exact: true }).click();
   await expect(page.getByRole("list", { name: `Readings for ${firstCharacter.hanzi}`, exact: true }).getByRole("listitem")).toHaveText([...firstCharacter.pinyin]);
-  await page.getByRole("button", { name: "Didn't get it", exact: true }).click();
+  await page.getByRole("button", { name: "Have not got it", exact: true }).click();
   await round(page, 4);
   await expect(page.getByText("Card 1 of 1 · 0 missed this round", { exact: true })).toBeVisible();
   await page.reload();
@@ -44,7 +44,7 @@ test("real introduction → practice/retries → full confirmation → persisted
   await answer(page);
   await expect(page.getByRole("heading", { name: "Full-deck confirmation", exact: true })).toBeVisible();
   await answer(page, false);
-  await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
+  await page.getByRole("link", { name: "Back to lessons", exact: true }).click();
   await logout(page);
   await login(page, credentials);
   await page.getByRole("link", { name: /^Resume lesson\s*:\s*First characters$/ }).click();
@@ -58,11 +58,11 @@ test("real introduction → practice/retries → full confirmation → persisted
   await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   await page.reload();
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
   await page.evaluate(() => localStorage.clear());
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
-  await page.getByRole("link", { name: "Return to lesson list", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Back to lessons", exact: true }).click();
   await expect(lessonCard(page, "First characters").getByText("In progress", { exact: true })).toBeVisible();
   await expect(lessonCard(page, "People and places").getByText("Locked", { exact: true })).toBeVisible();
 });
@@ -76,7 +76,7 @@ test("a clean initial full-deck round completes without confirmation", async ({ 
   await answer(page);
   await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
 });
 
 test("a clean full-deck practice round completes after every card was missed", async ({ page }) => {
@@ -88,7 +88,7 @@ test("a clean full-deck practice round completes after every card was missed", a
   await round(page);
   await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
 });
 
 test("lost or malformed local state restarts the current deck; another device keeps the D1 phase", async ({ page, browser }) => {
@@ -104,7 +104,7 @@ test("lost or malformed local state restarts the current deck; another device ke
     await login(otherPage, credentials);
     await otherPage.goto(firstLesson);
     await expect(otherPage.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
-    await expect(otherPage.getByRole("button", { name: "Start flashcards", exact: true })).toHaveCount(0);
+    await expect(otherPage.getByRole("button", { name: "Continue", exact: true })).toHaveCount(0);
   } finally { await other.close(); }
   for (const value of ["{broken json", JSON.stringify({ stage: "complete" }), null]) {
     await page.evaluate((saved) => {
@@ -125,10 +125,10 @@ test("unavailable localStorage does not block practice or phase saving", async (
     Storage.prototype.setItem = () => { throw new Error("storage blocked"); };
   });
   await register(page);
-  // Direct URL introductions have no progress row until Start flashcards.
+  // Direct URL introductions have no progress row until Continue.
   await page.goto(firstLesson);
-  await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
-  await expect(page.getByText(/Browser storage is unavailable/)).toBeVisible();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await expect(page.getByText(/Browser storage is unavailable/)).toHaveCount(0);
   await round(page, 4);
   await page.reload();
   await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
@@ -136,7 +136,7 @@ test("unavailable localStorage does not block practice or phase saving", async (
   await round(page);
   await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
 });
 
 test("phase writes reject wrong attempts, wrong phases, another owner and locked lessons", async ({ page, browser }) => {
@@ -162,7 +162,7 @@ test("phase writes reject wrong attempts, wrong phases, another owner and locked
   expect((await post(page.request, firstLesson, { intent: "deck-passed", attempt_id: id })).status()).toBe(409);
   expect((await post(page.request, firstLesson, { intent: "start-flashcards", attempt_id: id })).status()).toBe(409);
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
 });
 
 test("a failed phase save is visible and can be retried without repeating the deck", async ({ page }) => {
@@ -183,5 +183,5 @@ test("a failed phase save is visible and can be retried without repeating the de
   await expect(page.getByRole("heading", { name: "Deck recognised", exact: true })).toBeVisible();
   await page.unroute("**/lessons/first-characters*");
   await page.getByRole("button", { name: "Continue to story", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Story phase", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
 });
