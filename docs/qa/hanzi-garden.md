@@ -1,7 +1,7 @@
 # Hanzi Garden — issue #9 implementation evidence
 
-Local verification, 9 November 2026. **Not a deployment claim.** Issue #9 stays
-open for review. Implementation branch: `hanzi-garden-implementation`, based on
+Local verification, 9 November 2026; subsequent production release is recorded
+below. Implementation branch: `hanzi-garden-implementation`, based on
 the approved reference branch at `cc48c0f041b8339ee2648a7beabcd264e9e05e85`.
 The published reference branch and its original assets/previews are unchanged.
 
@@ -113,8 +113,9 @@ with the individual pinned previews, including the scrolled list.
 
 ## Remaining review limits
 
-- Chromium desktop/mobile emulation and local workerd were verified, not physical
-  iOS/Android devices, Safari/Firefox, hosted infrastructure or production data.
+- At the implementation handoff, Chromium desktop/mobile emulation and local
+  workerd were verified, not hosted infrastructure. The release smoke below adds
+  hosted verification, but not physical iOS/Android devices or Safari/Firefox.
 - The 720×405 check exercises 200%-zoom-equivalent reflow; a native browser UI
   zoom session and a screen-reader-user pass were not performed.
 - Audio scheduling/mute/gesture behavior is automated evidence, **not subjective
@@ -126,5 +127,48 @@ with the individual pinned previews, including the scrolled list.
   composition preserves their painterly style; final aesthetic sign-off remains
   human review, not something a passing test can establish.
 
-No production deployment, remote migration, new curriculum/module mechanics,
-account-recovery feature or issue closure was performed.
+At the implementation handoff no production deployment, remote migration or
+issue closure had been performed. No new curriculum/module mechanics or
+account-recovery feature was added.
+
+## Approved production release and clean start — 9 November 2026
+
+After the user approved the result and explicitly requested merge, push,
+deployment, issue completion and a local/Cloudflare database reset:
+
+- PR #10 was merged to `main` as `df456e8`; local `main` was fast-forwarded and
+  pushed. The approved reference branch remains at `cc48c0f`.
+- Production build and Wrangler deployment dry run passed. `npm run deploy`
+  published Worker `chinese-reading`, version
+  `54e80e69-d96d-48d2-a988-feb51c0a27cd`, at
+  **https://chinese-reading.chinese-reading.workers.dev**. HTTPS returned 200.
+- Remote D1 migrations were checked/applied: all three existing migrations were
+  already current. No new schema migration was needed for this UI release.
+- Per the explicit reset request, all application accounts were deleted, with
+  sessions and progress removed by existing foreign-key cascades. Database ID,
+  bindings, schema, migration history and repository curriculum were preserved.
+- All six project-local application SQLite databases under the development,
+  Playwright, revision and visual-check stores were cleared as well. Active
+  local D1 bindings were checked for migrations; none were pending. All local
+  `users`, `sessions` and `lesson_progress` counts were zero; integrity was `ok`.
+- Hosted browser smoke used a temporary account: live username availability and
+  signup; all 11 lesson tiles with Start here/locks; introduction and five clean
+  initial cards; a saved occurrence reveal surviving reload; contextual revision;
+  a fresh reread with a new attempt identity and no taught reveals; saved
+  completion and next-lesson unlock; no confetti replay on reload; single-action
+  revisit with its permanent tick and Continue here; logout/login restoring that
+  active revisit. Remembered mute also survived transitions/reload.
+- Hosted Finish was activated through the rendered button's DOM click after
+  reader refresh settled: the browser harness's native click repeatedly collided
+  with focus-refresh gating. This did not bypass the real handler or server
+  save. Native-pointer and keyboard learning coverage remains in the passing
+  local built-Worker suite; no physical-device claim is added.
+- The temporary account was deleted afterwards, including its session/progress.
+  Final production counts: **0 users, 0 sessions, 0 progress rows**;
+  `foreign_key_check` returned no violations and `quick_check` returned `ok`.
+  Temporary credentials were removed. No existing test account remains.
+
+This release record is documentation-only; the deployed application code is the
+approved merged implementation above. Broader device, native zoom,
+screen-reader-user and subjective speaker/headphone checks remain outside the
+verified scope.
