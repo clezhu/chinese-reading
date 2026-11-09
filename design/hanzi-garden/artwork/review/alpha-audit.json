@@ -1,0 +1,102 @@
+{
+  "favicon-source-v1": {
+    "file": "favicon-source-v1/image_1794205717295_1024-1024.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ],
+    "transparent_pixels": 1038493,
+    "partial_alpha_pixels": 532965,
+    "opaque_pixels": 1058
+  },
+  "home-background-v1": {
+    "file": "home-background-v1/image_1794205712758_1536-1024.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  "home-concept-v1": {
+    "file": "home-concept-v1/image_1794205633226_1536-1024.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  "home-fog-v1": {
+    "file": "home-fog-v1/image_1794205714715_1536-1024.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      242
+    ],
+    "transparent_pixels": 973320,
+    "partial_alpha_pixels": 599544,
+    "opaque_pixels": 0
+  },
+  "home-foreground-blossoms-v1": {
+    "file": "home-foreground-blossoms-v1/image_1794205717699_1536-1024.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      254
+    ],
+    "transparent_pixels": 1273053,
+    "partial_alpha_pixels": 299811,
+    "opaque_pixels": 0
+  },
+  "home-temple-midground-v1": {
+    "file": "home-temple-midground-v1/image_1794205722997_1536-1024.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      254
+    ],
+    "transparent_pixels": 1182977,
+    "partial_alpha_pixels": 389887,
+    "opaque_pixels": 0
+  },
+  "lesson-list-background-v1": {
+    "file": "lesson-list-background-v1/image_1794205709746_1536-1024.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  "login-background-v1": {
+    "file": "login-background-v1/image_1794205716131_1536-1024.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  "signup-background-v1": {
+    "file": "signup-background-v1/image_1794205722109_1536-1024.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  }
+}

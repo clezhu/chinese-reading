@@ -1,0 +1,363 @@
+[
+  [
+    {
+      "hanzi": "我",
+      "pinyin": [
+        "wǒ"
+      ]
+    },
+    {
+      "hanzi": "的",
+      "pinyin": [
+        "de",
+        "dī",
+        "dí",
+        "dì"
+      ]
+    },
+    {
+      "hanzi": "你",
+      "pinyin": [
+        "nǐ"
+      ]
+    },
+    {
+      "hanzi": "是",
+      "pinyin": [
+        "shì"
+      ]
+    },
+    {
+      "hanzi": "了",
+      "pinyin": [
+        "le",
+        "liǎo"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "不",
+      "pinyin": [
+        "bù"
+      ]
+    },
+    {
+      "hanzi": "们",
+      "pinyin": [
+        "men",
+        "mén"
+      ]
+    },
+    {
+      "hanzi": "这",
+      "pinyin": [
+        "zhè",
+        "zhèi"
+      ]
+    },
+    {
+      "hanzi": "一",
+      "pinyin": [
+        "yī",
+        "yāo"
+      ]
+    },
+    {
+      "hanzi": "他",
+      "pinyin": [
+        "tā"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "么",
+      "pinyin": [
+        "me",
+        "mó",
+        "ma",
+        "má",
+        "yāo"
+      ]
+    },
+    {
+      "hanzi": "在",
+      "pinyin": [
+        "zài"
+      ]
+    },
+    {
+      "hanzi": "有",
+      "pinyin": [
+        "yǒu",
+        "yòu"
+      ]
+    },
+    {
+      "hanzi": "个",
+      "pinyin": [
+        "gè",
+        "gě"
+      ]
+    },
+    {
+      "hanzi": "好",
+      "pinyin": [
+        "hǎo",
+        "hào"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "来",
+      "pinyin": [
+        "lái"
+      ]
+    },
+    {
+      "hanzi": "人",
+      "pinyin": [
+        "rén"
+      ]
+    },
+    {
+      "hanzi": "那",
+      "pinyin": [
+        "nà",
+        "nèi",
+        "nǎ",
+        "nā",
+        "nuó"
+      ]
+    },
+    {
+      "hanzi": "要",
+      "pinyin": [
+        "yào",
+        "yāo"
+      ]
+    },
+    {
+      "hanzi": "会",
+      "pinyin": [
+        "huì",
+        "huǐ",
+        "kuài"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "就",
+      "pinyin": [
+        "jiù"
+      ]
+    },
+    {
+      "hanzi": "什",
+      "pinyin": [
+        "shén",
+        "shí"
+      ]
+    },
+    {
+      "hanzi": "没",
+      "pinyin": [
+        "méi",
+        "mò"
+      ]
+    },
+    {
+      "hanzi": "到",
+      "pinyin": [
+        "dào"
+      ]
+    },
+    {
+      "hanzi": "说",
+      "pinyin": [
+        "shuō",
+        "shuì"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "吗",
+      "pinyin": [
+        "ma",
+        "má",
+        "mǎ"
+      ]
+    },
+    {
+      "hanzi": "为",
+      "pinyin": [
+        "wéi",
+        "wèi"
+      ]
+    },
+    {
+      "hanzi": "想",
+      "pinyin": [
+        "xiǎng"
+      ]
+    },
+    {
+      "hanzi": "能",
+      "pinyin": [
+        "néng"
+      ]
+    },
+    {
+      "hanzi": "上",
+      "pinyin": [
+        "shàng",
+        "shǎng"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "去",
+      "pinyin": [
+        "qù"
+      ]
+    },
+    {
+      "hanzi": "道",
+      "pinyin": [
+        "dào"
+      ]
+    },
+    {
+      "hanzi": "她",
+      "pinyin": [
+        "tā"
+      ]
+    },
+    {
+      "hanzi": "很",
+      "pinyin": [
+        "hěn"
+      ]
+    },
+    {
+      "hanzi": "看",
+      "pinyin": [
+        "kàn",
+        "kān"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "可",
+      "pinyin": [
+        "kě",
+        "kè"
+      ]
+    },
+    {
+      "hanzi": "知",
+      "pinyin": [
+        "zhī"
+      ]
+    },
+    {
+      "hanzi": "得",
+      "pinyin": [
+        "de",
+        "dé",
+        "děi",
+        "dè"
+      ]
+    },
+    {
+      "hanzi": "过",
+      "pinyin": [
+        "guò",
+        "guo",
+        "guō"
+      ]
+    },
+    {
+      "hanzi": "吧",
+      "pinyin": [
+        "ba",
+        "bā",
+        "biā"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "还",
+      "pinyin": [
+        "hái",
+        "huán"
+      ]
+    },
+    {
+      "hanzi": "对",
+      "pinyin": [
+        "duì"
+      ]
+    },
+    {
+      "hanzi": "里",
+      "pinyin": [
+        "lǐ"
+      ]
+    },
+    {
+      "hanzi": "以",
+      "pinyin": [
+        "yǐ"
+      ]
+    },
+    {
+      "hanzi": "都",
+      "pinyin": [
+        "dōu",
+        "dū"
+      ]
+    }
+  ],
+  [
+    {
+      "hanzi": "事",
+      "pinyin": [
+        "shì"
+      ]
+    },
+    {
+      "hanzi": "子",
+      "pinyin": [
+        "zǐ",
+        "zi"
+      ]
+    },
+    {
+      "hanzi": "生",
+      "pinyin": [
+        "shēng"
+      ]
+    },
+    {
+      "hanzi": "时",
+      "pinyin": [
+        "shí"
+      ]
+    },
+    {
+      "hanzi": "样",
+      "pinyin": [
+        "yàng"
+      ]
+    }
+  ],
+  []
+]

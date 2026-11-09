@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device" version="29.0.0">
+  <diagram id="page-1" name="Sound icon states - review detail">
+    <mxGraphModel dx="520" dy="180" grid="0" page="1" pageScale="1" pageWidth="520" pageHeight="180" background="#F8F8F4" adaptiveColors="none" tooltips="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F8F8F4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="520" height="180" />
+        </mxCell>
+        <mxCell id="3" value="Same toggle, two states" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=22;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="24" y="16" width="472" height="32" />
+        </mxCell>
+        <mxCell id="4" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="24" y="70" width="44" height="44" />
+        </mxCell>
+        <mxCell id="5" value="" style="html=1;shape=stencil(lVPbbsMgDP0aHjcF3F3yOLXdfyBCF1QKEaRr+veDubngSdHyFB/7YB+OA4N9bGWnmaicvGgGByZE7LQ86/DkXQKpcsO02CFsSygTXfWYO5lBN5iOffBnfTNN/+Ab1+pg+lyFI4O98s6lg8a7mOhMfGL65IP+Cv7qGsTYR3nrQ6Lh97cfEwAV7OAD580NjLUb6Eud6aqzXv78TqidzLUcXfx3tmxAJiDvjqgmp6xxC+7bBi4XBfllC5lvkcHXW8M6WVkf9TKRgtmqvA70+D9W8tdiFt2AugZk8/KW9xFXiAdB6iN+/LMDkHEETwOJunp1IVTd+EJGdXUpbiqL0thJXE3E0ZUWPv/1OAX0MaUUPnc4/gA=);strokeColor=#30343A;fillColor=#30343A;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="34" y="80" width="24" height="24" />
+        </mxCell>
+        <mxCell id="6" value="On → Mute sound" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=15;fontColor=#30343A;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="82" y="70" width="160" height="44" />
+        </mxCell>
+        <mxCell id="7" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1" tooltip="Unmute sound">
+          <mxGeometry as="geometry" x="266" y="70" width="44" height="44" />
+        </mxCell>
+        <mxCell id="8" value="" style="html=1;shape=stencil(lZPbTsMwDIafJpegJR4DLtE23iNqPRotjaskY+PtcTCoB6RCrurD5z/O31bBPnV2QGU2wfao4KCMSQPaM8a7/pKx5ZybV+mYraTdPLU80WSpndztZyjlSGe8ujZ/8y50GF0uXTgq2DcUAg86ColxZV6lfKKIb5EuoZVcdBryFBmT55eeMgAb2MKLnDcKOO8r8OmefNVxX33/tEAHW3ol6um9uHYTEoT7kOx5MeVdmLCPFaw2M/ihBtY1a+h1aViHG08JpwUORqvK6xCP/2Ol3lX4Y8z6YnPpBf2H9bt16dkVf1+Pg+V3zCX52eD4CQ==);strokeColor=#30343A;fillColor=#30343A;" vertex="1" parent="1" tooltip="Unmute sound">
+          <mxGeometry as="geometry" x="276" y="80" width="24" height="24" />
+        </mxCell>
+        <mxCell id="9" value="Off → Unmute sound" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=15;fontColor=#30343A;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="324" y="70" width="180" height="44" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device" version="29.0.0">
+  <diagram id="page-1" name="State details - not an extra app screen">
+    <mxGraphModel dx="1440" dy="810" grid="0" page="1" pageScale="1" pageWidth="1440" pageHeight="810" background="#F8F8F4" adaptiveColors="none" tooltips="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F8F8F4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="810" />
+        </mxCell>
+        <mxCell id="3" value="Lesson tile state rules" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=34;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56" y="40" width="1328" height="54" />
+        </mxCell>
+        <mxCell id="4" value="One tile = one action. Checkmarks record permanent completion, not current practice state." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=19;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56" y="104" width="1328" height="54" />
+        </mxCell>
+        <mxCell id="5" value="" style="html=1;group;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56" y="210" width="180" height="180" />
+        </mxCell>
+        <mxCell id="6" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#30343A;strokeWidth=2;" vertex="1" parent="5" tooltip="One tile click starts or resumes. Completed tile restarts practice unless an active revisit exists; then resumes it. Completion check never resets.">
+          <mxGeometry as="geometry" x="0" y="0" width="180" height="180" />
+        </mxCell>
+        <mxCell id="7" value="1" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=60;fontColor=#30343A;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="5">
+          <mxGeometry as="geometry" x="20" y="18" width="140" height="72" />
+        </mxCell>
+        <mxCell id="8" value="Start here" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=14;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="5">
+          <mxGeometry as="geometry" x="20" y="99" width="140" height="26" />
+        </mxCell>
+        <mxCell id="9" value="" style="html=1;rounded=1;arcSize=10;fillColor=#EEEEE8;strokeColor=none;rounded=0;" vertex="1" parent="5">
+          <mxGeometry as="geometry" x="1" y="137" width="178" height="42" />
+        </mxCell>
+        <mxCell id="10" value="我 的 你 是 了" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=21;fontColor=#30343A;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="5">
+          <mxGeometry as="geometry" x="10" y="140" width="160" height="34" />
+        </mxCell>
+        <mxCell id="11" value="Brand-new learner&lt;br&gt;Lesson 1 starts; later lessons locked." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56" y="414" width="260" height="100" />
+        </mxCell>
+        <mxCell id="12" value="" style="html=1;group;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="386" y="210" width="180" height="180" />
+        </mxCell>
+        <mxCell id="13" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#30343A;strokeWidth=2;" vertex="1" parent="12" tooltip="One tile click starts or resumes. Completed tile restarts practice unless an active revisit exists; then resumes it. Completion check never resets.">
+          <mxGeometry as="geometry" x="0" y="0" width="180" height="180" />
+        </mxCell>
+        <mxCell id="14" value="1" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=60;fontColor=#30343A;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="12">
+          <mxGeometry as="geometry" x="20" y="18" width="140" height="72" />
+        </mxCell>
+        <mxCell id="15" value="✓" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=24;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="12">
+          <mxGeometry as="geometry" x="136" y="14" width="26" height="30" />
+        </mxCell>
+        <mxCell id="16" value="Continue here" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=14;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="12">
+          <mxGeometry as="geometry" x="20" y="99" width="140" height="26" />
+        </mxCell>
+        <mxCell id="17" value="" style="html=1;rounded=1;arcSize=10;fillColor=#EEEEE8;strokeColor=none;rounded=0;" vertex="1" parent="12">
+          <mxGeometry as="geometry" x="1" y="137" width="178" height="42" />
+        </mxCell>
+        <mxCell id="18" value="我 的 你 是 了" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=21;fontColor=#30343A;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="12">
+          <mxGeometry as="geometry" x="10" y="140" width="160" height="34" />
+        </mxCell>
+        <mxCell id="19" value="Active revisit&lt;br&gt;Resume this completed lesson first.&lt;br&gt;Tick and later access remain." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="386" y="414" width="290" height="130" />
+        </mxCell>
+        <mxCell id="20" value="" style="html=1;group;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="716" y="210" width="180" height="180" />
+        </mxCell>
+        <mxCell id="21" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F6F6F2;strokeColor=#DDDDD6;" vertex="1" parent="20" tooltip="Locked until previous lesson is completed.">
+          <mxGeometry as="geometry" x="0" y="0" width="180" height="180" />
+        </mxCell>
+        <mxCell id="22" value="10" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=60;fontColor=#777A74;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="20">
+          <mxGeometry as="geometry" x="20" y="18" width="140" height="72" />
+        </mxCell>
+        <mxCell id="23" value="Locked" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=14;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="20">
+          <mxGeometry as="geometry" x="20" y="99" width="140" height="26" />
+        </mxCell>
+        <mxCell id="24" value="" style="html=1;rounded=1;arcSize=10;fillColor=#EEEEE8;strokeColor=none;rounded=0;" vertex="1" parent="20">
+          <mxGeometry as="geometry" x="1" y="137" width="178" height="42" />
+        </mxCell>
+        <mxCell id="25" value="事 子 生 时 样" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=21;fontColor=#30343A;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="20">
+          <mxGeometry as="geometry" x="10" y="140" width="160" height="34" />
+        </mxCell>
+        <mxCell id="26" value="Two digits&lt;br&gt;Same 60 px numeral size." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="716" y="414" width="260" height="90" />
+        </mxCell>
+        <mxCell id="27" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1046" y="210" width="180" height="180" />
+        </mxCell>
+        <mxCell id="28" value="100" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=60;fontColor=#30343A;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1066" y="228" width="140" height="72" />
+        </mxCell>
+        <mxCell id="29" value="Sizing only" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=14;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1066" y="309" width="140" height="26" />
+        </mxCell>
+        <mxCell id="30" value="" style="html=1;rounded=1;arcSize=10;fillColor=#EEEEE8;strokeColor=none;rounded=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1047" y="347" width="178" height="42" />
+        </mxCell>
+        <mxCell id="31" value="Three digits&lt;br&gt;Same font and number region.&lt;br&gt;Not a curriculum lesson." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1046" y="414" width="300" height="110" />
+        </mxCell>
+        <mxCell id="32" value="Priority: active revisit → next unfinished lesson. Without progress, show Start here.&lt;br&gt;Completed tile: restart practice; if its revisit is active, resume. Never remove its tick.&lt;br&gt;Locked tile: no lesson access. No secondary play/restart button. No popup tour." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=20;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="56" y="602" width="1300" height="130" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

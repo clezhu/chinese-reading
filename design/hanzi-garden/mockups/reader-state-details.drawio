@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device" version="29.0.0">
+  <diagram id="page-1" name="Reader save states - design detail">
+    <mxGraphModel dx="1440" dy="810" grid="0" page="1" pageScale="1" pageWidth="1440" pageHeight="810" background="#F8F8F4" adaptiveColors="none" tooltips="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F8F8F4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="810" />
+        </mxCell>
+        <mxCell id="3" value="Reader states and transitions" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=34;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="56" width="1280" height="54" />
+        </mxCell>
+        <mxCell id="4" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="150" width="1280" height="74" />
+        </mxCell>
+        <mxCell id="5" value="Saving a reveal" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=18;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="100" y="162" width="270" height="48" />
+        </mxCell>
+        <mxCell id="6" value="1 reveal not yet saved. Saving… Keep this page open." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="162" width="690" height="48" />
+        </mxCell>
+        <mxCell id="7" value="Finish unavailable" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=right;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1090" y="162" width="240" height="48" />
+        </mxCell>
+        <mxCell id="8" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="238" width="1280" height="74" />
+        </mxCell>
+        <mxCell id="9" value="Connection interrupted" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=18;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="100" y="250" width="270" height="48" />
+        </mxCell>
+        <mxCell id="10" value="Retrying automatically. Keep this page open; unsaved reveals may be lost." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="250" width="690" height="48" />
+        </mxCell>
+        <mxCell id="11" value="Finish unavailable" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=right;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1090" y="250" width="240" height="48" />
+        </mxCell>
+        <mxCell id="12" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="326" width="1280" height="74" />
+        </mxCell>
+        <mxCell id="13" value="Checking saved progress" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=18;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="100" y="338" width="270" height="48" />
+        </mxCell>
+        <mxCell id="14" value="Checking saved progress…" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="338" width="690" height="48" />
+        </mxCell>
+        <mxCell id="15" value="Finish unavailable" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=right;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1090" y="338" width="240" height="48" />
+        </mxCell>
+        <mxCell id="16" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="414" width="1280" height="74" />
+        </mxCell>
+        <mxCell id="17" value="Saving Finish" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=18;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="100" y="426" width="270" height="48" />
+        </mxCell>
+        <mxCell id="18" value="Saving the end of your reading…" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="426" width="690" height="48" />
+        </mxCell>
+        <mxCell id="19" value="Finish unavailable" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=right;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1090" y="426" width="240" height="48" />
+        </mxCell>
+        <mxCell id="20" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="502" width="1280" height="74" />
+        </mxCell>
+        <mxCell id="21" value="Attempt/session changed" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=18;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="100" y="514" width="270" height="48" />
+        </mxCell>
+        <mxCell id="22" value="Reload the lesson to continue. Unsaved reveals may be lost." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="514" width="690" height="48" />
+        </mxCell>
+        <mxCell id="23" value="Reload lesson" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#666863;fontStyle=0;align=right;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1090" y="514" width="240" height="48" />
+        </mxCell>
+        <mxCell id="24" value="Finish with no taught reveals → Lesson complete.&lt;br&gt;Finish with taught reveals → frozen contextual revision deck; not completion.&lt;br&gt;Recognise that deck → Reread story with taught help hidden; permanent help remains." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=21;fontColor=#666863;fontStyle=0;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="622" width="1280" height="130" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

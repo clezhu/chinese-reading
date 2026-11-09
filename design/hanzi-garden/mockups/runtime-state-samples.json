@@ -1,0 +1,1229 @@
+{
+  "lesson": {
+    "id": "first-characters",
+    "title": "First characters",
+    "kind": "learning",
+    "description": "Two siblings discover that their mother belongs to both of them.",
+    "contentRevision": 3,
+    "story": {
+      "paragraphs": [
+        [
+          [
+            {
+              "hanzi": "我",
+              "pinyin": "wǒ"
+            },
+            {
+              "hanzi": "回",
+              "pinyin": "huí"
+            },
+            {
+              "hanzi": "到",
+              "pinyin": "dào"
+            },
+            {
+              "hanzi": "家",
+              "pinyin": "jiā"
+            },
+            "，",
+            {
+              "hanzi": "看",
+              "pinyin": "kàn"
+            },
+            {
+              "hanzi": "见",
+              "pinyin": "jiàn"
+            },
+            {
+              "hanzi": "你",
+              "pinyin": "nǐ"
+            },
+            {
+              "hanzi": "和",
+              "pinyin": "hé"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "mā"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "ma"
+            },
+            {
+              "hanzi": "在",
+              "pinyin": "zài"
+            },
+            {
+              "hanzi": "一",
+              "pinyin": "yì"
+            },
+            {
+              "hanzi": "起",
+              "pinyin": "qǐ"
+            },
+            "。"
+          ]
+        ],
+        [
+          [
+            {
+              "hanzi": "你",
+              "pinyin": "nǐ"
+            },
+            {
+              "hanzi": "说",
+              "pinyin": "shuō"
+            },
+            "：“",
+            {
+              "hanzi": "这",
+              "pinyin": "zhè"
+            },
+            {
+              "hanzi": "是",
+              "pinyin": "shì"
+            },
+            {
+              "hanzi": "我",
+              "pinyin": "wǒ"
+            },
+            {
+              "hanzi": "的",
+              "pinyin": "de"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "mā"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "ma"
+            },
+            "，",
+            {
+              "hanzi": "不",
+              "pinyin": "bú"
+            },
+            {
+              "hanzi": "是",
+              "pinyin": "shì"
+            },
+            {
+              "hanzi": "你",
+              "pinyin": "nǐ"
+            },
+            {
+              "hanzi": "的",
+              "pinyin": "de"
+            },
+            "！”"
+          ],
+          [
+            {
+              "hanzi": "我",
+              "pinyin": "wǒ"
+            },
+            {
+              "hanzi": "说",
+              "pinyin": "shuō"
+            },
+            "：“",
+            {
+              "hanzi": "也",
+              "pinyin": "yě"
+            },
+            {
+              "hanzi": "是",
+              "pinyin": "shì"
+            },
+            {
+              "hanzi": "我",
+              "pinyin": "wǒ"
+            },
+            {
+              "hanzi": "的",
+              "pinyin": "de"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "mā"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "ma"
+            },
+            "。”"
+          ]
+        ],
+        [
+          [
+            {
+              "hanzi": "你",
+              "pinyin": "nǐ"
+            },
+            {
+              "hanzi": "看",
+              "pinyin": "kàn"
+            },
+            {
+              "hanzi": "看",
+              "pinyin": "kan"
+            },
+            {
+              "hanzi": "我",
+              "pinyin": "wǒ"
+            },
+            "，",
+            {
+              "hanzi": "不",
+              "pinyin": "bù"
+            },
+            {
+              "hanzi": "说",
+              "pinyin": "shuō"
+            },
+            {
+              "hanzi": "话",
+              "pinyin": "huà"
+            },
+            {
+              "hanzi": "了",
+              "pinyin": "le"
+            },
+            "。"
+          ],
+          [
+            {
+              "hanzi": "妈",
+              "pinyin": "mā"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "ma"
+            },
+            {
+              "hanzi": "说",
+              "pinyin": "shuō"
+            },
+            "：“",
+            {
+              "hanzi": "你",
+              "pinyin": "nǐ"
+            },
+            {
+              "hanzi": "们",
+              "pinyin": "men"
+            },
+            {
+              "hanzi": "都",
+              "pinyin": "dōu"
+            },
+            {
+              "hanzi": "是",
+              "pinyin": "shì"
+            },
+            {
+              "hanzi": "我",
+              "pinyin": "wǒ"
+            },
+            {
+              "hanzi": "的",
+              "pinyin": "de"
+            },
+            {
+              "hanzi": "儿",
+              "pinyin": "ér"
+            },
+            {
+              "hanzi": "子",
+              "pinyin": "zi"
+            },
+            {
+              "hanzi": "啊",
+              "pinyin": "a"
+            },
+            "！”"
+          ],
+          [
+            {
+              "hanzi": "你",
+              "pinyin": "nǐ"
+            },
+            {
+              "hanzi": "说",
+              "pinyin": "shuō"
+            },
+            "：“",
+            {
+              "hanzi": "好",
+              "pinyin": "hǎo"
+            },
+            {
+              "hanzi": "吧",
+              "pinyin": "ba"
+            },
+            "，",
+            {
+              "hanzi": "我",
+              "pinyin": "wǒ"
+            },
+            {
+              "hanzi": "们",
+              "pinyin": "men"
+            },
+            {
+              "hanzi": "的",
+              "pinyin": "de"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "mā"
+            },
+            {
+              "hanzi": "妈",
+              "pinyin": "ma"
+            },
+            "！”"
+          ]
+        ]
+      ]
+    },
+    "newCharacters": [
+      {
+        "id": "我",
+        "hanzi": "我",
+        "pinyin": [
+          "wǒ"
+        ]
+      },
+      {
+        "id": "的",
+        "hanzi": "的",
+        "pinyin": [
+          "de",
+          "dī",
+          "dí",
+          "dì"
+        ]
+      },
+      {
+        "id": "你",
+        "hanzi": "你",
+        "pinyin": [
+          "nǐ"
+        ]
+      },
+      {
+        "id": "是",
+        "hanzi": "是",
+        "pinyin": [
+          "shì"
+        ]
+      },
+      {
+        "id": "了",
+        "hanzi": "了",
+        "pinyin": [
+          "le",
+          "liǎo"
+        ]
+      }
+    ]
+  },
+  "occurrences": [
+    {
+      "ref": "0:0:0",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 0,
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "permanent": false
+    },
+    {
+      "ref": "0:0:1",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 1,
+      "hanzi": "回",
+      "pinyin": "huí",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:2",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 2,
+      "hanzi": "到",
+      "pinyin": "dào",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:3",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 3,
+      "hanzi": "家",
+      "pinyin": "jiā",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:5",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 5,
+      "hanzi": "看",
+      "pinyin": "kàn",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:6",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 6,
+      "hanzi": "见",
+      "pinyin": "jiàn",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:7",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 7,
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "permanent": false
+    },
+    {
+      "ref": "0:0:8",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 8,
+      "hanzi": "和",
+      "pinyin": "hé",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:9",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 9,
+      "hanzi": "妈",
+      "pinyin": "mā",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:10",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 10,
+      "hanzi": "妈",
+      "pinyin": "ma",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:11",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 11,
+      "hanzi": "在",
+      "pinyin": "zài",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:12",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 12,
+      "hanzi": "一",
+      "pinyin": "yì",
+      "permanent": true
+    },
+    {
+      "ref": "0:0:13",
+      "paragraphIndex": 0,
+      "sentenceIndex": 0,
+      "tokenIndex": 13,
+      "hanzi": "起",
+      "pinyin": "qǐ",
+      "permanent": true
+    },
+    {
+      "ref": "1:0:0",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 0,
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "permanent": false
+    },
+    {
+      "ref": "1:0:1",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 1,
+      "hanzi": "说",
+      "pinyin": "shuō",
+      "permanent": true
+    },
+    {
+      "ref": "1:0:3",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 3,
+      "hanzi": "这",
+      "pinyin": "zhè",
+      "permanent": true
+    },
+    {
+      "ref": "1:0:4",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 4,
+      "hanzi": "是",
+      "pinyin": "shì",
+      "permanent": false
+    },
+    {
+      "ref": "1:0:5",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 5,
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "permanent": false
+    },
+    {
+      "ref": "1:0:6",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 6,
+      "hanzi": "的",
+      "pinyin": "de",
+      "permanent": false
+    },
+    {
+      "ref": "1:0:7",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 7,
+      "hanzi": "妈",
+      "pinyin": "mā",
+      "permanent": true
+    },
+    {
+      "ref": "1:0:8",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 8,
+      "hanzi": "妈",
+      "pinyin": "ma",
+      "permanent": true
+    },
+    {
+      "ref": "1:0:10",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 10,
+      "hanzi": "不",
+      "pinyin": "bú",
+      "permanent": true
+    },
+    {
+      "ref": "1:0:11",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 11,
+      "hanzi": "是",
+      "pinyin": "shì",
+      "permanent": false
+    },
+    {
+      "ref": "1:0:12",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 12,
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "permanent": false
+    },
+    {
+      "ref": "1:0:13",
+      "paragraphIndex": 1,
+      "sentenceIndex": 0,
+      "tokenIndex": 13,
+      "hanzi": "的",
+      "pinyin": "de",
+      "permanent": false
+    },
+    {
+      "ref": "1:1:0",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 0,
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "permanent": false
+    },
+    {
+      "ref": "1:1:1",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 1,
+      "hanzi": "说",
+      "pinyin": "shuō",
+      "permanent": true
+    },
+    {
+      "ref": "1:1:3",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 3,
+      "hanzi": "也",
+      "pinyin": "yě",
+      "permanent": true
+    },
+    {
+      "ref": "1:1:4",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 4,
+      "hanzi": "是",
+      "pinyin": "shì",
+      "permanent": false
+    },
+    {
+      "ref": "1:1:5",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 5,
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "permanent": false
+    },
+    {
+      "ref": "1:1:6",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 6,
+      "hanzi": "的",
+      "pinyin": "de",
+      "permanent": false
+    },
+    {
+      "ref": "1:1:7",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 7,
+      "hanzi": "妈",
+      "pinyin": "mā",
+      "permanent": true
+    },
+    {
+      "ref": "1:1:8",
+      "paragraphIndex": 1,
+      "sentenceIndex": 1,
+      "tokenIndex": 8,
+      "hanzi": "妈",
+      "pinyin": "ma",
+      "permanent": true
+    },
+    {
+      "ref": "2:0:0",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 0,
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "permanent": false
+    },
+    {
+      "ref": "2:0:1",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 1,
+      "hanzi": "看",
+      "pinyin": "kàn",
+      "permanent": true
+    },
+    {
+      "ref": "2:0:2",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 2,
+      "hanzi": "看",
+      "pinyin": "kan",
+      "permanent": true
+    },
+    {
+      "ref": "2:0:3",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 3,
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "permanent": false
+    },
+    {
+      "ref": "2:0:5",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 5,
+      "hanzi": "不",
+      "pinyin": "bù",
+      "permanent": true
+    },
+    {
+      "ref": "2:0:6",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 6,
+      "hanzi": "说",
+      "pinyin": "shuō",
+      "permanent": true
+    },
+    {
+      "ref": "2:0:7",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 7,
+      "hanzi": "话",
+      "pinyin": "huà",
+      "permanent": true
+    },
+    {
+      "ref": "2:0:8",
+      "paragraphIndex": 2,
+      "sentenceIndex": 0,
+      "tokenIndex": 8,
+      "hanzi": "了",
+      "pinyin": "le",
+      "permanent": false
+    },
+    {
+      "ref": "2:1:0",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 0,
+      "hanzi": "妈",
+      "pinyin": "mā",
+      "permanent": true
+    },
+    {
+      "ref": "2:1:1",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 1,
+      "hanzi": "妈",
+      "pinyin": "ma",
+      "permanent": true
+    },
+    {
+      "ref": "2:1:2",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 2,
+      "hanzi": "说",
+      "pinyin": "shuō",
+      "permanent": true
+    },
+    {
+      "ref": "2:1:4",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 4,
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "permanent": false
+    },
+    {
+      "ref": "2:1:5",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 5,
+      "hanzi": "们",
+      "pinyin": "men",
+      "permanent": true
+    },
+    {
+      "ref": "2:1:6",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 6,
+      "hanzi": "都",
+      "pinyin": "dōu",
+      "permanent": true
+    },
+    {
+      "ref": "2:1:7",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 7,
+      "hanzi": "是",
+      "pinyin": "shì",
+      "permanent": false
+    },
+    {
+      "ref": "2:1:8",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 8,
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "permanent": false
+    },
+    {
+      "ref": "2:1:9",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 9,
+      "hanzi": "的",
+      "pinyin": "de",
+      "permanent": false
+    },
+    {
+      "ref": "2:1:10",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 10,
+      "hanzi": "儿",
+      "pinyin": "ér",
+      "permanent": true
+    },
+    {
+      "ref": "2:1:11",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 11,
+      "hanzi": "子",
+      "pinyin": "zi",
+      "permanent": true
+    },
+    {
+      "ref": "2:1:12",
+      "paragraphIndex": 2,
+      "sentenceIndex": 1,
+      "tokenIndex": 12,
+      "hanzi": "啊",
+      "pinyin": "a",
+      "permanent": true
+    },
+    {
+      "ref": "2:2:0",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 0,
+      "hanzi": "你",
+      "pinyin": "nǐ",
+      "permanent": false
+    },
+    {
+      "ref": "2:2:1",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 1,
+      "hanzi": "说",
+      "pinyin": "shuō",
+      "permanent": true
+    },
+    {
+      "ref": "2:2:3",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 3,
+      "hanzi": "好",
+      "pinyin": "hǎo",
+      "permanent": true
+    },
+    {
+      "ref": "2:2:4",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 4,
+      "hanzi": "吧",
+      "pinyin": "ba",
+      "permanent": true
+    },
+    {
+      "ref": "2:2:6",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 6,
+      "hanzi": "我",
+      "pinyin": "wǒ",
+      "permanent": false
+    },
+    {
+      "ref": "2:2:7",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 7,
+      "hanzi": "们",
+      "pinyin": "men",
+      "permanent": true
+    },
+    {
+      "ref": "2:2:8",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 8,
+      "hanzi": "的",
+      "pinyin": "de",
+      "permanent": false
+    },
+    {
+      "ref": "2:2:9",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 9,
+      "hanzi": "妈",
+      "pinyin": "mā",
+      "permanent": true
+    },
+    {
+      "ref": "2:2:10",
+      "paragraphIndex": 2,
+      "sentenceIndex": 2,
+      "tokenIndex": 10,
+      "hanzi": "妈",
+      "pinyin": "ma",
+      "permanent": true
+    }
+  ],
+  "revealed": [
+    "0:0:0",
+    "1:0:6"
+  ],
+  "revisionCards": [
+    {
+      "character": {
+        "id": "我",
+        "hanzi": "我",
+        "pinyin": [
+          "wǒ"
+        ]
+      },
+      "occurrence": {
+        "ref": "0:0:0",
+        "paragraphIndex": 0,
+        "sentenceIndex": 0,
+        "tokenIndex": 0,
+        "hanzi": "我",
+        "pinyin": "wǒ",
+        "permanent": false
+      },
+      "sentence": [
+        {
+          "ref": "0:0:0",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 0,
+          "hanzi": "我",
+          "pinyin": "wǒ",
+          "permanent": false,
+          "revealed": true,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:1",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 1,
+          "hanzi": "回",
+          "pinyin": "huí",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:2",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 2,
+          "hanzi": "到",
+          "pinyin": "dào",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:3",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 3,
+          "hanzi": "家",
+          "pinyin": "jiā",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        "，",
+        {
+          "ref": "0:0:5",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 5,
+          "hanzi": "看",
+          "pinyin": "kàn",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:6",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 6,
+          "hanzi": "见",
+          "pinyin": "jiàn",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:7",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 7,
+          "hanzi": "你",
+          "pinyin": "nǐ",
+          "permanent": false,
+          "revealed": false,
+          "showPinyin": false
+        },
+        {
+          "ref": "0:0:8",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 8,
+          "hanzi": "和",
+          "pinyin": "hé",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:9",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 9,
+          "hanzi": "妈",
+          "pinyin": "mā",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:10",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 10,
+          "hanzi": "妈",
+          "pinyin": "ma",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:11",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 11,
+          "hanzi": "在",
+          "pinyin": "zài",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:12",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 12,
+          "hanzi": "一",
+          "pinyin": "yì",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "0:0:13",
+          "paragraphIndex": 0,
+          "sentenceIndex": 0,
+          "tokenIndex": 13,
+          "hanzi": "起",
+          "pinyin": "qǐ",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        "。"
+      ]
+    },
+    {
+      "character": {
+        "id": "的",
+        "hanzi": "的",
+        "pinyin": [
+          "de",
+          "dī",
+          "dí",
+          "dì"
+        ]
+      },
+      "occurrence": {
+        "ref": "1:0:6",
+        "paragraphIndex": 1,
+        "sentenceIndex": 0,
+        "tokenIndex": 6,
+        "hanzi": "的",
+        "pinyin": "de",
+        "permanent": false
+      },
+      "sentence": [
+        {
+          "ref": "1:0:0",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 0,
+          "hanzi": "你",
+          "pinyin": "nǐ",
+          "permanent": false,
+          "revealed": false,
+          "showPinyin": false
+        },
+        {
+          "ref": "1:0:1",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 1,
+          "hanzi": "说",
+          "pinyin": "shuō",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        "：“",
+        {
+          "ref": "1:0:3",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 3,
+          "hanzi": "这",
+          "pinyin": "zhè",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "1:0:4",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 4,
+          "hanzi": "是",
+          "pinyin": "shì",
+          "permanent": false,
+          "revealed": false,
+          "showPinyin": false
+        },
+        {
+          "ref": "1:0:5",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 5,
+          "hanzi": "我",
+          "pinyin": "wǒ",
+          "permanent": false,
+          "revealed": false,
+          "showPinyin": false
+        },
+        {
+          "ref": "1:0:6",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 6,
+          "hanzi": "的",
+          "pinyin": "de",
+          "permanent": false,
+          "revealed": true,
+          "showPinyin": true
+        },
+        {
+          "ref": "1:0:7",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 7,
+          "hanzi": "妈",
+          "pinyin": "mā",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "1:0:8",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 8,
+          "hanzi": "妈",
+          "pinyin": "ma",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        "，",
+        {
+          "ref": "1:0:10",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 10,
+          "hanzi": "不",
+          "pinyin": "bú",
+          "permanent": true,
+          "revealed": false,
+          "showPinyin": true
+        },
+        {
+          "ref": "1:0:11",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 11,
+          "hanzi": "是",
+          "pinyin": "shì",
+          "permanent": false,
+          "revealed": false,
+          "showPinyin": false
+        },
+        {
+          "ref": "1:0:12",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 12,
+          "hanzi": "你",
+          "pinyin": "nǐ",
+          "permanent": false,
+          "revealed": false,
+          "showPinyin": false
+        },
+        {
+          "ref": "1:0:13",
+          "paragraphIndex": 1,
+          "sentenceIndex": 0,
+          "tokenIndex": 13,
+          "hanzi": "的",
+          "pinyin": "de",
+          "permanent": false,
+          "revealed": false,
+          "showPinyin": false
+        },
+        "！”"
+      ]
+    }
+  ],
+  "lastLesson": {
+    "id": "the-birthday-surprise",
+    "title": "The birthday surprise",
+    "kind": "revision",
+    "number": 11
+  }
+}

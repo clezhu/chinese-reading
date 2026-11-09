@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device" version="29.0.0">
+  <diagram id="page-1" name="Lesson complete - celebration">
+    <mxGraphModel dx="1440" dy="810" grid="0" page="1" pageScale="1" pageWidth="1440" pageHeight="810" background="#F8F8F4" adaptiveColors="none" tooltips="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F8F8F4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="810" />
+        </mxCell>
+        <mxCell id="3" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;rounded=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="88" />
+        </mxCell>
+        <mxCell id="4" value="‹  Lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="48" y="23" width="120" height="40" />
+        </mxCell>
+        <mxCell id="5" value="Lesson 1  ·  我 的 你 是 了" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=20;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="460" y="24" width="520" height="30" />
+        </mxCell>
+        <mxCell id="6" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1348" y="22" width="44" height="44" />
+        </mxCell>
+        <mxCell id="7" value="" style="html=1;shape=stencil(lVPbbsMgDP0aHjcF3F3yOLXdfyBCF1QKEaRr+veDubngSdHyFB/7YB+OA4N9bGWnmaicvGgGByZE7LQ86/DkXQKpcsO02CFsSygTXfWYO5lBN5iOffBnfTNN/+Ab1+pg+lyFI4O98s6lg8a7mOhMfGL65IP+Cv7qGsTYR3nrQ6Lh97cfEwAV7OAD580NjLUb6Eud6aqzXv78TqidzLUcXfx3tmxAJiDvjqgmp6xxC+7bBi4XBfllC5lvkcHXW8M6WVkf9TKRgtmqvA70+D9W8tdiFt2AugZk8/KW9xFXiAdB6iN+/LMDkHEETwOJunp1IVTd+EJGdXUpbiqL0thJXE3E0ZUWPv/1OAX0MaUUPnc4/gA=);strokeColor=#30343A;fillColor=#30343A;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1358" y="32" width="24" height="24" />
+        </mxCell>
+        <mxCell id="8" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="92" y="144" width="7" height="16" />
+        </mxCell>
+        <mxCell id="9" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=31;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="286" y="206" width="7" height="16" />
+        </mxCell>
+        <mxCell id="10" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=62;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="520" y="124" width="7" height="16" />
+        </mxCell>
+        <mxCell id="11" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=93;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="812" y="156" width="7" height="16" />
+        </mxCell>
+        <mxCell id="12" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=124;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1088" y="132" width="7" height="16" />
+        </mxCell>
+        <mxCell id="13" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=155;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1330" y="228" width="7" height="16" />
+        </mxCell>
+        <mxCell id="14" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=26;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="154" y="336" width="7" height="16" />
+        </mxCell>
+        <mxCell id="15" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=57;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="344" y="458" width="7" height="16" />
+        </mxCell>
+        <mxCell id="16" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=88;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1140" y="366" width="7" height="16" />
+        </mxCell>
+        <mxCell id="17" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=119;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1296" y="494" width="7" height="16" />
+        </mxCell>
+        <mxCell id="18" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=150;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="74" y="668" width="7" height="16" />
+        </mxCell>
+        <mxCell id="19" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=21;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="294" y="732" width="7" height="16" />
+        </mxCell>
+        <mxCell id="20" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=52;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="480" y="690" width="7" height="16" />
+        </mxCell>
+        <mxCell id="21" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=83;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="918" y="704" width="7" height="16" />
+        </mxCell>
+        <mxCell id="22" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=114;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1188" y="746" width="7" height="16" />
+        </mxCell>
+        <mxCell id="23" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=145;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1362" y="632" width="7" height="16" />
+        </mxCell>
+        <mxCell id="24" value="✓" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=64;fontColor=#30343A;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="208" width="200" height="84" />
+        </mxCell>
+        <mxCell id="25" value="Lesson complete" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=42;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="306" width="680" height="70" />
+        </mxCell>
+        <mxCell id="26" value="Your completion is saved." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=22;fontColor=#666863;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="390" width="680" height="44" />
+        </mxCell>
+        <mxCell id="27" value="" style="html=1;rounded=1;arcSize=10;fillColor=#30343A;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="510" width="224" height="56" />
+        </mxCell>
+        <mxCell id="28" value="Next lesson" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="510" width="224" height="56" />
+        </mxCell>
+        <mxCell id="29" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="586" width="224" height="48" />
+        </mxCell>
+        <mxCell id="30" value="Back to lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="586" width="224" height="48" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-2" name="Lesson complete - settled / reduced motion">
+    <mxGraphModel dx="1440" dy="810" grid="0" page="1" pageScale="1" pageWidth="1440" pageHeight="810" background="#F8F8F4" adaptiveColors="none" tooltips="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F8F8F4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="810" />
+        </mxCell>
+        <mxCell id="3" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;rounded=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="88" />
+        </mxCell>
+        <mxCell id="4" value="‹  Lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="48" y="23" width="120" height="40" />
+        </mxCell>
+        <mxCell id="5" value="Lesson 1  ·  我 的 你 是 了" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=20;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="460" y="24" width="520" height="30" />
+        </mxCell>
+        <mxCell id="6" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1348" y="22" width="44" height="44" />
+        </mxCell>
+        <mxCell id="7" value="" style="html=1;shape=stencil(lVPbbsMgDP0aHjcF3F3yOLXdfyBCF1QKEaRr+veDubngSdHyFB/7YB+OA4N9bGWnmaicvGgGByZE7LQ86/DkXQKpcsO02CFsSygTXfWYO5lBN5iOffBnfTNN/+Ab1+pg+lyFI4O98s6lg8a7mOhMfGL65IP+Cv7qGsTYR3nrQ6Lh97cfEwAV7OAD580NjLUb6Eud6aqzXv78TqidzLUcXfx3tmxAJiDvjqgmp6xxC+7bBi4XBfllC5lvkcHXW8M6WVkf9TKRgtmqvA70+D9W8tdiFt2AugZk8/KW9xFXiAdB6iN+/LMDkHEETwOJunp1IVTd+EJGdXUpbiqL0thJXE3E0ZUWPv/1OAX0MaUUPnc4/gA=);strokeColor=#30343A;fillColor=#30343A;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1358" y="32" width="24" height="24" />
+        </mxCell>
+        <mxCell id="8" value="✓" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=64;fontColor=#30343A;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="208" width="200" height="84" />
+        </mxCell>
+        <mxCell id="9" value="Lesson complete" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=42;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="306" width="680" height="70" />
+        </mxCell>
+        <mxCell id="10" value="Your completion is saved." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=22;fontColor=#666863;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="390" width="680" height="44" />
+        </mxCell>
+        <mxCell id="11" value="" style="html=1;rounded=1;arcSize=10;fillColor=#30343A;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="510" width="224" height="56" />
+        </mxCell>
+        <mxCell id="12" value="Next lesson" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="510" width="224" height="56" />
+        </mxCell>
+        <mxCell id="13" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="586" width="224" height="48" />
+        </mxCell>
+        <mxCell id="14" value="Back to lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="608" y="586" width="224" height="48" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-3" name="Final available lesson - celebration">
+    <mxGraphModel dx="1440" dy="810" grid="0" page="1" pageScale="1" pageWidth="1440" pageHeight="810" background="#F8F8F4" adaptiveColors="none" tooltips="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F8F8F4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="810" />
+        </mxCell>
+        <mxCell id="3" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;rounded=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="88" />
+        </mxCell>
+        <mxCell id="4" value="‹  Lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="48" y="23" width="120" height="40" />
+        </mxCell>
+        <mxCell id="5" value="Lesson 11  ·  Revision" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=20;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="460" y="24" width="520" height="30" />
+        </mxCell>
+        <mxCell id="6" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1348" y="22" width="44" height="44" />
+        </mxCell>
+        <mxCell id="7" value="" style="html=1;shape=stencil(lVPbbsMgDP0aHjcF3F3yOLXdfyBCF1QKEaRr+veDubngSdHyFB/7YB+OA4N9bGWnmaicvGgGByZE7LQ86/DkXQKpcsO02CFsSygTXfWYO5lBN5iOffBnfTNN/+Ab1+pg+lyFI4O98s6lg8a7mOhMfGL65IP+Cv7qGsTYR3nrQ6Lh97cfEwAV7OAD580NjLUb6Eud6aqzXv78TqidzLUcXfx3tmxAJiDvjqgmp6xxC+7bBi4XBfllC5lvkcHXW8M6WVkf9TKRgtmqvA70+D9W8tdiFt2AugZk8/KW9xFXiAdB6iN+/LMDkHEETwOJunp1IVTd+EJGdXUpbiqL0thJXE3E0ZUWPv/1OAX0MaUUPnc4/gA=);strokeColor=#30343A;fillColor=#30343A;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1358" y="32" width="24" height="24" />
+        </mxCell>
+        <mxCell id="8" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="92" y="144" width="7" height="16" />
+        </mxCell>
+        <mxCell id="9" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=31;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="286" y="206" width="7" height="16" />
+        </mxCell>
+        <mxCell id="10" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=62;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="520" y="124" width="7" height="16" />
+        </mxCell>
+        <mxCell id="11" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=93;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="812" y="156" width="7" height="16" />
+        </mxCell>
+        <mxCell id="12" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=124;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1088" y="132" width="7" height="16" />
+        </mxCell>
+        <mxCell id="13" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=155;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1330" y="228" width="7" height="16" />
+        </mxCell>
+        <mxCell id="14" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=26;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="154" y="336" width="7" height="16" />
+        </mxCell>
+        <mxCell id="15" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=57;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="344" y="458" width="7" height="16" />
+        </mxCell>
+        <mxCell id="16" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=88;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1140" y="366" width="7" height="16" />
+        </mxCell>
+        <mxCell id="17" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=119;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1296" y="494" width="7" height="16" />
+        </mxCell>
+        <mxCell id="18" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=150;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="74" y="668" width="7" height="16" />
+        </mxCell>
+        <mxCell id="19" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=21;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="294" y="732" width="7" height="16" />
+        </mxCell>
+        <mxCell id="20" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=52;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="480" y="690" width="7" height="16" />
+        </mxCell>
+        <mxCell id="21" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=83;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="918" y="704" width="7" height="16" />
+        </mxCell>
+        <mxCell id="22" value="" style="html=1;rounded=1;arcSize=10;fillColor=#777B74;strokeColor=none;rounded=0;rotation=114;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1188" y="746" width="7" height="16" />
+        </mxCell>
+        <mxCell id="23" value="" style="html=1;rounded=1;arcSize=10;fillColor=#B9BBB3;strokeColor=none;rounded=0;rotation=145;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1362" y="632" width="7" height="16" />
+        </mxCell>
+        <mxCell id="24" value="✓" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=64;fontColor=#30343A;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="208" width="200" height="84" />
+        </mxCell>
+        <mxCell id="25" value="Lesson complete" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=42;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="306" width="680" height="70" />
+        </mxCell>
+        <mxCell id="26" value="Your completion is saved." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=22;fontColor=#666863;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="390" width="680" height="44" />
+        </mxCell>
+        <mxCell id="27" value="You reached the end of the available lessons." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=19;fontColor=#666863;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="444" width="680" height="52" />
+        </mxCell>
+        <mxCell id="28" value="" style="html=1;rounded=1;arcSize=10;fillColor=#30343A;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="590" y="540" width="260" height="56" />
+        </mxCell>
+        <mxCell id="29" value="Back to lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="590" y="540" width="260" height="56" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="page-4" name="Final available lesson - settled / reduced motion">
+    <mxGraphModel dx="1440" dy="810" grid="0" page="1" pageScale="1" pageWidth="1440" pageHeight="810" background="#F8F8F4" adaptiveColors="none" tooltips="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="" style="html=1;rounded=1;arcSize=10;fillColor=#F8F8F4;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="810" />
+        </mxCell>
+        <mxCell id="3" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=none;rounded=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="1440" height="88" />
+        </mxCell>
+        <mxCell id="4" value="‹  Lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=16;fontColor=#30343A;fontStyle=1;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="48" y="23" width="120" height="40" />
+        </mxCell>
+        <mxCell id="5" value="Lesson 11  ·  Revision" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=20;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="460" y="24" width="520" height="30" />
+        </mxCell>
+        <mxCell id="6" value="" style="html=1;rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#DDDDD6;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1348" y="22" width="44" height="44" />
+        </mxCell>
+        <mxCell id="7" value="" style="html=1;shape=stencil(lVPbbsMgDP0aHjcF3F3yOLXdfyBCF1QKEaRr+veDubngSdHyFB/7YB+OA4N9bGWnmaicvGgGByZE7LQ86/DkXQKpcsO02CFsSygTXfWYO5lBN5iOffBnfTNN/+Ab1+pg+lyFI4O98s6lg8a7mOhMfGL65IP+Cv7qGsTYR3nrQ6Lh97cfEwAV7OAD580NjLUb6Eud6aqzXv78TqidzLUcXfx3tmxAJiDvjqgmp6xxC+7bBi4XBfllC5lvkcHXW8M6WVkf9TKRgtmqvA70+D9W8tdiFt2AugZk8/KW9xFXiAdB6iN+/LMDkHEETwOJunp1IVTd+EJGdXUpbiqL0thJXE3E0ZUWPv/1OAX0MaUUPnc4/gA=);strokeColor=#30343A;fillColor=#30343A;" vertex="1" parent="1" tooltip="Mute sound">
+          <mxGeometry as="geometry" x="1358" y="32" width="24" height="24" />
+        </mxCell>
+        <mxCell id="8" value="✓" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=64;fontColor=#30343A;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="208" width="200" height="84" />
+        </mxCell>
+        <mxCell id="9" value="Lesson complete" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=42;fontColor=#30343A;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="306" width="680" height="70" />
+        </mxCell>
+        <mxCell id="10" value="Your completion is saved." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=22;fontColor=#666863;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="390" width="680" height="44" />
+        </mxCell>
+        <mxCell id="11" value="You reached the end of the available lessons." style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=19;fontColor=#666863;fontStyle=0;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="444" width="680" height="52" />
+        </mxCell>
+        <mxCell id="12" value="" style="html=1;rounded=1;arcSize=10;fillColor=#30343A;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="590" y="540" width="260" height="56" />
+        </mxCell>
+        <mxCell id="13" value="Back to lessons" style="html=1;text;fillColor=none;strokeColor=none;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;fontSize=17;fontColor=#FFFFFF;fontStyle=1;align=center;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="590" y="540" width="260" height="56" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
