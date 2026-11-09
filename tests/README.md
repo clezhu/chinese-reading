@@ -48,12 +48,13 @@ that isolated database, then assert public HTTP/browser behavior.
   Initial learning is not repeated during this automatic reread.
 - Every taught occurrence starts hidden in each fresh pass; permanent help stays
   visible. The read → revision → reread cycle has no pass limit.
-- Only a zero-reveal Finish earns/updates completion milestones and unlocks later
-  lessons. Practice cannot write completion, including during an earned revisit.
+- Only a zero-reveal Finish earns/updates completion milestones. All lessons are
+  available independently of earlier completion. Practice cannot write completion,
+  including during an earned revisit.
 - Fresh IDs reject old reveal/Finish/revision/initial-deck writes and isolate
   browser-local decks even when two consecutive revision sets have identical IDs.
 - Explicit completed learning revisits return to introduction; revision-kind
-  revisits return to story. First completion and later access are preserved.
+  revisits return to story. First completion and unrestricted lesson access are preserved.
 
 `completion.browser.spec.ts` exercises repeated passes, retry/full confirmation,
 reload/local deck restoration, stale tabs/writes and old-pass snapshots,

@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { curriculum } from "../app/content/curriculum";
 import { revisionCards, type RevisionCard, type StoryState } from "../app/lib/story";
-import { firstLesson, lessonCard, lockedLessons, login, origin, post, register, startReader } from "./helpers";
+import { firstLesson, lessonCard, laterLessons, login, origin, post, register, startReader } from "./helpers";
 import { candidates, first, firstRef, firstTitle, lastRef, lessons, nextTitle, punctuationRef, secondRef } from "./content-helpers";
 
 const endpoint = `${firstLesson}/reader`;
@@ -63,7 +63,7 @@ test("independent occurrences persist and freeze earliest story-order sentence h
   expect(new Set(saved.state.revealed)).toEqual(new Set([later.ref, earlier.ref, extra.ref]));
   expect(saved.cards).toEqual([]);
   await page.goto("/lessons");
-  await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
   await page.goto(firstLesson);
   await page.evaluate(() => localStorage.clear());
   await page.reload();
@@ -96,7 +96,7 @@ test("independent occurrences persist and freeze earliest story-order sentence h
   } finally { await other.close(); }
 });
 
-test("no-click Finish completes directly, is idempotent, and unlocks only the next lesson", async ({ page }) => {
+test("no-click Finish completes directly, is idempotent, and leaves later lessons available", async ({ page }) => {
   await register(page);
   await startReader(page);
   const before = (await snapshot(page)).state;
@@ -116,7 +116,7 @@ test("no-click Finish completes directly, is idempotent, and unlocks only the ne
   await page.goto("/lessons");
   await expect(lessonCard(page, firstTitle).getByText("Completed", { exact: true })).toBeVisible();
   await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
-  for (const lesson of lessons.slice(2)) await expect(lessonCard(page, lesson.title).getByText("Locked", { exact: true })).toBeVisible();
+  for (const lesson of lessons.slice(2)) await expect(lessonCard(page, lesson.title).getByText("Available", { exact: true })).toBeVisible();
   expect(await snapshot(page)).toEqual(completed);
 });
 
@@ -157,7 +157,7 @@ test("a reveal racing Finish is either frozen or rejected, never lost after ackn
   expect((await post(page.request, endpoint, form(state, "reveal", secondRef))).status()).toBe(409);
 });
 
-test("resource rejects missing attempts, wrong phases, locked lessons and unknown lessons", async ({ page }) => {
+test("resource rejects missing attempts, wrong phases, cross-lesson attempts and unknown lessons", async ({ page }) => {
   await register(page);
   expect((await page.request.get(endpoint)).status()).toBe(409);
   expect((await post(page.request, endpoint, { intent: "reveal", occurrence: firstRef, attempt_id: "invented", content_revision: String(first.contentRevision) })).status()).toBe(409);
@@ -168,9 +168,9 @@ test("resource rejects missing attempts, wrong phases, locked lessons and unknow
   expect(state.phase).toBe("flashcards");
   for (const intent of ["reveal", "finish-reading"]) {
     expect((await post(page.request, endpoint, form(state, intent))).status()).toBe(409);
-    for (const path of lockedLessons) expect((await post(page.request, `${path}/reader`, form(state, intent))).status()).toBe(403);
+    for (const path of laterLessons) expect((await post(page.request, `${path}/reader`, form(state, intent))).status()).toBe(409);
   }
-  for (const path of lockedLessons) expect((await page.request.get(`${path}/reader`)).status()).toBe(403);
+  for (const path of laterLessons) expect((await page.request.get(`${path}/reader`)).status()).toBe(409);
   expect((await page.request.get("/lessons/not-a-lesson/reader")).status()).toBe(404);
   expect((await post(page.request, "/lessons/not-a-lesson/reader", form(state))).status()).toBe(404);
   expect((await snapshot(page)).state).toEqual(state);

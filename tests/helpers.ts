@@ -3,7 +3,7 @@ import { expect, type APIRequestContext, type Page } from "@playwright/test";
 import { first, lessonPath, lessons } from "./content-helpers";
 
 export const firstLesson = lessonPath(first);
-export const lockedLessons = lessons.slice(1).map(lessonPath);
+export const laterLessons = lessons.slice(1).map(lessonPath);
 export const origin = "http://127.0.0.1:4173";
 
 export function account() {

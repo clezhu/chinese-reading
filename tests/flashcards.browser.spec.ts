@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { firstLesson, lessonCard, lockedLessons, login, logout, post, register } from "./helpers";
+import { firstLesson, lessonCard, laterLessons, login, logout, post, register } from "./helpers";
 import { first } from "./content-helpers";
 const firstCharacter = first.newCharacters[0];
 
@@ -64,7 +64,7 @@ test("real introduction → practice/retries → full confirmation → persisted
   await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Back to lessons", exact: true }).click();
   await expect(lessonCard(page, "First characters").getByText("In progress", { exact: true })).toBeVisible();
-  await expect(lessonCard(page, "People and places").getByText("Locked", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, "People and places").getByText("Available", { exact: true })).toBeVisible();
 });
 
 test("a clean initial full-deck round completes without confirmation", async ({ page }) => {
@@ -139,7 +139,7 @@ test("unavailable localStorage does not block practice or phase saving", async (
   await expect(page.getByRole("heading", { name: "Read the story", exact: true })).toBeVisible();
 });
 
-test("phase writes reject wrong attempts, wrong phases, another owner and locked lessons", async ({ page, browser }) => {
+test("phase writes reject wrong attempts, wrong phases, another owner and cross-lesson attempts", async ({ page, browser }) => {
   await register(page);
   expect((await post(page.request, firstLesson, { intent: "deck-passed", attempt_id: "invented" })).status()).toBe(409);
   await start(page);
@@ -154,8 +154,8 @@ test("phase writes reject wrong attempts, wrong phases, another owner and locked
     await bobPage.reload();
     await expect(lessonCard(bobPage, "First characters").getByText("Available", { exact: true })).toBeVisible();
   } finally { await bob.close(); }
-  for (const path of lockedLessons) {
-    expect((await post(page.request, path, { intent: "deck-passed", attempt_id: id })).status()).toBe(403);
+  for (const path of laterLessons) {
+    expect((await post(page.request, path, { intent: "deck-passed", attempt_id: id })).status()).toBe(409);
   }
   // Deliberately trusted browser claim, but only flashcards → story is allowed.
   expect((await post(page.request, firstLesson, { intent: "deck-passed", attempt_id: id, phase: "complete", user_id: "other" })).status()).toBe(303);

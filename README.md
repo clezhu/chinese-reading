@@ -101,7 +101,7 @@ npm run deploy
 
 Wrangler prints the hosted workers.dev URL. Enable a workers.dev subdomain in
 Cloudflare if prompted. Smoke-test registration, logout/login, the first lesson,
-and rejection of a locked lesson at that HTTPS URL before declaring deployment
+and starting a later lesson without completing earlier lessons at that HTTPS URL before declaring deployment
 complete. Apply future remote migrations before deploying code that needs them;
 back up existing D1 data before destructive migrations.
 

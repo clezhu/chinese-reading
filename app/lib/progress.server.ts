@@ -44,8 +44,7 @@ export function lessonStatus(lessonId: string, progress: readonly LessonProgress
   const lessons = orderedLessons(content);
   const index = lessons.findIndex((lesson) => lesson.id === lessonId);
   if (index < 0) return "locked";
-  // Prerequisites are determined exclusively by ordered authored lists.
-  if (lessons.slice(0, index).some((lesson) => progress.find((row) => row.lesson_id === lesson.id)?.first_completed_at == null)) return "locked";
+  // Authored order guides navigation, but never gates lesson access.
   const current = progress.find((row) => row.lesson_id === lessonId);
   if (current?.first_completed_at != null) return "completed";
   return current ? "in-progress" : "available";

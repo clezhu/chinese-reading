@@ -42,6 +42,26 @@ const reveal = (db: D1Database, saved: StoryState, ref = firstRef, user = "alice
 const finish = (db: D1Database, saved: StoryState, user = "alice") => finishReading(db, user, first.id, saved.attemptId, saved.contentRevision);
 const pass = (db: D1Database, saved: StoryState, user = "alice") => completeRevisionDeck(db, user, first.id, saved.attemptId, saved.contentRevision);
 
+test("lessons can be completed out of order without changing earlier progress", async () => {
+  const { db, close } = database();
+  try {
+    for (const lesson of [...lessons].reverse()) {
+      expect(lessonStatus(lesson.id, await getProgress(db, "alice"))).toBe("available");
+      await startIntroduction(db, "alice", lesson.id);
+      const started = (await getProgress(db, "alice")).find((entry) => entry.lesson_id === lesson.id)!;
+      if (lesson.kind === "learning") {
+        await startFlashcards(db, "alice", lesson.id, started.attempt_id);
+        await passInitialDeck(db, "alice", lesson.id, started.attempt_id);
+      }
+      expect((await finishReading(db, "alice", lesson.id, started.attempt_id, lesson.contentRevision)).phase).toBe("complete");
+      const progress = await getProgress(db, "alice");
+      expect(lessonStatus(lesson.id, progress)).toBe("completed");
+      expect(progress).toHaveLength(lessons.length - lessons.indexOf(lesson));
+      expect(lessonStatus(lesson.id, await getProgress(db, "bob"))).toBe("available");
+    }
+  } finally { close(); }
+});
+
 test("public progress seam permits unlimited clean-identity rereads and earns milestones only on zero-reveal Finish", async () => {
   const { db, close } = database();
   try {
@@ -59,7 +79,7 @@ test("public progress seam permits unlimited clean-identity rereads and earns mi
       identities.add(next.attemptId);
       expect(storyState(await row(db))).toEqual(next);
       expect(await row(db)).toMatchObject({ first_completed_at: null, last_completed_at: null, first_completed_content_revision: null, last_completed_content_revision: null });
-      expect(lessonStatus(lessons[1].id, await getProgress(db, "alice"))).toBe("locked");
+      expect(lessonStatus(lessons[1].id, await getProgress(db, "alice"))).toBe("available");
       for (const old of [current, frozen]) {
         await conflict(reveal(db, old));
         await conflict(finish(db, old));

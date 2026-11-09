@@ -55,7 +55,7 @@ for (const phase of ["flashcards", "story", "revision-flashcards"]) {
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(page.getByText(`Card 1 of ${first.newCharacters.length} · 0 missed this round`, { exact: true })).toBeVisible();
     await page.goto("/lessons");
-    await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
+    await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
   });
 }
 for (const phase of ["complete", "story"]) {

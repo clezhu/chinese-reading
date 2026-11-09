@@ -9,8 +9,8 @@ npx tsc --noEmit -p tests/tsconfig.json
 Coordinate server-backed execution serially. `test:revision` uses the separate
 `playwright.revision.config.ts`, validates content, builds Vite mode
 `revision-fixture`, applies local-only D1 migrations and serves a built Worker.
-No application endpoint/progress operation is mocked and prerequisites are
-completed through the browser, not seeded success rows.
+No application endpoint/progress operation is mocked. Revision lessons are
+started directly without completing earlier lessons or seeding success rows.
 
 | Resource | Revision fixture |
 | --- | --- |
@@ -35,13 +35,13 @@ production checkpoint schedule.
 Tests derive refs/readings/help and list order from this checked adapter, not
 old story coordinates or module counts. Coverage includes:
 
-- Revision badge, no new characters, authored order, locked access.
+- Revision badge, no new characters, authored order, immediately available access.
 - Start/resume straight into story; inherited taught help starts hidden,
   permanent help remains visible.
 - No-reveal completion, cross-device persistence, later access and an explicit
   revision-kind revisit that starts a fresh story without initial learning.
 - Reveals freeze the current pass's contextual cards; **Reread story** creates a
-  new empty/version-zero attempt and does not earn milestones or unlock access.
+  new empty/version-zero attempt and does not earn milestones or change lesson availability.
 - Repeating the same reveal/deck after reload must start practice again, not
   inherit the old browser's recognised deck. A later zero-reveal Finish completes.
 

@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { curriculum } from "../app/content/curriculum";
-import { account, firstLesson, lessonCard, lockedLessons, login, logout, post, register } from "./helpers";
+import { account, firstLesson, lessonCard, laterLessons, login, logout, post, register } from "./helpers";
 import { first, firstTitle, lessons, nextTitle } from "./content-helpers";
 
-test("modules/lessons render in authored order with only the first lesson available", async ({ page }) => {
+test("modules/lessons render in authored order with every lesson available", async ({ page }) => {
   await register(page);
   await expect(page.getByRole("heading", { name: "Lessons", exact: true })).toBeVisible();
   await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(curriculum.modules.map((module, index) => `Module ${index + 1}: ${module.title}`));
@@ -13,14 +13,14 @@ test("modules/lessons render in authored order with only the first lesson availa
   await expect(firstCard.getByText("Start here", { exact: true })).toBeVisible();
   await expect(page.getByText("Start here", { exact: true })).toHaveCount(1);
   await expect(page.getByText("Continue here", { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /^Start lesson\s*:/ })).toHaveCount(1);
+  await expect(page.getByRole("button", { name: /^Start lesson\s*:/ })).toHaveCount(lessons.length);
   await expect(firstCard.getByRole("link")).toHaveCount(0);
   for (const character of first.newCharacters) await expect(firstCard.getByText(character.hanzi, { exact: true })).toBeVisible();
   for (const lesson of lessons.slice(1)) {
     const card = lessonCard(page, lesson.title);
-    await expect(card.getByText("Locked", { exact: true })).toBeVisible();
+    await expect(card.getByText("Available", { exact: true })).toBeVisible();
     await expect(card.getByRole("link")).toHaveCount(0);
-    await expect(card.getByRole("button")).toHaveCount(0);
+    await expect(card.getByRole("button", { name: /^Start lesson/ })).toBeVisible();
   }
   await expect(page.getByRole("heading", { level: 3 })).toHaveCount(lessons.length);
   await expect(page.getByText("Revision", { exact: true })).toHaveCount(lessons.filter((lesson) => lesson.kind === "revision").length);
@@ -48,15 +48,15 @@ test("starting first learning lesson groups every authored character/reading wit
   await expect(page.getByText("Start here", { exact: true })).toHaveCount(0);
   await expect(activeCard.getByRole("link", { name: /^Resume lesson/ })).toBeVisible();
   await expect(activeCard.getByRole("button")).toHaveCount(0);
-  await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
 });
 
-test("locked GETs/POSTs reject forged completion claims server-side", async ({ page }) => {
+test("later lessons accept direct access and starts but reject forged completion claims", async ({ page }) => {
   await register(page);
-  for (const path of lockedLessons) {
-    expect((await page.goto(path))?.status()).toBe(403);
-    const lockedForms: Record<string, string>[] = [{ intent: "start" }, { intent: "complete", phase: "completed", first_completed_at: "1", last_completed_at: "1" }, { intent: "start", completed: "true", user_id: "somebody-else" }];
-    for (const form of lockedForms) expect((await post(page.request, path, form)).status()).toBe(403);
+  for (const path of [...laterLessons].reverse()) {
+    expect((await page.goto(path))?.status()).toBe(200);
+    expect((await post(page.request, path, { intent: "complete", phase: "completed", first_completed_at: "1", last_completed_at: "1" })).status()).toBe(400);
+    expect((await post(page.request, path, { intent: "start", completed: "true", user_id: "somebody-else" })).status()).toBe(303);
   }
   await page.goto("/lessons");
   const unsupported: (Record<string, string> | string)[] = [{ intent: "complete" }, { intent: "finish" }, { phase: "completed" }, "intent=start&intent=complete", "intent=start&intent=start"];
@@ -64,7 +64,7 @@ test("locked GETs/POSTs reject forged completion claims server-side", async ({ p
   expect((await post(page.request, firstLesson, { intent: "start", phase: "completed", completed: "true", first_completed_at: "1", last_completed_at: "1" })).status()).toBe(303);
   await page.reload();
   await expect(lessonCard(page, firstTitle).getByText("In progress", { exact: true })).toBeVisible();
-  for (const lesson of lessons.slice(1)) await expect(lessonCard(page, lesson.title).getByText("Locked", { exact: true })).toBeVisible();
+  for (const lesson of lessons.slice(1)) await expect(lessonCard(page, lesson.title).getByText("In progress", { exact: true })).toBeVisible();
   expect((await page.request.get("/lessons/does-not-exist")).status()).toBe(404);
 });
 

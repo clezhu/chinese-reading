@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { firstLesson, lessonCard, lockedLessons, login, origin, post, register, startReader } from "./helpers";
+import { firstLesson, lessonCard, laterLessons, login, origin, post, register, startReader } from "./helpers";
 import { candidates, first, firstRef, firstTitle, lessonPath, lessons, nextTitle } from "./content-helpers";
 import { revisionCards, type StoryState } from "../app/lib/story";
 
@@ -91,7 +91,7 @@ test("current-pass revision retries confirmations and reloads, but only a zero-r
   expect(await state(page)).toEqual(fresh);
   await page.goto("/lessons");
   await expect(lessonCard(page, firstTitle).getByText("In progress", { exact: true })).toBeVisible();
-  await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
   await page.goto(firstLesson);
   await finish(page).click();
   await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
@@ -101,7 +101,7 @@ test("current-pass revision retries confirmations and reloads, but only a zero-r
   await page.reload();
   expect(await dates(page)).toEqual(earned);
   await page.getByRole("link", { name: "Next lesson", exact: true }).click();
-  await expect(page).toHaveURL(lockedLessons[0]);
+  await expect(page).toHaveURL(laterLessons[0]);
 });
 
 test("repeated passes use only current help, ignore old local decks, and atomically reject stale/concurrent writes", async ({ page, context }) => {
@@ -263,7 +263,7 @@ test("all 11 published lessons complete through the UI, ending in direct-story a
   await register(page);
   for (const [index, lesson] of lessons.entries()) {
     await expect(page.getByText("Completed", { exact: true })).toHaveCount(index);
-    await expect(page.getByText("Locked", { exact: true })).toHaveCount(lessons.length - index - 1);
+    await expect(page.getByText("Available", { exact: true })).toHaveCount(lessons.length - index);
     const card = lessonCard(page, lesson.title);
     await expect(card.getByText("Available", { exact: true })).toBeVisible();
     if (lesson.kind === "revision") {
@@ -318,14 +318,14 @@ test("all 11 published lessons complete through the UI, ending in direct-story a
   await expect(page.getByText("Locked", { exact: true })).toHaveCount(0);
 });
 
-test("revision/revisit writes enforce phase, identity, locks and account isolation across fresh passes", async ({ page, browser }) => {
+test("revision/revisit writes enforce phase, identity, cross-lesson attempts and account isolation across fresh passes", async ({ page, browser }) => {
   await register(page);
   await startReader(page);
   const current = await state(page);
   expect((await post(page.request, firstLesson, passed(current))).status()).toBe(409);
   expect((await post(page.request, firstLesson, { intent: "revisit", attempt_id: current.attemptId })).status()).toBe(409);
   const frozen = await collect(page, [firstRef]);
-  for (const intent of ["revision-passed", "revisit"]) expect((await post(page.request, lockedLessons[0], { ...passed(frozen), intent })).status()).toBe(403);
+  for (const intent of ["revision-passed", "revisit"]) expect((await post(page.request, laterLessons[0], { ...passed(frozen), intent })).status()).toBe(409);
   const other = await browser.newContext({ baseURL: origin });
   try {
     const bob = await other.newPage();
@@ -342,6 +342,6 @@ test("revision/revisit writes enforce phase, identity, locks and account isolati
     await page.reload();
     await expect(milestones(page)).toHaveCount(0);
     await page.goto("/lessons");
-    await expect(lessonCard(page, nextTitle).getByText("Locked", { exact: true })).toBeVisible();
+    await expect(lessonCard(page, nextTitle).getByText("Available", { exact: true })).toBeVisible();
   } finally { await other.close(); }
 });
