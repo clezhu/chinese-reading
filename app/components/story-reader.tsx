@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useRevalidator } from "react-router";
 import type { Lesson } from "../content/curriculum";
 import { enumerateStory, type StoryOccurrence, type StoryState } from "../lib/story";
+import { useLessonSound } from "./lesson-sound";
 
-export type StoryReaderProps = { lesson: Lesson; state: StoryState; onPhaseChange?: () => void };
+export type StoryReaderProps = { lesson: Lesson; state: StoryState; onPhaseChange?: () => void; onComplete?: (state: StoryState) => void };
 
 type View = {
   saved: StoryState;
@@ -22,7 +23,10 @@ export function StoryReader(props: StoryReaderProps) {
   return <ReaderAttempt key={`${props.lesson.id}:${props.state.attemptId}:${props.state.contentRevision}`} {...props} />;
 }
 
-function ReaderAttempt({ lesson, state, onPhaseChange }: StoryReaderProps) {
+function ReaderAttempt({ lesson, state, onPhaseChange, onComplete }: StoryReaderProps) {
+  const sound = useLessonSound();
+  const effects = useRef({ onComplete, prime: sound.prime });
+  effects.current = { onComplete, prime: sound.prime };
   const endpoint = `/lessons/${encodeURIComponent(lesson.id)}/reader`;
   const revalidator = useRevalidator();
   const notify = useRef(() => {});
@@ -55,7 +59,7 @@ function ReaderAttempt({ lesson, state, onPhaseChange }: StoryReaderProps) {
       lifetime.abort(); // Late successes/errors can no longer modify this session.
       publish();
     };
-    const accept = (next: StoryState) => {
+    const accept = (next: StoryState, ownFinish = false) => {
       if (!live()) return;
       if (next.attemptId !== saved.attemptId || next.contentRevision !== saved.contentRevision) {
         freeze("This attempt or story content changed. Reload the lesson to continue. Unsaved reveals will not carry over.");
@@ -73,6 +77,9 @@ function ReaderAttempt({ lesson, state, onPhaseChange }: StoryReaderProps) {
         retrying.clear();
         lifetime.abort();
         publish();
+        // Only an acknowledged POST issued by this tab's Finish can celebrate.
+        // GET/focus/loader snapshots, stale versions and failed saves cannot.
+        if (ownFinish && previousPhase === "story" && next.phase === "complete" && !pending.size && !next.revealed.length) effects.current.onComplete?.(next);
         notify.current();
         return;
       }
@@ -176,12 +183,13 @@ function ReaderAttempt({ lesson, state, onPhaseChange }: StoryReaderProps) {
     };
     const finish = () => {
       if (!live() || saved.phase !== "story" || pending.size || refreshing || finishing) return;
+      effects.current.prime(); // Unlock audio now, not after the network await.
       finishing = true;
       publish();
       void (async () => {
         const next = await request("finish", formFor("finish-reading"));
         if (next && live()) {
-          accept(next);
+          accept(next, true);
           if (live()) {
             finishing = false;
             void refresh();
@@ -214,7 +222,7 @@ function ReaderAttempt({ lesson, state, onPhaseChange }: StoryReaderProps) {
   const occurrences = new Map(enumerateStory(lesson).map((occurrence) => [occurrence.ref, occurrence]));
 
   return <section className="story-reader" aria-label="Story reader">
-    <p className="reader-instructions">Try reading without help. Select a character to keep its pinyin visible. Double-underlined characters have permanent help and do not enter revision.</p>
+    <p className="reader-instructions">Try reading your new characters inside this passage without help. If you need help, click on a character to show its pinyin. Double underlined characters are unseen characters and have pinyin on by default - you do not need to know them yet.</p>
     <div className="reader-passage" lang="zh-Hans">
       {lesson.story?.paragraphs.map((paragraph, paragraphIndex) => {
         // One wrapping unit per occurrence, with following punctuation attached.
@@ -259,7 +267,7 @@ function ReaderAttempt({ lesson, state, onPhaseChange }: StoryReaderProps) {
         : view.retrying ? <p>Connection interrupted; retrying automatically. Finish is unavailable until progress is confirmed.</p>
         : view.finishing ? <p>Saving the end of your reading…</p>
         : view.refreshing ? <p>Checking saved progress…</p>
-        : <p>{view.saved.revealed.length ? "All reveals saved." : "No reveals yet."}</p>}
+        : view.saved.revealed.length ? <p>All reveals saved.</p> : null}
     </div>
     {view.terminal && <div className="form-error" role="alert"><p>{view.terminal}</p><button type="button" className="secondary" onClick={() => window.location.reload()}>Reload lesson</button></div>}
     <button className="reader-finish" type="button" disabled={!active || view.pending.length > 0 || view.refreshing} onClick={() => actions.current?.finish()}>Finish reading</button>

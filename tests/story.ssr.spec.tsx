@@ -94,7 +94,8 @@ test("fresh reread SSR hides every taught occurrence while permanent help remain
     const html = renderToStaticMarkup(createElement(RouterProvider, { router }));
     for (const entry of candidates.taught) expect(html).toContain(`data-occurrence="${entry.ref}" data-revealed="false" data-permanent="false" data-save-state="hidden"`);
     for (const entry of candidates.permanent) expect(html).toContain(`data-occurrence="${entry.ref}" data-revealed="true" data-permanent="true" data-save-state="permanent"`);
-    expect(html).toContain("No reveals yet.");
+    expect(html).not.toContain("No reveals yet.");
+    expect(html).not.toContain("All reveals saved.");
     expect(html).toContain(">Finish reading</button>");
   } finally { router.dispose(); }
 });

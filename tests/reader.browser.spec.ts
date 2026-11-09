@@ -162,7 +162,7 @@ test("resource rejects missing attempts, wrong phases, locked lessons and unknow
   expect((await page.request.get(endpoint)).status()).toBe(409);
   expect((await post(page.request, endpoint, { intent: "reveal", occurrence: firstRef, attempt_id: "invented", content_revision: String(first.contentRevision) })).status()).toBe(409);
   await page.goto(firstLesson);
-  await page.getByRole("button", { name: "Start flashcards", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Practice round", exact: true })).toBeVisible();
   const state = (await snapshot(page)).state;
   expect(state.phase).toBe("flashcards");
@@ -368,7 +368,7 @@ for (const failure of ["authentication", "stale attempt", "invalid occurrence"] 
     await page.waitForTimeout(700);
     expect(attempts).toBe(1);
     await page.getByRole("button", { name: "Reload lesson", exact: true }).click();
-    if (failure === "authentication") await expect(page).toHaveURL(/\/login$/);
+    if (failure === "authentication") await expect(page).toHaveURL(/\/register$/);
     else expect((await snapshot(page)).state.revealed).toEqual([]);
   });
 }

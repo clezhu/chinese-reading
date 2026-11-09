@@ -1,25 +1,30 @@
-import { isRouteErrorResponse, Links, Link, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { isRouteErrorResponse, Links, Link, Meta, Outlet, Scripts, ScrollRestoration, useLocation } from "react-router";
 import type { Route } from "./+types/root";
 import "./styles.css";
+import "./garden.css";
 
 export const meta: Route.MetaFunction = () => [
-  { title: "Chinese Reader" },
-  { name: "description", content: "Connect the Mandarin you know to the characters you read." },
+  { title: "Hanzi Garden" },
+  { name: "description", content: "Learn to read Chinese for free!" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  const inLesson = pathname.startsWith("/lessons/");
+  const home = pathname === "/";
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta /><Links />
+        <link rel="icon" type="image/png" sizes="32x32" href="/art/favicon-32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/art/favicon-16.png" />
       </head>
-      <body>
+      <body className={inLesson ? "page-lesson" : home ? "page-home" : pathname === "/lessons" ? "page-lessons" : "page-auth"}>
         <a className="skip-link" href="#main">Skip to content</a>
-        <header className="site-header"><Link to="/lessons" className="brand">Chinese Reader <span lang="zh-Hans">中文阅读</span></Link></header>
+        {!inLesson && <header className="site-header"><Link to="/" className="brand">Hanzi Garden</Link>{home && <nav aria-label="Account"><Link to="/login">Login</Link><Link to="/register" className="button signup-link">Sign up</Link></nav>}</header>}
         <main id="main" tabIndex={-1}>{children}</main>
-        <footer>Familiar language. New characters. One lesson at a time.</footer>
         <ScrollRestoration /><Scripts />
       </body>
     </html>
