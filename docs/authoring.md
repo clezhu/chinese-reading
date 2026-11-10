@@ -7,12 +7,16 @@
 - [Frequency source comparison](research/character-frequency-sources.md)
 - [Candidate drafts and archival status](../authoring/drafts/README.md)
 - [Expansion sources and author self-review](../authoring/drafts/REVIEW-expansion.md)
+- [Next 44 lessons: sources, self-reviews and integration](../authoring/drafts/next-44-review/)
+- [Parallel authoring adapter and Herdr workflow](../authoring/parallel-authoring.md)
 
 The user-requested expansion explicitly supersedes the former three-lesson cap
-and fourth-lesson prohibition. Production now has 11 lessons in the existing
-Fundamentals module, with no unit logic: learning 1–10 plus an all-50 revision.
+and fourth-lesson prohibition. The runtime now has 55 lessons in the existing
+Fundamentals module, with no unit logic: learning 1–50 plus five latest-50 revisions.
 The unchanged first three stay revision 3; learning 4–10 and the checkpoint are
-revision 1, integrated from `app/content/extended-fundamentals.ts`. This is not
+revision 1, integrated from `app/content/extended-fundamentals.ts`. The next 44
+lessons are in `app/content/frequency-expansion.ts`, all at revision 1; the first
+11 remain unchanged. The linked review records document local validation, not
 a hosted deployment claim. Replacements still use candidate-over-current checks;
 new lessons can be authored in drafts, then appended and the whole publication
 checked. The isolated revision fixture remains a separate four-lesson curriculum.

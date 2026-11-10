@@ -256,10 +256,10 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   expect(Date.parse(latest[1]!)).toBeGreaterThan(Date.parse(earned[1]!));
 });
 
-test("all 11 published lessons complete through the UI, ending in direct-story all-50 revision", async ({ page }, testInfo) => {
-  test.setTimeout(120_000);
-  expect(lessons).toHaveLength(11);
-  expect(lessons.map((lesson) => lesson.kind)).toEqual([...Array(10).fill("learning"), "revision"]);
+test("all 55 published lessons complete through the UI, with five direct-story latest-50 revisions", async ({ page }, testInfo) => {
+  test.setTimeout(300_000);
+  expect(lessons).toHaveLength(55);
+  expect(lessons.map((lesson) => lesson.kind)).toEqual(Array.from({ length: 5 }, () => [...Array(10).fill("learning"), "revision"]).flat());
   await register(page);
   for (const [index, lesson] of lessons.entries()) {
     await expect(page.getByText("Completed", { exact: true })).toHaveCount(index);
@@ -287,11 +287,31 @@ test("all 11 published lessons complete through the UI, ending in direct-story a
       const saved = await state(page, lessonPath(lesson));
       expect(saved).toMatchObject({ phase: "story", contentRevision: lesson.contentRevision, revealed: [], version: 0 });
       expect(saved.attemptId).not.toBe("");
-      await expect(page.locator('[data-occurrence][data-permanent="false"][data-revealed="true"]')).toHaveCount(0);
-      const taughtHanzi = await page.locator('[data-occurrence][data-permanent="false"] .reader-hanzi').allTextContents();
-      expect(new Set(taughtHanzi)).toEqual(new Set(lessons.flatMap((entry) => entry.newCharacters.map((character) => character.hanzi))));
+      const introduced = lessons.slice(0, index + 1).flatMap((entry) => entry.newCharacters.map((character) => character.hanzi));
+      expect(introduced).toHaveLength((Math.floor(index / 11) + 1) * 50);
+      const taught = new Set(introduced);
+      const occurrences = lesson.story!.paragraphs.flat(2).filter((token) => typeof token !== "string");
+      const taughtOccurrences = occurrences.filter((token) => taught.has(token.hanzi));
+      const permanentOccurrences = occurrences.filter((token) => !taught.has(token.hanzi));
+      const assertRevisionStory = async () => {
+        // Match actual story occurrences (including repeats/older characters),
+        // not every character ever taught or an exclusive latest-50 bank.
+        await expect(page.locator('[data-occurrence] .reader-hanzi')).toHaveText(occurrences.map((token) => token.hanzi));
+        const taughtCells = page.locator('[data-occurrence][data-permanent="false"]');
+        await expect(taughtCells.locator('.reader-hanzi')).toHaveText(taughtOccurrences.map((token) => token.hanzi));
+        const observed = new Set(await taughtCells.locator('.reader-hanzi').allTextContents());
+        for (const hanzi of introduced.slice(-50)) expect(observed.has(hanzi), `${lesson.id} must cover latest-50 ${hanzi}`).toBe(true);
+        await expect(taughtCells.locator('.reader-pinyin')).toHaveCount(taughtOccurrences.length);
+        await expect(taughtCells.locator('.reader-pinyin:visible')).toHaveCount(0);
+        await expect(page.locator('[data-occurrence][data-permanent="false"][data-revealed="true"]')).toHaveCount(0);
+        const permanentCells = page.locator('[data-occurrence][data-permanent="true"]');
+        await expect(permanentCells.locator('.reader-hanzi')).toHaveText(permanentOccurrences.map((token) => token.hanzi));
+        await expect(permanentCells.locator('.reader-pinyin:visible')).toHaveCount(permanentOccurrences.length);
+      };
+      await assertRevisionStory();
       await page.reload();
       expect(await state(page, lessonPath(lesson))).toEqual(saved);
+      await assertRevisionStory();
     }
     await expect(page.getByRole("region", { name: "Story reader", exact: true })).toBeVisible();
     await expect(milestones(page)).toHaveCount(0);
@@ -314,7 +334,7 @@ test("all 11 published lessons complete through the UI, ending in direct-story a
   expect(await state(page, lessonPath(lessons.at(-1)!))).toEqual(completedRevision);
   expect(await dates(page)).toEqual(earned);
   await page.locator('.completion-actions').getByRole("link", { name: "Back to lessons", exact: true }).click();
-  await expect(page.getByText("Completed", { exact: true })).toHaveCount(11);
+  await expect(page.getByText("Completed", { exact: true })).toHaveCount(55);
   await expect(page.getByText("Locked", { exact: true })).toHaveCount(0);
 });
 

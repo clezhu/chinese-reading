@@ -7,10 +7,14 @@ accounts → ordered lesson list → character introduction → mastery flashcar
 reveals completes the lesson; otherwise recognise that pass's collected deck,
 then reread with taught pinyin hidden again. Repeat as needed. Explicit revisits
 reset practice without undoing milestones or later access. **Fundamentals** now
-contains 11 lessons: learning 1–10 in exact frequency order plus an all-50
-revision. The user-requested expansion supersedes the former three-lesson cap;
+contains 55 lessons: learning 1–50 in exact frequency order plus five latest-50
+revisions. The user-requested expansion supersedes the former three-lesson cap;
 there is no unit logic. #7's first three remain unchanged at revision 3; the
-eight new lessons at revision 1 are integrated from `app/content/extended-fundamentals.ts`.
+earlier eight lessons at revision 1 remain in `app/content/extended-fundamentals.ts`.
+The next 44 lessons are integrated at revision 1 from
+`app/content/frequency-expansion.ts`; the original 11 are unchanged. Their sources,
+author self-reviews and local validation are in
+[`next-44-review/`](authoring/drafts/next-44-review/).
 See [`REVIEW-expansion.md`](authoring/drafts/REVIEW-expansion.md) for new-content
 sources/self-review. This is not independent human approval or a deployment claim.
 The reader under `prototype/` remains unrelated throwaway work.
@@ -177,7 +181,7 @@ Stale/repeated revisit requests cannot replace an active attempt.
 Revision-kind lessons enter the story directly with no new characters or initial
 deck. `npm run test:revision` validates an unpublished fixture in a separate
 build/D1 store. That fixture has the first three lessons plus an early revision
-(four total), separate from production's 11 lessons. See
+(four total), separate from the full 55-lesson curriculum. See
 [`tests/revision-README.md`](tests/revision-README.md).
 
 No R2, content administration, email/recovery system, or runtime content generation.

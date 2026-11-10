@@ -114,9 +114,21 @@ export function authoringBrief(content, lessonId) {
   };
 }
 
+/** Planning lives beside the canonical schedule, not in orchestration code. */
+export function nextLessonSpec(content) {
+  const schedule = authoringPlan(content);
+  if (schedule.errors.length) throw new Error(schedule.errors.join("\n"));
+  const learningNumber = schedule.plans.at(-1)?.learningNumber ?? 0;
+  const checkpoint = schedule.pending.find((entry) => entry.type === "revision");
+  if (learningNumber && checkpoint.afterLearningNumber === learningNumber) {
+    return { kind: "revision", learningNumber, introductions: [] };
+  }
+  return { kind: "learning", learningNumber: learningNumber + 1, introductions: frequencyGroup(learningNumber + 1) };
+}
+
 /** Invoke only after structural validation; occurrence coverage is mechanical,
  * meaningful reuse and language quality remain the author's self-review. */
-export function validateAuthoringPolicy(content) {
+export function validateAuthoringPolicy(content, { storyLessonIds } = {}) {
   const schedule = authoringPlan(content);
   const errors = [...schedule.errors];
   const lessons = content.modules.flatMap((module) => module.lessons);
@@ -125,6 +137,8 @@ export function validateAuthoringPolicy(content) {
     if (lesson.kind === "learning" && lesson.newCharacters.map(({ hanzi }) => hanzi).join("") !== plan.expectedIntroductions.join("")) {
       errors.push(`${lesson.id}: exact frequency introductions required: ${plan.expectedIntroductions.join("")}`);
     }
+    // Sequence rules above always apply. Only occurrence checks are scoped.
+    if (storyLessonIds && !storyLessonIds.has(lesson.id)) continue;
     const occurrences = new Set(lesson.story?.paragraphs.flat(2).filter((token) => typeof token !== "string").map(({ hanzi }) => hanzi));
     const allowed = new Set(plan.allowed);
     for (const hanzi of occurrences) if (!allowed.has(hanzi)) errors.push(`${lesson.id}: illegal Hanzi ${hanzi}; allowed set is taught + top 100`);

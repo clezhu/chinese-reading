@@ -3,14 +3,19 @@
 `curriculum.ts` is the only ordered curriculum. Each learning lesson owns its
 five `newCharacters`; revision lessons own none. There is no global character
 dictionary, stored cumulative bank, or duplicated module membership on a story.
-The current curriculum has 11 lessons in the single `foundations` module named
-**Fundamentals**: learning lessons 1–10, then an all-50 revision checkpoint.
+The current curriculum has 55 lessons in the single `foundations` module named
+**Fundamentals**: 50 learning lessons, with a latest-50 revision checkpoint after
+every ten learning lessons (five checkpoints, 250 introduced characters).
+The original first 11 lessons remain unchanged. Learning lessons 11–50 and
+checkpoints 20/30/40/50 are in `frequency-expansion.ts`, all at revision 1.
+Sources, language self-reviews and local integration evidence are preserved in
+[`next-44-review/`](../../authoring/drafts/next-44-review/).
 There is no unit logic or `connections` module. The user-requested expansion
 explicitly supersedes the former three-lesson cap/fourth-lesson prohibition.
 The first three are #7's original **author-self-reviewed** stories in
 `fundamentals-stories.ts`, unchanged. Their stable lesson IDs are
 `first-characters`, `people-and-places`, and `everyday-connections`; all have
-`contentRevision: 3`. Learning lessons 4–10 and the revision are integrated from
+`contentRevision: 3`. Learning lessons 4–10 and the first revision are integrated from
 `extended-fundamentals.ts`, all at revision 1. New-content sources/self-review
 are in [`REVIEW-expansion.md`](../../authoring/drafts/REVIEW-expansion.md).
 This is not independent human approval or a claim that the expansion is deployed.

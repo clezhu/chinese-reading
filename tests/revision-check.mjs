@@ -8,8 +8,8 @@ const { revisionLessonFixture } = fixture;
 const firstLearning = published.orderedLessons()[0];
 const result = validateCurriculum(fixture.curriculum, { policy: "structural", requireStories: true });
 assert.deepEqual(result.errors, []);
-assert.equal(published.orderedLessons().length, 11, "the published curriculum has ten learning lessons and a checkpoint");
-assert.deepEqual(published.orderedLessons().map((lesson) => lesson.kind), [...Array(10).fill("learning"), "revision"]);
+assert.equal(published.orderedLessons().length, 55, "the published curriculum has fifty learning lessons and five checkpoints");
+assert.deepEqual(published.orderedLessons().map((lesson) => lesson.kind), Array.from({ length: 5 }, () => [...Array(10).fill("learning"), "revision"]).flat());
 assert.deepEqual(revisionLessonFixture.story, firstLearning.story);
 assert.equal(revisionLessonFixture.contentRevision, firstLearning.contentRevision);
 assert.equal(published.findLesson(revisionLessonFixture.id), undefined);
@@ -21,4 +21,4 @@ for (const lesson of published.orderedLessons().slice(3)) {
 assert.equal(fixture.findLesson(revisionLessonFixture.id).kind, "revision");
 assert.deepEqual(fixture.findLesson(revisionLessonFixture.id).newCharacters, []);
 assert.deepEqual(fixture.taughtCharacters(revisionLessonFixture.id), published.taughtCharacters(firstLearning.id));
-console.log("Isolated four-lesson revision fixture checked; published 11-lesson curriculum is unchanged (not language approval).");
+console.log("Isolated four-lesson revision fixture checked; published 55-lesson curriculum is separate (not language approval).");

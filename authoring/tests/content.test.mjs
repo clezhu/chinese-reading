@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { loadContent, repoRoot } from "../scripts/load-content.mjs";
 import { availableBank, lengthGuidance, validateCurriculum, validatePublishedCurriculum, validateOccurrenceReference, validPinyin, withDrafts } from "../scripts/content-tools.mjs";
-import { authoringPlan, frequencyGroup } from "../scripts/authoring-policy.mjs";
+import { authoringBrief, authoringPlan, frequencyGroup } from "../scripts/authoring-policy.mjs";
 
 const { curriculum, taughtCharacters, orderedLessons } = await loadContent("app/content/curriculum.ts");
 // Exercise replacement mechanics independently of archived/proposed real drafts.
@@ -19,29 +20,63 @@ const checkMutation = (mutate, pattern) => {
   assert.match(validateCurriculum(candidate).errors.join("\n"), pattern);
 };
 
-test("published curriculum has ten ordered frequency groups and a final all-50 revision", () => {
+// Frozen publication fingerprints include stories, reading lists and metadata.
+// Sort object keys so formatting/property order changes are not content changes.
+const canonical = (value) => Array.isArray(value) ? value.map(canonical)
+  : value && typeof value === "object" ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])])) : value;
+const fingerprint = (lessons) => createHash("sha256").update(JSON.stringify(canonical(lessons))).digest("hex");
+
+test("publication preserves the first 11 lessons and appends the frozen 44-lesson authoring output in order", () => {
   const published = orderedLessons();
-  assert.equal(published.length, 11);
-  assert.deepEqual(published.slice(0, 3).map((l) => l.id), ["first-characters", "people-and-places", "everyday-connections"]);
-  assert.deepEqual(published.slice(0, 3).map((l) => l.contentRevision), [3, 3, 3]);
-  assert.deepEqual(published.map((l) => l.kind), [...Array(10).fill("learning"), "revision"]);
+  assert.deepEqual(curriculum.modules.map(({ id, title }) => ({ id, title })), [{ id: "foundations", title: "Fundamentals" }]);
+  assert.deepEqual(published.slice(0, 11).map(({ id, title, description, kind, contentRevision }) => ({ id, title, description, kind, contentRevision })), [
+    { id: "first-characters", title: "First characters", description: "Two siblings discover that their mother belongs to both of them.", kind: "learning", contentRevision: 3 },
+    { id: "people-and-places", title: "People and places", description: "A quiet storyteller finds the courage to join the conversation.", kind: "learning", contentRevision: 3 },
+    { id: "everyday-connections", title: "Everyday connections", description: "A second pastry turns a possessive moment into a chance to share.", kind: "learning", contentRevision: 3 },
+    { id: "an-extra-pair-of-hands", title: "An extra pair of hands", description: "A child learns to make pastries by watching his mother.", kind: "learning", contentRevision: 1 },
+    { id: "an-unspoken-invitation", title: "An unspoken invitation", description: "An invitation never reaches Grandma because everyone thinks someone else passed it on.", kind: "learning", contentRevision: 1 },
+    { id: "more-than-a-thank-you", title: "More than a thank-you", description: "A child has a more generous reply in mind than the expected thank-you.", kind: "learning", contentRevision: 1 },
+    { id: "a-welcome-visit", title: "A welcome visit", description: "Someone who thinks she needs a reason to visit finds she is already welcome.", kind: "learning", contentRevision: 1 },
+    { id: "more-than-the-pastries", title: "More than the pastries", description: "An imperfect pastry is no reason to miss a visit to Mum.", kind: "learning", contentRevision: 1 },
+    { id: "seeing-for-herself", title: "Seeing for herself", description: "One visitor checks a place out instead of accepting the group's verdict.", kind: "learning", contentRevision: 1 },
+    { id: "a-birthday-change", title: "A birthday change", description: "A parent discovers that being present matters more than a birthday treat.", kind: "learning", contentRevision: 1 },
+    { id: "the-birthday-surprise", title: "The birthday surprise", description: "Three generations discover that a birthday gathering says more than the invitation.", kind: "revision", contentRevision: 1 },
+  ]);
+  assert.equal(fingerprint(published.slice(0, 11)), "5850eb784791dabd1b25a71b110ab4f98fc7d5b2660daa364eda56e69441b132");
+  const appended = published.slice(11);
+  assert.equal(appended.length, 44);
+  assert.deepEqual(appended.map((lesson) => lesson.id), Array.from({ length: 4 }, (_, block) => [
+    ...Array.from({ length: 10 }, (_, i) => `learning-${11 + block * 10 + i}`), `revision-${20 + block * 10}`,
+  ]).flat());
+  assert.ok(appended.every((lesson) => lesson.contentRevision === 1));
+  // Captured from the frozen authoring output for this expansion; no ignored
+  // draft or local run files are imported/read by this regression test.
+  assert.equal(fingerprint(appended), "4e97cf823fd939b604e9a33cb5ce8955e15918f4471d671741241a177a9757dd");
+});
+
+test("published curriculum has 50 ordered frequency groups and five latest-50 revisions", () => {
+  const published = orderedLessons();
+  assert.equal(published.length, 55);
+  assert.deepEqual(published.map((l) => l.kind), Array.from({ length: 5 }, () => [...Array(10).fill("learning"), "revision"]).flat());
   assert.deepEqual(validatePublishedCurriculum(curriculum).errors, []);
-  for (const [index, lesson] of published.slice(0, 10).entries()) {
+  for (const [index, lesson] of published.filter((lesson) => lesson.kind === "learning").entries()) {
     assert.deepEqual(lesson.newCharacters.map((c) => c.hanzi), frequencyGroup(index + 1));
     assert.ok(lesson.contentRevision > 0);
     lesson.newCharacters.forEach((c) => assert.equal(c.id, c.hanzi));
   }
-  const revision = published.at(-1);
-  assert.deepEqual(revision.newCharacters, []);
-  const bank = taughtCharacters(revision.id);
-  assert.equal(bank.length, 50);
-  assert.equal(new Set(bank.map((c) => c.hanzi)).size, 50);
-  const occurrences = new Set(revision.story.paragraphs.flat(2).filter((t) => typeof t !== "string").map((t) => t.hanzi));
-  for (const { hanzi } of bank) assert.ok(occurrences.has(hanzi), `revision must cover ${hanzi}`);
-  const brief = availableBank(curriculum, revision.id);
-  assert.equal(brief.prior.length, 50);
-  assert.deepEqual(brief.current, []);
-  assert.deepEqual(brief.combined, bank);
+  for (const [index, revision] of published.filter((lesson) => lesson.kind === "revision").entries()) {
+    assert.deepEqual(revision.newCharacters, []);
+    const bank = taughtCharacters(revision.id);
+    assert.equal(bank.length, (index + 1) * 50);
+    assert.equal(new Set(bank.map((c) => c.hanzi)).size, (index + 1) * 50);
+    const occurrences = new Set(revision.story.paragraphs.flat(2).filter((t) => typeof t !== "string").map((t) => t.hanzi));
+    for (const { hanzi } of bank.slice(-50)) assert.ok(occurrences.has(hanzi), `${revision.id} must cover ${hanzi}`);
+    const brief = availableBank(curriculum, revision.id);
+    assert.equal(brief.prior.length, (index + 1) * 50);
+    assert.deepEqual(brief.current, []);
+    assert.deepEqual(brief.combined, bank);
+    assert.deepEqual(authoringBrief(curriculum, revision.id).revisionTargets, bank.slice(-50).map((c) => c.hanzi));
+  }
 });
 
 test("published stories satisfy actual Fibonacci due groups and revision does not advance the schedule", () => {
@@ -58,18 +93,48 @@ test("published stories satisfy actual Fibonacci due groups and revision does no
       assert.ok(occurrences.has(hanzi), `${lesson.id} must cover new/due ${hanzi}`);
     }
   }
+  // Extend coverage to every learning lesson while retaining the explicit
+  // first-ten due-group baseline above. Checkpoints never advance this clock.
+  const offsets = [1, 2, 4, 7, 12, 20, 33, 54];
+  for (const [index, lesson] of orderedLessons().entries()) {
+    const plan = plans[index];
+    if (lesson.kind === "learning") {
+      const groups = Array.from({ length: plan.learningNumber - 1 }, (_, i) => i + 1)
+        .filter((introducedAt) => offsets.includes(plan.learningNumber - introducedAt));
+      assert.deepEqual(plan.due, groups.flatMap(frequencyGroup));
+      assert.equal(plan.cumulativeIntroduced, plan.learningNumber * 5);
+      assert.equal(plan.guidance.target, lengthGuidance(plan.learningNumber).target);
+    } else {
+      assert.equal(plan.learningNumber, (Math.floor(index / 11) + 1) * 10);
+      assert.equal(plan.cumulativeIntroduced, plan.learningNumber * 5);
+      assert.deepEqual(plan.due, []);
+      assert.deepEqual(plan.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(plan.learningNumber - 9 + i)).flat());
+      assert.deepEqual(plan.mandatory, plan.revisionTargets);
+      assert.equal(plan.guidance.target, lengthGuidance(plan.learningNumber, { revision: true }).target);
+    }
+    const occurrences = new Set(lesson.story.paragraphs.flat(2).filter((t) => typeof t !== "string").map((t) => t.hanzi));
+    for (const hanzi of plan.mandatory) assert.ok(occurrences.has(hanzi), `${lesson.id} must cover ${hanzi}`);
+  }
   const revision = plans.at(-1);
-  assert.equal(revision.learningNumber, 10);
-  assert.equal(revision.cumulativeIntroduced, 50);
+  assert.equal(revision.learningNumber, 50);
+  assert.equal(revision.cumulativeIntroduced, 250);
   assert.deepEqual(revision.due, []);
-  assert.deepEqual(revision.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(i + 1)).flat());
+  assert.deepEqual(revision.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(i + 41)).flat());
   assert.deepEqual(revision.mandatory, revision.revisionTargets);
-  assert.equal(revision.guidance.target, 375);
+  assert.equal(plans.at(-2).guidance.target, 145);
+  assert.equal(revision.guidance.target, 725);
   const beforeRevision = { modules: curriculum.modules.map((module) => ({ ...module, lessons: module.lessons.filter((lesson) => lesson.kind === "learning") })) };
   assert.deepEqual(pending.filter((entry) => entry.type === "fibonacci"), authoringPlan(beforeRevision).pending.filter((entry) => entry.type === "fibonacci"));
-  assert.equal(pending.filter((entry) => entry.type === "fibonacci").length, 50);
-  assert.deepEqual(pending.filter((entry) => entry.type === "revision"), [{ type: "revision", afterLearningNumber: 20, introductions: 50, status: "pending" }]);
-  assert.ok(pending.every((entry) => entry.status === "pending" && (entry.type !== "fibonacci" || entry.learningNumber > 10)));
+  assert.equal(pending.filter((entry) => entry.type === "fibonacci").length, 250);
+  assert.deepEqual(pending.filter((entry) => entry.type === "fibonacci"), Array.from({ length: 50 }, (_, i) => {
+    const introducedAt = i + 1;
+    return frequencyGroup(introducedAt).map((hanzi) => ({
+      type: "fibonacci", hanzi, introducedAt,
+      learningNumber: introducedAt + offsets.find((offset) => introducedAt + offset > 50), status: "pending",
+    }));
+  }).flat());
+  assert.deepEqual(pending.filter((entry) => entry.type === "revision"), [{ type: "revision", afterLearningNumber: 60, introductions: 50, status: "pending" }]);
+  assert.ok(pending.every((entry) => entry.status === "pending" && (entry.type !== "fibonacci" || entry.learningNumber > 50)));
 });
 
 test("available bank derives prior/current/combined readings across module boundaries", () => {
@@ -112,10 +177,10 @@ test("published stories have paragraphs, individual occurrences and derived perm
 });
 
 test("candidate drafts replace lessons together, reuse the taught bank, and remain unpublished", () => {
-  assert.equal(drafts.length, 11);
+  assert.equal(drafts.length, 55);
   const candidate = withDrafts(curriculum, drafts);
   assert.deepEqual(validateCurriculum(candidate).errors, []);
-  assert.equal(orderedLessons(candidate).length, 11);
+  assert.equal(orderedLessons(candidate).length, 55);
   assert.equal(orderedLessons(candidate).at(-1).kind, "revision");
   assert.deepEqual(orderedLessons(candidate).at(-1).newCharacters, []);
   assert.ok(orderedLessons(candidate).every((l, i) => l.contentRevision === orderedLessons()[i].contentRevision + 1));
@@ -254,9 +319,12 @@ test("CLI candidates repair older policy violations but cannot bypass hard check
     assert.equal(JSON.parse(valid.stdout).baselinePolicy, "structural");
     assert.equal(JSON.parse(valid.stdout).policy, "published");
     const revisionSentence = candidates.at(-1).lesson.story.paragraphs[0][0];
-    const removedRevisionTarget = revisionSentence.shift();
+    // Older taught characters are optional here: remove a latest-50 target.
+    const targetIndex = revisionSentence.findIndex((token) => typeof token !== "string" && token.hanzi === frequencyGroup(41)[0]);
+    assert.ok(targetIndex >= 0);
+    const [removedRevisionTarget] = revisionSentence.splice(targetIndex, 1);
     assert.match(run().stderr, new RegExp(`${candidates.at(-1).lesson.id}: missing mandatory target`));
-    revisionSentence.unshift(removedRevisionTarget);
+    revisionSentence.splice(targetIndex, 0, removedRevisionTarget);
     const illegal = { hanzi: frequencyGroup(21)[0], pinyin: "a" };
     candidates[0].lesson.story.paragraphs[0][0].unshift(illegal);
     assert.match(run().stderr, /illegal Hanzi/);

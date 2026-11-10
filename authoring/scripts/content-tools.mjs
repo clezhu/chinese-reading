@@ -71,7 +71,19 @@ function consistentReading(hanzi, reading, readings) {
 
 // Structural mode is for generic fixtures, not publication. Use the named
 // publication API below (also used by CLI/build) for the canonical policy.
-export function validateCurriculum(content, { requireStories = false, policy = "structural" } = {}) {
+export function validateCurriculum(content, options = {}) {
+  return validateContent(content, options);
+}
+
+/** Scoped validation is explicitly not publication approval. Metadata is global. */
+export function validatePlannedLessons(content, lessonIds) {
+  if (!Array.isArray(lessonIds) || new Set(lessonIds).size !== lessonIds.length) throw new Error("Expected unique lesson IDs");
+  const known = new Set(content.modules.flatMap((module) => module.lessons.map((lesson) => lesson.id)));
+  for (const id of lessonIds) if (!known.has(id)) throw new Error(`Unknown planned lesson: ${id}`);
+  return { ...validateContent(content, { policy: "published" }, new Set(lessonIds)), policy: "planned-lessons" };
+}
+
+function validateContent(content, { requireStories = false, policy = "structural" } = {}, storyLessonIds) {
   if (!["structural", "published"].includes(policy)) throw new Error("Unknown validation policy");
   if (policy === "published") requireStories = true;
   const errors = [], warnings = [], reports = [];
@@ -136,6 +148,10 @@ export function validateCurriculum(content, { requireStories = false, policy = "
     if (lesson.kind === "learning") level++;
     const report = { lessonId: lesson.id, hanziCount: 0, taughtCount: 0, permanentHelp: [], guidance: lengthGuidance(Math.max(1, level), { revision: lesson.kind === "revision" }) };
     reports.push(report);
+    if (storyLessonIds && !storyLessonIds.has(lesson.id)) {
+      report.status = "not-checked";
+      continue;
+    }
     if (lesson.story === undefined) {
       if (requireStories) fail(path, "published/candidate lesson requires a story");
       else warnings.push(`${lesson.id}: no story yet`);
@@ -184,13 +200,13 @@ export function validateCurriculum(content, { requireStories = false, policy = "
     }
   }
   if (policy === "published" && !errors.length) {
-    const authoring = validateAuthoringPolicy(content);
+    const authoring = validateAuthoringPolicy(content, { storyLessonIds });
     errors.push(...authoring.errors);
     for (const [index, report] of reports.entries()) {
       const { newTargets, due, revisionTargets, mandatory, expectedIntroductions } = authoring.plans[index];
       Object.assign(report, { newTargets, due, revisionTargets, mandatory, expectedIntroductions });
     }
-    return { errors, warnings, reports, policy, pending: authoring.pending };
+    return { errors, warnings, reports, policy: storyLessonIds ? "planned-lessons" : policy, pending: authoring.pending };
   }
   return { errors, warnings, reports, policy };
 }

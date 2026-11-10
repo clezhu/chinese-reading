@@ -1,4 +1,5 @@
 node_modules/
+.authoring-runs/
 .pi/
 build/
 .react-router/

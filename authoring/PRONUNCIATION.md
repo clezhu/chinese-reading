@@ -121,9 +121,18 @@ before checks and after the tool-forced edit. No separate human review,
 independent Mandarin approval or learner testing is claimed. Source comparison
 and mechanical validation do not establish language quality or learning efficacy.
 
-The requested expansion supersedes the former three-lesson cap: production now
-has 11 lessons in Fundamentals, with no unit logic. Learning lessons 4–10 and
-the all-50 revision are integrated from `app/content/extended-fundamentals.ts`
+The requested expansions supersede the former three-lesson cap: the local
+runtime curriculum now has 55 lessons in Fundamentals, with no unit logic.
+Learning lessons 11–50 and four additional latest-50 revisions are integrated
+from `app/content/frequency-expansion.ts`. The next 200 reading lists were
+reviewed against CC-CEDICT archive SHA-256
+`2e8921a90b9abdca2ce78b8a6af104368f848681b7afe8020043f500fbe0238a`,
+dated `2026-11-09T04:23:50Z`, not the older archive described above. Attribution,
+rare-reading scope and worker contextual-pinyin self-reviews are preserved in
+[`drafts/next-44-review/`](drafts/next-44-review/), under the same CC BY-SA 4.0
+terms for adapted pronunciation material. This does not claim deployment.
+Learning lessons 4–10 and the first all-50 revision remain integrated from
+`app/content/extended-fundamentals.ts`
 at revision 1; the first three remain unchanged at revision 3. See
 [`drafts/REVIEW-expansion.md`](drafts/REVIEW-expansion.md) for the new reading
 lists, source comparisons and author self-review. Its pre-integration blocker

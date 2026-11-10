@@ -15,11 +15,14 @@ reveal set, not Hanzi, pinyin, interaction order, sentence snapshots or a deck.
 Reading definitions belong to the introducing lesson; cumulative taught sets,
 permanent help and revision cards are derived.
 
-The current production curriculum has 11 lessons in the existing Fundamentals
-module (`foundations`), with no unit logic: learning 1–10 plus an all-50 revision.
+The current runtime curriculum has 55 lessons in the existing Fundamentals
+module (`foundations`), with no unit logic: learning 1–50 plus five latest-50 revisions.
 The user-requested expansion supersedes the former three-lesson cap. The first
 three remain unchanged at revision 3; learning 4–10 and the checkpoint are
-revision 1, integrated from `app/content/extended-fundamentals.ts`. See
+revision 1, integrated from `app/content/extended-fundamentals.ts`. The next 44
+lessons are at revision 1 in `app/content/frequency-expansion.ts`; see
+[`next-44-review/`](../authoring/drafts/next-44-review/) for their source/self-review
+and local integration evidence. See
 [`REVIEW-expansion.md`](../authoring/drafts/REVIEW-expansion.md) for new-content
 sources/self-review, not deployment evidence. Content review status belongs to the authoring review records, not runtime
 checks. Changing preceding introductions/order can affect later stories' taught
@@ -141,7 +144,7 @@ no-click completion, and preserved revisit milestones. This does not substitute
 for real Worker/D1 concurrency and browser tests. Run server-backed suites
 serially (see `tests/README.md`); never start competing test servers.
 An isolated checked four-lesson build (first three plus an early revision) tests
-story-first entry separately from production's 11 lessons (see
+story-first entry separately from the full 55-lesson curriculum (see
 `tests/revision-README.md`). Historical #7 hosted verification is in
 [the release record](release-7.md), not evidence of expansion deployment. No new schema
 migration is required for the reread loop.
