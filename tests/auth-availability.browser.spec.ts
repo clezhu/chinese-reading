@@ -26,6 +26,7 @@ test("untouched slots stay empty; editing shows one priority rule and password v
     await expect(form.password).toHaveAttribute("aria-invalid", "true");
   }
   await form.password.fill("Garden1!");
+  await page.getByLabel("Confirm password", { exact: true }).fill("Garden1!");
   await expect(page.locator("#password-message")).toBeEmpty();
   await expect(form.password).toHaveAttribute("data-state", "valid");
   await expect(form.password).not.toHaveAttribute("aria-invalid", "true");
@@ -43,6 +44,7 @@ test("only locally valid debounced usernames are checked; edits revoke availabil
   await page.waitForTimeout(450);
   expect(requests).toEqual([]);
   await form.password.fill("Garden1!");
+  await page.getByLabel("Confirm password", { exact: true }).fill("Garden1!");
   await form.username.fill("reader_one");
   await form.username.fill("reader_two");
   await form.username.fill("reader_three");
@@ -71,6 +73,7 @@ test("late replies cannot replace the current username status, even if cancellat
   });
   const form = await fields(page);
   await form.password.fill("Garden1!");
+  await page.getByLabel("Confirm password", { exact: true }).fill("Garden1!");
   const oldRequest = page.waitForRequest("**/availability");
   await form.username.fill("old_reader");
   await oldRequest;
@@ -99,6 +102,7 @@ test("failed and malformed checks are neutral, block signup, and offer a keyboar
   const form = await fields(page);
   await form.username.fill("retry_reader");
   await form.password.fill("Garden1!");
+  await page.getByLabel("Confirm password", { exact: true }).fill("Garden1!");
   const retry = page.getByRole("button", { name: "Could not check. Try again.", exact: true });
   await expect(retry).toBeVisible();
   await expect(form.submit).toBeDisabled();
@@ -127,6 +131,7 @@ test("a hung check times out with an explicit retry instead of an endless pendin
   });
   const form = await fields(page);
   await form.password.fill("Garden1!");
+  await page.getByLabel("Confirm password", { exact: true }).fill("Garden1!");
   const requestStarted = page.waitForRequest("**/availability");
   await form.username.fill("timeout_reader");
   await page.clock.runFor(400);
@@ -149,8 +154,9 @@ test("authoritative registration conflict uses the existing username slot and re
   const form = await fields(page);
   await form.username.fill(credentials.username);
   await form.password.fill(credentials.password);
+  await page.getByLabel("Confirm password", { exact: true }).fill(credentials.password);
   await expect(page.locator("#username-message")).toHaveText("✓ Username available");
-  expect((await post(request, "/register", { ...credentials, username: credentials.username.toUpperCase() })).status()).toBe(303);
+  expect((await post(request, "/register", { ...credentials, confirmPassword: credentials.password, username: credentials.username.toUpperCase() })).status()).toBe(303);
   await form.submit.click();
   await expect(page.locator("#username-message")).toHaveText("Username taken");
   await expect(form.username).toHaveAttribute("aria-invalid", "true");

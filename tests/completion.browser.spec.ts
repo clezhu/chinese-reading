@@ -209,6 +209,19 @@ test("narrow revision wraps context and retains an unsaved result for retry", as
   await expect(milestones(page)).toHaveCount(0);
 });
 
+test("completing a later lesson removes start guidance even with the first lesson untouched", async ({ page }) => {
+  await register(page);
+  await startReader(page, lessonPath(lessons[1]!));
+  await finish(page).click();
+  await expect(page.getByRole("heading", { name: "Lesson complete", exact: true })).toBeVisible();
+  await page.goto("/lessons");
+  await page.reload();
+  await expect(lessonCard(page, firstTitle).getByRole("button", { name: /^Start lesson/ })).toBeVisible();
+  await expect(lessonCard(page, nextTitle).getByText("Completed", { exact: true })).toBeVisible();
+  await expect(page.getByText("Start here", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(0);
+});
+
 test("explicit learning revisit starts introduction, rereads skip it, and only a clean Finish updates latest milestone", async ({ page }) => {
   await register(page);
   const original = await startReader(page);
@@ -220,7 +233,8 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   await expect(completedCard.getByText("Completed", { exact: true })).toBeAttached();
   await expect(completedCard.getByRole("link")).toHaveCount(0);
   await expect(completedCard.getByRole("button")).toHaveCount(1);
-  await expect(lessonCard(page, nextTitle).getByText("Continue here", { exact: true })).toBeVisible();
+  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Start here", { exact: true })).toHaveCount(0);
   await completedCard.getByRole("button", { name: /^Revisit lesson/ }).click();
   await expect(page.getByRole("button", { name: "Continue", exact: true })).toBeVisible();
   const revisit = await state(page);
@@ -230,8 +244,10 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   await page.goto("/lessons");
   const card = lessonCard(page, firstTitle);
   await expect(card.getByText("Completed", { exact: true })).toBeAttached();
-  await expect(card.getByText("Continue here", { exact: true })).toBeVisible();
-  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(1);
+  await expect(card.getByText("Completed", { exact: true })).toBeVisible();
+  await expect(card.locator(".completion-badge")).toHaveText("✓");
+  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Start here", { exact: true })).toHaveCount(0);
   await expect(card.getByRole("button")).toHaveCount(0);
   await expect(card.getByRole("link")).toHaveCount(1);
   await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeAttached();

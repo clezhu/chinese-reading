@@ -8,6 +8,7 @@ async function register(page: Page, credentials = account()) {
   await page.goto("/register");
   await page.getByLabel("Username", { exact: true }).fill(credentials.username);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password);
+  await page.getByLabel("Confirm password", { exact: true }).fill(credentials.password);
   await page.getByRole("button", { name: "Create account", exact: true }).click();
   await expect(page).toHaveURL(/\/lessons$/);
   return credentials;
@@ -18,7 +19,7 @@ function expectLoginRedirect(response: { status(): number; headers(): Record<str
   expect(response.headers().location).toBe("/register");
 }
 
-test("register with username/password only; logout revokes a copied cookie, then login restores access", async ({ page, context, request }) => {
+test("register with username/password and confirmation; logout revokes a copied cookie, then login restores access", async ({ page, context, request }) => {
   await page.goto("/lessons");
   await expect(page).toHaveURL(/\/register$/);
   await page.getByRole("link", { name: "Log in", exact: true }).click();
@@ -59,6 +60,7 @@ test("duplicate usernames and incorrect login attempts give useful, password-fre
   await page.goto("/register");
   await page.getByLabel("Username", { exact: true }).fill(credentials.username.toUpperCase());
   await page.getByLabel("Password", { exact: true }).fill(credentials.password);
+  await page.getByLabel("Confirm password", { exact: true }).fill(credentials.password);
   await expect(page.locator("#username-message")).toHaveText("Username taken");
   await expect(page.getByRole("button", { name: "Create account", exact: true })).toBeDisabled();
   await expect(page.locator("#username")).toHaveAttribute("aria-invalid", "true");

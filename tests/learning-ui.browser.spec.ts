@@ -13,7 +13,7 @@ const flashcardCopy = "Look at the character, think in your head what you think 
 // changing signup/list presentation. No D1 seeds or invented curriculum.
 async function setup(page: Page) {
   const credentials = { ...account(), password: "Garden1!" };
-  expect((await post(page.request, "/register", credentials)).status()).toBe(303);
+  expect((await post(page.request, "/register", { ...credentials, confirmPassword: credentials.password })).status()).toBe(303);
   expect((await post(page.request, path, { intent: "start" })).status()).toBe(303);
   await page.goto(path);
   return credentials;

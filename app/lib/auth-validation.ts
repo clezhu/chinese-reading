@@ -2,7 +2,7 @@
 // not apply the creation policy to existing passwords.
 export const MAX_PASSWORD_LENGTH = 128;
 export const INCORRECT_CREDENTIALS = "Incorrect username or password.";
-export type AuthField = "username" | "password";
+export type AuthField = "username" | "password" | "confirmPassword";
 export type AuthError = { error: string; field: AuthField; username: string };
 
 export function usernameError(username: string): string | undefined {
@@ -27,6 +27,11 @@ export function passwordError(password: string): string | undefined {
 
 type Credentials = { username: string; password: string };
 
+export function confirmationError(password: string, confirmation: string): string | undefined {
+  if (!confirmation) return "Enter your password again.";
+  if (password !== confirmation) return "Passwords do not match.";
+}
+
 export function validateSignup(form: URLSearchParams): Credentials | AuthError {
   const username = form.get("username") ?? "";
   const password = form.get("password") ?? "";
@@ -37,6 +42,10 @@ export function validateSignup(form: URLSearchParams): Credentials | AuthError {
   const passwordMessage = passwordError(password);
   if (form.getAll("password").length !== 1 || passwordMessage) {
     return { error: passwordMessage ?? "Enter a password.", field: "password", username } as const;
+  }
+  const confirmationMessage = confirmationError(password, form.get("confirmPassword") ?? "");
+  if (form.getAll("confirmPassword").length !== 1 || confirmationMessage) {
+    return { error: confirmationMessage ?? "Enter your password again.", field: "confirmPassword", username } as const;
   }
   return { username, password } as const;
 }

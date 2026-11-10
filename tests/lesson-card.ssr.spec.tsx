@@ -26,7 +26,7 @@ const actionCount = (html: string) => (html.match(/<(?:a|button)\b/g) ?? []).len
 
 test("unstarted lessons omit Available while preserving guidance and start actions", () => {
   for (const lesson of [first, revisionLessonFixture]) {
-    for (const guidance of [undefined, "Start here", "Continue here"] as const) {
+    for (const guidance of [undefined, "Start here"] as const) {
       const html = renderCard({ lesson, status: "available", guidance });
       expect(html).not.toContain("Available");
       expect(html).toContain("Start lesson");

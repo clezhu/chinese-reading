@@ -45,9 +45,9 @@ test("starting first learning lesson groups every authored character/reading wit
   await page.reload();
   const activeCard = lessonCard(page, firstTitle);
   await expect(activeCard.getByText("In progress", { exact: true })).toBeAttached();
-  await expect(activeCard.getByText("Continue here", { exact: true })).toBeVisible();
-  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(1);
-  await expect(page.getByText("Start here", { exact: true })).toHaveCount(0);
+  await expect(activeCard.getByText("Start here", { exact: true })).toBeVisible();
+  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Start here", { exact: true })).toHaveCount(1);
   await expect(activeCard.getByRole("link", { name: /^Resume lesson/ })).toBeVisible();
   await expect(activeCard.getByRole("button")).toHaveCount(0);
   await expect(lessonCard(page, nextTitle).getByRole("button", { name: /^Start lesson\s*:/ })).toBeVisible();
@@ -61,6 +61,9 @@ test("later lessons accept direct access and starts but reject forged completion
     expect((await post(page.request, path, { intent: "start", completed: "true", user_id: "somebody-else" })).status()).toBe(303);
   }
   await page.goto("/lessons");
+  await expect(lessonCard(page, firstTitle).getByText("Start here", { exact: true })).toBeVisible();
+  await expect(page.getByText("Start here", { exact: true })).toHaveCount(1);
+  await expect(page.getByText("Continue here", { exact: true })).toHaveCount(0);
   const unsupported: (Record<string, string> | string)[] = [{ intent: "complete" }, { intent: "finish" }, { phase: "completed" }, "intent=start&intent=complete", "intent=start&intent=start"];
   for (const form of unsupported) expect((await post(page.request, firstLesson, form)).status()).toBe(400);
   expect((await post(page.request, firstLesson, { intent: "start", phase: "completed", completed: "true", first_completed_at: "1", last_completed_at: "1" })).status()).toBe(303);

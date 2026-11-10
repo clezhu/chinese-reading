@@ -14,6 +14,7 @@ export async function register(page: Page, credentials = account()) {
   await page.goto("/register");
   await page.getByLabel("Username", { exact: true }).fill(credentials.username);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password);
+  await page.getByLabel("Confirm password", { exact: true }).fill(credentials.password);
   await page.getByRole("button", { name: "Create account", exact: true }).click();
   await expect(page).toHaveURL(/\/lessons$/);
   await expect(page.getByText(credentials.username, { exact: true })).toBeAttached();

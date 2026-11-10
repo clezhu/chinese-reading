@@ -17,10 +17,16 @@ test("mobile form, lesson controls and introduction remain usable with keyboard 
   await page.keyboard.press("Tab");
   await expect(password).toBeFocused();
   await page.keyboard.type(credentials.password);
+  const confirmation = page.getByLabel("Confirm password", { exact: true });
+  await confirmation.focus();
+  await expect(confirmation).toBeFocused();
+  await page.keyboard.type(credentials.password);
   const create = page.getByRole("button", { name: "Create account", exact: true });
   // Availability is debounced: wait for the current username before tabbing
   // to a submit button which is intentionally disabled while checking.
   await expect(create).toBeEnabled();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Show confirmation password", exact: true })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(create).toBeFocused();
   expect((await create.boundingBox())!.height).toBeGreaterThanOrEqual(44);
@@ -64,6 +70,7 @@ test("flashcards work with keyboard controls and fit the mobile viewport", async
   await page.goto("/register");
   await page.getByLabel("Username", { exact: true }).fill(credentials.username);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password);
+  await page.getByLabel("Confirm password", { exact: true }).fill(credentials.password);
   await page.getByRole("button", { name: "Create account", exact: true }).click();
   await expect(page).toHaveURL(/\/lessons$/);
   await page.goto(firstLesson);

@@ -50,13 +50,14 @@ test("auth slots keep geometry across wrapped messages and forms scroll at short
   const password = page.getByLabel("Password", { exact: true });
   const submit = page.getByRole("button", { name: "Create account", exact: true });
   await expect(username).toBeEnabled();
-  const positions = async () => page.locator("#username, #password, button[type=submit]").evaluateAll((els) => els.map((el) => ({ top: el.getBoundingClientRect().top, height: el.getBoundingClientRect().height })));
+  const positions = async () => page.locator("#username, #password, #confirmPassword, button[type=submit]").evaluateAll((els) => els.map((el) => ({ top: el.getBoundingClientRect().top, height: el.getBoundingClientRect().height })));
   const initial = await positions();
   await shot(page, info, "signup-mobile-empty");
   await username.fill("bad name"); await password.fill("a");
   expect(await positions()).toEqual(initial);
   await shot(page, info, "signup-mobile-invalid");
   await username.fill(account().username); await password.fill("Garden1!");
+  await page.getByLabel("Confirm password", { exact: true }).fill("Garden1!");
   await expect(submit).toBeEnabled();
   expect(await positions()).toEqual(initial);
   await shot(page, info, "signup-mobile-valid");
@@ -70,6 +71,33 @@ test("auth slots keep geometry across wrapped messages and forms scroll at short
   await page.setViewportSize({ width: 1440, height: 810 });
   await page.goto("/login");
   await shot(page, info, "login-desktop");
+});
+
+test("both auth forms keep compact, stable message spacing", async ({ page }) => {
+  for (const width of [320, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const mode of ["login", "register"]) {
+      await page.goto(`/${mode}`);
+      const username = page.getByLabel("Username", { exact: true });
+      await expect(username).toBeEnabled();
+      const positions = () => page.locator(".auth-input, button[type=submit]").evaluateAll((els) => els.map((el) => el.getBoundingClientRect().top));
+      const initial = await positions();
+      const gaps = await page.locator(".auth-field").evaluateAll((fields) => fields.slice(0, -1).map((field, index) =>
+        fields[index + 1].querySelector("label")!.getBoundingClientRect().top - field.querySelector("input")!.getBoundingClientRect().bottom));
+      for (const gap of gaps) expect(gap).toBeLessThanOrEqual(48);
+      await username.fill("bad name");
+      await page.getByLabel("Password", { exact: true }).fill("a");
+      if (mode === "register") {
+        await page.getByLabel("Confirm password", { exact: true }).fill("b");
+        await expect(page.locator("#confirmation-message")).toHaveText("Passwords do not match.");
+      } else {
+        await page.getByRole("button", { name: "Log in", exact: true }).click();
+        await expect(page.getByRole("alert")).toHaveText("Incorrect username or password.");
+      }
+      expect(await positions()).toEqual(initial);
+      await noOverflow(page);
+    }
+  }
 });
 
 test("fixed list scenery, live introduction and centered stable flashcards reflow without clipping", async ({ page }, info) => {

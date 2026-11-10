@@ -14,7 +14,7 @@ test("username reports exactly the highest-priority creation rule without trimmi
     ["bad!", "Use letters, numbers or _."],
   ]) {
     expect(usernameError(value), value).toBe(message);
-    expect(validateSignup(new URLSearchParams({ ...valid, username: value }))).toEqual({ username: value, field: "username", error: message });
+    expect(validateSignup(new URLSearchParams({ ...valid, confirmPassword: valid.password, username: value }))).toEqual({ username: value, field: "username", error: message });
   }
   for (const username of ["a_B", "a".repeat(32), valid.username]) expect(usernameError(username)).toBeUndefined();
 });
@@ -29,12 +29,12 @@ test("password creation priority, maximum and ASCII character classes match serv
     ["a".repeat(129), "Use at most 128 characters."],
   ]) {
     expect(passwordError(password), password).toBe(message);
-    expect(validateSignup(new URLSearchParams({ ...valid, password }))).toEqual({ username: valid.username, field: "password", error: message });
+    expect(validateSignup(new URLSearchParams({ ...valid, password, confirmPassword: password }))).toEqual({ username: valid.username, field: "password", error: message });
   }
   for (const symbol of "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~") expect(passwordError(`Garden1${symbol}`)).toBeUndefined();
   for (const password of ["Garden1!", "Garden12!", "Garden123!", "Garden1234!", `Garden1!${"a".repeat(120)}`]) {
     expect(passwordError(password)).toBeUndefined();
-    expect(validateSignup(new URLSearchParams({ ...valid, password }))).toEqual({ ...valid, password });
+    expect(validateSignup(new URLSearchParams({ ...valid, password, confirmPassword: password }))).toEqual({ ...valid, password });
     expect(validateLogin(new URLSearchParams({ ...valid, password }))).toEqual({ ...valid, password });
   }
 });
@@ -47,6 +47,25 @@ test("signup rejects missing/duplicate fields and all errors omit passwords", ()
     const result = validateSignup(new URLSearchParams(body));
     expect(result).toHaveProperty("error");
     expect(result).not.toHaveProperty("password");
+  }
+});
+
+test("signup requires exactly one matching password confirmation", () => {
+  for (const [confirmation, error] of [
+    [undefined, "Enter your password again."],
+    ["", "Enter your password again."],
+    ["Garden2!", "Passwords do not match."],
+    [" Garden1!", "Passwords do not match."],
+    ["Garden1! ", "Passwords do not match."],
+  ] as const) {
+    const body = new URLSearchParams(valid);
+    if (confirmation !== undefined) body.set("confirmPassword", confirmation);
+    expect(validateSignup(body)).toEqual({ username: valid.username, field: "confirmPassword", error });
+  }
+  for (const confirmations of [[valid.password, valid.password], [valid.password, "other"], ["", valid.password]]) {
+    const body = new URLSearchParams(valid);
+    for (const confirmation of confirmations) body.append("confirmPassword", confirmation);
+    expect(validateSignup(body)).toEqual({ username: valid.username, field: "confirmPassword", error: "Enter your password again." });
   }
 });
 

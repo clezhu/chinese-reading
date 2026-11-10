@@ -13,7 +13,7 @@ export function LessonCard({ lesson, status, number, phase, attemptId, guidance 
   number: number;
   phase?: LessonProgress["phase"];
   attemptId?: string;
-  guidance?: "Start here" | "Continue here";
+  guidance?: "Start here";
 }) {
   const activeRevisit = status === "completed" && phase != null && phase !== "complete";
   const contents = <>
