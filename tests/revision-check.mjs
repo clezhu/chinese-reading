@@ -10,12 +10,12 @@ const result = validateCurriculum(fixture.curriculum, { policy: "structural", re
 assert.deepEqual(result.errors, []);
 const publishedLessons = published.orderedLessons();
 const introductions = publishedLessons.flatMap((lesson) => lesson.newCharacters);
-assert.equal(publishedLessons.length, 110, "the published curriculum has 110 stories");
-assert.equal(publishedLessons.filter((lesson) => lesson.kind === "learning").length, 100, "the published curriculum has 100 learning lessons");
-assert.equal(publishedLessons.filter((lesson) => lesson.kind === "revision").length, 10, "the published curriculum has ten revision checkpoints");
-assert.equal(introductions.length, 500, "the published curriculum has 500 introductions");
-assert.equal(new Set(introductions.map((character) => character.hanzi)).size, 500, "all 500 introduced characters are unique");
-assert.deepEqual(publishedLessons.map((lesson) => lesson.kind), Array.from({ length: 10 }, () => [...Array(10).fill("learning"), "revision"]).flat());
+assert.equal(publishedLessons.length, 165, "the published curriculum has 165 stories");
+assert.equal(publishedLessons.filter((lesson) => lesson.kind === "learning").length, 150, "the published curriculum has 150 learning lessons");
+assert.equal(publishedLessons.filter((lesson) => lesson.kind === "revision").length, 15, "the published curriculum has fifteen revision checkpoints");
+assert.equal(introductions.length, 750, "the published curriculum has 750 introductions");
+assert.equal(new Set(introductions.map((character) => character.hanzi)).size, 750, "all 750 introduced characters are unique");
+assert.deepEqual(publishedLessons.map((lesson) => lesson.kind), Array.from({ length: 15 }, () => [...Array(10).fill("learning"), "revision"]).flat());
 assert.deepEqual(revisionLessonFixture.story, firstLearning.story);
 assert.equal(revisionLessonFixture.contentRevision, firstLearning.contentRevision);
 assert.equal(published.findLesson(revisionLessonFixture.id), undefined);
@@ -27,4 +27,4 @@ for (const lesson of published.orderedLessons().slice(3)) {
 assert.equal(fixture.findLesson(revisionLessonFixture.id).kind, "revision");
 assert.deepEqual(fixture.findLesson(revisionLessonFixture.id).newCharacters, []);
 assert.deepEqual(fixture.taughtCharacters(revisionLessonFixture.id), published.taughtCharacters(firstLearning.id));
-console.log("Isolated four-lesson revision fixture checked; published 110-story curriculum (100 learning, ten revisions, 500 introductions) is separate (not language approval).");
+console.log("Isolated four-lesson revision fixture checked; published 165-story curriculum (150 learning, fifteen revisions, 750 introductions) is separate (not language approval).");

@@ -7,8 +7,12 @@ adapt the existing policy/validation core; they do not define separate rules.
 This space holds offline authoring resources, not runtime application content.
 Published content lives in `app/content/`. The user-requested expansion explicitly
 supersedes the former three-lesson cap and fourth-lesson prohibition: the existing
-**Fundamentals** module now contains 100 learning lessons and ten latest-50
-revision checkpoints (110 stories, 500 introductions), with no unit logic. The
+**Fundamentals** module now contains 150 learning lessons and fifteen latest-50
+revision checkpoints (165 stories, 750 introductions), with no unit logic.
+Learning 101–150 and checkpoints 110/120/130/140/150 are integrated at revision 1
+from `app/content/frequency-further.ts`, exporting `frequencyFurtherLessons`.
+The first 110 stories remain unchanged; sources and author self-reviews are in
+[`drafts/next-55-20261112-review/`](drafts/next-55-20261112-review/). The
 first 55 stories remain unchanged. Learning lessons 51–100 and checkpoints
 60/70/80/90/100 are integrated from `app/content/frequency-continuation.ts`,
 exporting `frequencyContinuationLessons`, at revision 1; see
@@ -179,7 +183,7 @@ The helper reports each introduced character's next Fibonacci obligation and
 the next checkpoint as `pending` beyond the authored sequence. A curriculum
 ending at a checkpoint boundary may leave that checkpoint pending; omission
 becomes an error only if the next learning lesson is already present. The current
-110-story publication includes ten latest-50 checkpoints; later obligations
+165-story publication includes fifteen latest-50 checkpoints; later obligations
 remain pending, **not missing lessons or errors**. This schedule is an
 authoring heuristic, not a claim that research establishes these exact gaps.
 
@@ -238,7 +242,7 @@ increase. Never pad a natural story to meet a soft range.
    published. Old stories need not be retained for attempts; server reset and
    milestone preservation are separate responsibilities.
 7. Rerun `authoring:check`, `authoring:typecheck`, `authoring:test`, app/test
-   typechecks and the reader/browser suite. Audit the intended 110-story
+   typechecks and the reader/browser suite. Audit the intended 165-story
    publication and that the app cannot import dataset/draft files. Record
    actual self-review and validation results with the relevant review; hosted release verification
    is separate from this toolkit. Do not invent an independent reviewer.

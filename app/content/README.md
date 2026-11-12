@@ -3,9 +3,14 @@
 `curriculum.ts` is the only ordered curriculum. Each learning lesson owns its
 five `newCharacters`; revision lessons own none. There is no global character
 dictionary, stored cumulative bank, or duplicated module membership on a story.
-The current curriculum has 110 stories in the single `foundations` module named
-**Fundamentals**: 100 learning lessons, with a latest-50 revision checkpoint after
-every ten learning lessons (ten checkpoints, 500 introduced characters).
+The current curriculum has 165 stories in the single `foundations` module named
+**Fundamentals**: 150 learning lessons, with a latest-50 revision checkpoint after
+every ten learning lessons (fifteen checkpoints, 750 introduced characters).
+Stories 111–165 (learning 101–150 and checkpoints 110/120/130/140/150) are in
+`frequency-further.ts`, exported as `frequencyFurtherLessons`, all at revision 1.
+The first 110 stories remain unchanged. Sources, author self-reviews and
+integration evidence are in
+[`next-55-20261112-review/`](../../authoring/drafts/next-55-20261112-review/).
 The original first 55 stories remain unchanged. Learning lessons 51–100 and
 checkpoints 60/70/80/90/100 are in `frequency-continuation.ts`, exported as
 `frequencyContinuationLessons`, all at revision 1. Sources and language
@@ -41,7 +46,7 @@ existing CLI command usable without stale candidates. The earlier illustrative
 `fixtures/reader-stories.ts` remains separate, used only by the isolated
 structural tests; it is not imported by the published curriculum. The isolated
 revision browser curriculum has four lessons: the unchanged first three plus
-an early revision copied from the first story, separate from production's 110.
+an early revision copied from the first story, separate from production's 165.
 
 Exports from `curriculum.ts`:
 

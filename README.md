@@ -7,8 +7,8 @@ accounts → ordered lesson list → character introduction → mastery flashcar
 reveals completes the lesson; otherwise recognise that pass's collected deck,
 then reread with taught pinyin hidden again. Repeat as needed. Explicit revisits
 reset practice without undoing milestones or later access. **Fundamentals** now
-contains 110 stories: 100 learning lessons in exact frequency order plus ten
-latest-50 revisions, introducing 500 characters. The user-requested expansion
+contains 165 stories: 150 learning lessons in exact frequency order plus fifteen
+latest-50 revisions, introducing 750 characters. The user-requested expansion
 supersedes the former three-lesson cap; there is no unit logic.
 #7's first three remain unchanged at revision 3; the
 earlier eight lessons at revision 1 remain in `app/content/extended-fundamentals.ts`.
@@ -21,6 +21,11 @@ The next 55 stories (learning 51–100 and checkpoints 60/70/80/90/100) come fro
 at revision 1; the first 55 stories remain unchanged. Sources and author
 self-reviews for this continuation are in
 [`next-55-review/`](authoring/drafts/next-55-review/).
+Stories 111–165 (learning 101–150 and checkpoints 110/120/130/140/150)
+are in `app/content/frequency-further.ts`, exporting `frequencyFurtherLessons`,
+at revision 1. The first 110 stories remain unchanged. Sources, author
+self-reviews and integration evidence are in
+[`next-55-20261112-review/`](authoring/drafts/next-55-20261112-review/).
 See [`REVIEW-expansion.md`](authoring/drafts/REVIEW-expansion.md) for the earlier
 learning 4–10/checkpoint sources and self-review. This is not independent human
 approval or a deployment claim.
@@ -188,7 +193,7 @@ Stale/repeated revisit requests cannot replace an active attempt.
 Revision-kind lessons enter the story directly with no new characters or initial
 deck. `npm run test:revision` validates an unpublished fixture in a separate
 build/D1 store. That fixture has the first three lessons plus an early revision
-(four total), separate from the full 110-story curriculum. See
+(four total), separate from the full 165-story curriculum. See
 [`tests/revision-README.md`](tests/revision-README.md).
 
 No R2, content administration, email/recovery system, or runtime content generation.

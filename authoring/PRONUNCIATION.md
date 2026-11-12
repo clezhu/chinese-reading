@@ -112,6 +112,19 @@ the author must consult both single-character entries and relevant compounds.
 
 ## Status
 
+The 2026-11-12 continuation adds learning 101–150 and five latest-50 checkpoints
+at revision 1 in `app/content/frequency-further.ts`. The resulting curriculum has
+165 stories (150 learning, fifteen revision, 750 introductions); the first 110
+remain unchanged. The new 250 reading lists were reviewed against CC-CEDICT
+archive SHA-256 `2e8921a90b9abdca2ce78b8a6af104368f848681b7afe8020043f500fbe0238a`
+dated `2026-11-09T04:23:50Z`, with documented 汉典 supplements. Complete reviewed
+lists, limited source evidence, exceptional/rare reading scope and all five
+author self-reviews are retained in
+[`drafts/next-55-20261112-review/`](drafts/next-55-20261112-review/).
+Retain CC-CEDICT contributor attribution and CC BY-SA 4.0 terms. This is author
+self-review, not independent Mandarin approval or learner testing. Earlier
+110-story integration records below describe that historical expansion.
+
 The first three runtime stories in `app/content/fundamentals-stories.ts` are #7's
 original, **author-self-reviewed** texts, promoted at revision 3. The exact
 review and mechanical results are in [`drafts/REVIEW-7.md`](drafts/REVIEW-7.md).
@@ -122,7 +135,7 @@ independent Mandarin approval or learner testing is claimed. Source comparison
 and mechanical validation do not establish language quality or learning efficacy.
 
 The requested expansions supersede the former three-lesson cap: the local
-runtime curriculum now has 110 stories in Fundamentals (100 learning lessons,
+runtime curriculum at that stage had 110 stories in Fundamentals (100 learning lessons,
 ten latest-50 revisions, 500 introductions), with no unit logic. The first 55
 stories remain unchanged. Learning lessons 51–100 and checkpoints 60/70/80/90/100
 come from `app/content/frequency-continuation.ts`, exporting

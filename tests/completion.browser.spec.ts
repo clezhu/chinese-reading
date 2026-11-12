@@ -272,15 +272,15 @@ test("explicit learning revisit starts introduction, rereads skip it, and only a
   expect(Date.parse(latest[1]!)).toBeGreaterThan(Date.parse(earned[1]!));
 });
 
-test("all 110 published stories complete through the UI, with 100 learning lessons and ten direct-story latest-50 revisions", async ({ page }, testInfo) => {
-  test.setTimeout(600_000);
-  expect(lessons).toHaveLength(110);
-  expect(lessons.filter((lesson) => lesson.kind === "learning")).toHaveLength(100);
-  expect(lessons.filter((lesson) => lesson.kind === "revision")).toHaveLength(10);
+test("all 165 published stories complete through the UI, with 150 learning lessons and fifteen direct-story latest-50 revisions", async ({ page }, testInfo) => {
+  test.setTimeout(900_000);
+  expect(lessons).toHaveLength(165);
+  expect(lessons.filter((lesson) => lesson.kind === "learning")).toHaveLength(150);
+  expect(lessons.filter((lesson) => lesson.kind === "revision")).toHaveLength(15);
   const introductions = lessons.flatMap((lesson) => lesson.newCharacters);
-  expect(introductions).toHaveLength(500);
-  expect(new Set(introductions.map((character) => character.hanzi)).size).toBe(500);
-  expect(lessons.map((lesson) => lesson.kind)).toEqual(Array.from({ length: 10 }, () => [...Array(10).fill("learning"), "revision"]).flat());
+  expect(introductions).toHaveLength(750);
+  expect(new Set(introductions.map((character) => character.hanzi)).size).toBe(750);
+  expect(lessons.map((lesson) => lesson.kind)).toEqual(Array.from({ length: 15 }, () => [...Array(10).fill("learning"), "revision"]).flat());
   await register(page);
   for (const [index, lesson] of lessons.entries()) {
     await expect(page.getByText("Completed", { exact: true })).toHaveCount(index);
@@ -355,7 +355,7 @@ test("all 110 published stories complete through the UI, with 100 learning lesso
   expect(await state(page, lessonPath(lessons.at(-1)!))).toEqual(completedRevision);
   expect(await dates(page)).toEqual(earned);
   await page.locator('.completion-actions').getByRole("link", { name: "Back to lessons", exact: true }).click();
-  await expect(page.getByText("Completed", { exact: true })).toHaveCount(110);
+  await expect(page.getByText("Completed", { exact: true })).toHaveCount(165);
   await expect(page.getByText("Locked", { exact: true })).toHaveCount(0);
 });
 

@@ -25,9 +25,9 @@ Only this build redirects application curriculum imports to
 `tests/revision-curriculum.ts`. This is a separate four-lesson test curriculum:
 the unchanged first three production learning lessons plus a test-only early
 revision inserted after the first. Its story and content revision come from
-that first lesson. It does not include the runtime's full 110-story sequence
-(100 learning lessons plus ten latest-50 revisions in Fundamentals, introducing
-500 characters). The real curriculum helpers still determine prior introductions.
+that first lesson. It does not include the runtime's full 165-story sequence
+(150 learning lessons plus fifteen latest-50 revisions in Fundamentals, introducing
+750 characters). The real curriculum helpers still determine prior introductions.
 Validation checks inherited
 characters, a valid story, three unchanged published entries and one extra
 unpublished fixture entry. This structural early-revision scenario is not the
@@ -35,7 +35,7 @@ production checkpoint schedule.
 
 `test:revision:check` explicitly asserts those publication totals and the repeated
 ten-learning/one-revision order while keeping this four-lesson fixture isolated.
-The normal `tests/completion.browser.spec.ts` regression completes all 110 stories
+The normal `tests/completion.browser.spec.ts` regression completes all 165 stories
 through the UI, including every checkpoint's direct-story entry, latest-50
 coverage, pinyin help state and reload persistence, then checks final completion.
 
