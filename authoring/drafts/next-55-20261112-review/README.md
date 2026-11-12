@@ -63,3 +63,36 @@ not padded; coverage and exact allowed banks still pass. The new stories contain
 
 The full browser suite and isolated revision suite are run serially. Deployment
 and its separate hosted smoke results are recorded only after they occur.
+
+## Cloudflare release and hosted checks
+
+Integration commit `b93d300` was pushed directly to `origin/main` (the checkout
+was already on main, so no merge was necessary). Deployed the production build
+to the existing `chinese-reading` Worker in account
+`25199d0c31150d259be2793febaba676`, retaining its existing D1 binding. No remote
+migrations were needed. Initial release version:
+`63606a40-f48a-478a-bc6b-9c328a78acd8`; reported startup time 2 ms.
+
+Live URL: https://chinese-reading.chinese-reading.workers.dev
+
+After deployment, a dedicated release-smoke account (not the user's account)
+verified through public HTTPS actions and routes:
+
+- The lesson list contains 165 stories.
+- All 55 added lesson pages respond successfully in the expected authored order;
+  all 250 new character cards are present.
+- learning-101 and learning-150 enter introduction, advance through the public
+  flashcard/deck actions, render exactly 338 and 357 authored Hanzi occurrences,
+  finish with no reveals, and retain completion on a fresh state request.
+- revision-150 starts directly in the story, renders exactly 984 authored Hanzi
+  occurrences, finishes without reveals and retains completion.
+- All three sampled readers report contentRevision 1.
+
+An interactive hosted browser check separately observed 165 lesson headings,
+15 revision labels, the full learning-101 reading lists and revision-150 as
+lesson 165 with direct-story entry. It did not modify the user's lesson progress.
+The complete local UI suite, rather than this hosted smoke, covers completion of
+every story. No independent language/learner approval is claimed.
+
+The release-evidence follow-up is documentation-only; the same tested production
+build is redeployed with that final commit's identifier for traceability.
