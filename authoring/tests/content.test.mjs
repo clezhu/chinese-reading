@@ -26,7 +26,7 @@ const canonical = (value) => Array.isArray(value) ? value.map(canonical)
   : value && typeof value === "object" ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])])) : value;
 const fingerprint = (lessons) => createHash("sha256").update(JSON.stringify(canonical(lessons))).digest("hex");
 
-test("publication preserves the first 11 lessons and appends the frozen 44-lesson authoring output in order", () => {
+test("publication preserves the first 55 lessons and appends the frozen 55-lesson continuation in order", () => {
   const published = orderedLessons();
   assert.deepEqual(curriculum.modules.map(({ id, title }) => ({ id, title })), [{ id: "foundations", title: "Fundamentals" }]);
   assert.deepEqual(published.slice(0, 11).map(({ id, title, description, kind, contentRevision }) => ({ id, title, description, kind, contentRevision })), [
@@ -43,7 +43,7 @@ test("publication preserves the first 11 lessons and appends the frozen 44-lesso
     { id: "the-birthday-surprise", title: "The birthday surprise", description: "Three generations discover that a birthday gathering says more than the invitation.", kind: "revision", contentRevision: 1 },
   ]);
   assert.equal(fingerprint(published.slice(0, 11)), "5850eb784791dabd1b25a71b110ab4f98fc7d5b2660daa364eda56e69441b132");
-  const appended = published.slice(11);
+  const appended = published.slice(11, 55);
   assert.equal(appended.length, 44);
   assert.deepEqual(appended.map((lesson) => lesson.id), Array.from({ length: 4 }, (_, block) => [
     ...Array.from({ length: 10 }, (_, i) => `learning-${11 + block * 10 + i}`), `revision-${20 + block * 10}`,
@@ -52,12 +52,24 @@ test("publication preserves the first 11 lessons and appends the frozen 44-lesso
   // Captured from the frozen authoring output for this expansion; no ignored
   // draft or local run files are imported/read by this regression test.
   assert.equal(fingerprint(appended), "4e97cf823fd939b604e9a33cb5ce8955e15918f4471d671741241a177a9757dd");
+  // First-55 fingerprint captured independently from the next-55 manifest's
+  // baseline lessons, verified unchanged in its validated candidate.json.
+  assert.equal(fingerprint(published.slice(0, 55)), "8dda76fbc2ea714e1e0c5ac0a278f18867229aa94fbcc0a2ba4054784714ed0f");
+  const continuation = published.slice(55);
+  assert.equal(continuation.length, 55);
+  assert.deepEqual(continuation.map((lesson) => lesson.id), Array.from({ length: 5 }, (_, block) => [
+    ...Array.from({ length: 10 }, (_, i) => `learning-${51 + block * 10 + i}`), `revision-${60 + block * 10}`,
+  ]).flat());
+  assert.ok(continuation.every((lesson) => lesson.contentRevision === 1));
+  // Independently frozen from .authoring-runs/next-55/candidate.json after
+  // publication validation; ignored authoring artifacts are not read at runtime.
+  assert.equal(fingerprint(continuation), "12b17fb616e39fa11f9f1989ad8c322cacab59bd92e76a60a42a3ebb9e31aae4");
 });
 
-test("published curriculum has 50 ordered frequency groups and five latest-50 revisions", () => {
+test("published curriculum has 100 ordered frequency groups and ten latest-50 revisions", () => {
   const published = orderedLessons();
-  assert.equal(published.length, 55);
-  assert.deepEqual(published.map((l) => l.kind), Array.from({ length: 5 }, () => [...Array(10).fill("learning"), "revision"]).flat());
+  assert.equal(published.length, 110);
+  assert.deepEqual(published.map((l) => l.kind), Array.from({ length: 10 }, () => [...Array(10).fill("learning"), "revision"]).flat());
   assert.deepEqual(validatePublishedCurriculum(curriculum).errors, []);
   for (const [index, lesson] of published.filter((lesson) => lesson.kind === "learning").entries()) {
     assert.deepEqual(lesson.newCharacters.map((c) => c.hanzi), frequencyGroup(index + 1));
@@ -95,46 +107,50 @@ test("published stories satisfy actual Fibonacci due groups and revision does no
   }
   // Extend coverage to every learning lesson while retaining the explicit
   // first-ten due-group baseline above. Checkpoints never advance this clock.
-  const offsets = [1, 2, 4, 7, 12, 20, 33, 54];
+  // Explicit independent oracle: offset 88 is first due at learning lesson 89;
+  // 143 is needed for the next pending obligation of the earliest groups.
+  const offsets = [1, 2, 4, 7, 12, 20, 33, 54, 88, 143];
   for (const [index, lesson] of orderedLessons().entries()) {
     const plan = plans[index];
+    const learningNumber = lesson.kind === "learning" ? index - Math.floor(index / 11) + 1 : (Math.floor(index / 11) + 1) * 10;
+    assert.equal(plan.learningNumber, learningNumber);
     if (lesson.kind === "learning") {
-      const groups = Array.from({ length: plan.learningNumber - 1 }, (_, i) => i + 1)
-        .filter((introducedAt) => offsets.includes(plan.learningNumber - introducedAt));
+      const groups = Array.from({ length: learningNumber - 1 }, (_, i) => i + 1)
+        .filter((introducedAt) => offsets.includes(learningNumber - introducedAt));
       assert.deepEqual(plan.due, groups.flatMap(frequencyGroup));
-      assert.equal(plan.cumulativeIntroduced, plan.learningNumber * 5);
-      assert.equal(plan.guidance.target, lengthGuidance(plan.learningNumber).target);
+      assert.deepEqual(plan.mandatory, [...frequencyGroup(learningNumber), ...groups.flatMap(frequencyGroup)]);
+      assert.equal(plan.cumulativeIntroduced, learningNumber * 5);
+      assert.equal(plan.guidance.target, lengthGuidance(learningNumber).target);
     } else {
-      assert.equal(plan.learningNumber, (Math.floor(index / 11) + 1) * 10);
-      assert.equal(plan.cumulativeIntroduced, plan.learningNumber * 5);
+      assert.equal(plan.cumulativeIntroduced, learningNumber * 5);
       assert.deepEqual(plan.due, []);
-      assert.deepEqual(plan.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(plan.learningNumber - 9 + i)).flat());
+      assert.deepEqual(plan.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(learningNumber - 9 + i)).flat());
       assert.deepEqual(plan.mandatory, plan.revisionTargets);
-      assert.equal(plan.guidance.target, lengthGuidance(plan.learningNumber, { revision: true }).target);
+      assert.equal(plan.guidance.target, lengthGuidance(learningNumber, { revision: true }).target);
     }
     const occurrences = new Set(lesson.story.paragraphs.flat(2).filter((t) => typeof t !== "string").map((t) => t.hanzi));
     for (const hanzi of plan.mandatory) assert.ok(occurrences.has(hanzi), `${lesson.id} must cover ${hanzi}`);
   }
   const revision = plans.at(-1);
-  assert.equal(revision.learningNumber, 50);
-  assert.equal(revision.cumulativeIntroduced, 250);
+  assert.equal(revision.learningNumber, 100);
+  assert.equal(revision.cumulativeIntroduced, 500);
   assert.deepEqual(revision.due, []);
-  assert.deepEqual(revision.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(i + 41)).flat());
+  assert.deepEqual(revision.revisionTargets, Array.from({ length: 10 }, (_, i) => frequencyGroup(i + 91)).flat());
   assert.deepEqual(revision.mandatory, revision.revisionTargets);
-  assert.equal(plans.at(-2).guidance.target, 145);
-  assert.equal(revision.guidance.target, 725);
+  assert.equal(plans.at(-2).guidance.target, 230);
+  assert.equal(revision.guidance.target, 1150);
   const beforeRevision = { modules: curriculum.modules.map((module) => ({ ...module, lessons: module.lessons.filter((lesson) => lesson.kind === "learning") })) };
   assert.deepEqual(pending.filter((entry) => entry.type === "fibonacci"), authoringPlan(beforeRevision).pending.filter((entry) => entry.type === "fibonacci"));
-  assert.equal(pending.filter((entry) => entry.type === "fibonacci").length, 250);
-  assert.deepEqual(pending.filter((entry) => entry.type === "fibonacci"), Array.from({ length: 50 }, (_, i) => {
+  assert.equal(pending.filter((entry) => entry.type === "fibonacci").length, 500);
+  assert.deepEqual(pending.filter((entry) => entry.type === "fibonacci"), Array.from({ length: 100 }, (_, i) => {
     const introducedAt = i + 1;
     return frequencyGroup(introducedAt).map((hanzi) => ({
       type: "fibonacci", hanzi, introducedAt,
-      learningNumber: introducedAt + offsets.find((offset) => introducedAt + offset > 50), status: "pending",
+      learningNumber: introducedAt + offsets.find((offset) => introducedAt + offset > 100), status: "pending",
     }));
   }).flat());
-  assert.deepEqual(pending.filter((entry) => entry.type === "revision"), [{ type: "revision", afterLearningNumber: 60, introductions: 50, status: "pending" }]);
-  assert.ok(pending.every((entry) => entry.status === "pending" && (entry.type !== "fibonacci" || entry.learningNumber > 50)));
+  assert.deepEqual(pending.filter((entry) => entry.type === "revision"), [{ type: "revision", afterLearningNumber: 110, introductions: 50, status: "pending" }]);
+  assert.ok(pending.every((entry) => entry.status === "pending" && (entry.type !== "fibonacci" || entry.learningNumber > 100)));
 });
 
 test("available bank derives prior/current/combined readings across module boundaries", () => {
@@ -177,10 +193,10 @@ test("published stories have paragraphs, individual occurrences and derived perm
 });
 
 test("candidate drafts replace lessons together, reuse the taught bank, and remain unpublished", () => {
-  assert.equal(drafts.length, 55);
+  assert.equal(drafts.length, 110);
   const candidate = withDrafts(curriculum, drafts);
   assert.deepEqual(validateCurriculum(candidate).errors, []);
-  assert.equal(orderedLessons(candidate).length, 55);
+  assert.equal(orderedLessons(candidate).length, 110);
   assert.equal(orderedLessons(candidate).at(-1).kind, "revision");
   assert.deepEqual(orderedLessons(candidate).at(-1).newCharacters, []);
   assert.ok(orderedLessons(candidate).every((l, i) => l.contentRevision === orderedLessons()[i].contentRevision + 1));
@@ -320,7 +336,7 @@ test("CLI candidates repair older policy violations but cannot bypass hard check
     assert.equal(JSON.parse(valid.stdout).policy, "published");
     const revisionSentence = candidates.at(-1).lesson.story.paragraphs[0][0];
     // Older taught characters are optional here: remove a latest-50 target.
-    const targetIndex = revisionSentence.findIndex((token) => typeof token !== "string" && token.hanzi === frequencyGroup(41)[0]);
+    const targetIndex = revisionSentence.findIndex((token) => typeof token !== "string" && token.hanzi === frequencyGroup(91)[0]);
     assert.ok(targetIndex >= 0);
     const [removedRevisionTarget] = revisionSentence.splice(targetIndex, 1);
     assert.match(run().stderr, new RegExp(`${candidates.at(-1).lesson.id}: missing mandatory target`));

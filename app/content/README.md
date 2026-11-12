@@ -3,12 +3,17 @@
 `curriculum.ts` is the only ordered curriculum. Each learning lesson owns its
 five `newCharacters`; revision lessons own none. There is no global character
 dictionary, stored cumulative bank, or duplicated module membership on a story.
-The current curriculum has 55 lessons in the single `foundations` module named
-**Fundamentals**: 50 learning lessons, with a latest-50 revision checkpoint after
-every ten learning lessons (five checkpoints, 250 introduced characters).
-The original first 11 lessons remain unchanged. Learning lessons 11–50 and
-checkpoints 20/30/40/50 are in `frequency-expansion.ts`, all at revision 1.
-Sources, language self-reviews and local integration evidence are preserved in
+The current curriculum has 110 stories in the single `foundations` module named
+**Fundamentals**: 100 learning lessons, with a latest-50 revision checkpoint after
+every ten learning lessons (ten checkpoints, 500 introduced characters).
+The original first 55 stories remain unchanged. Learning lessons 51–100 and
+checkpoints 60/70/80/90/100 are in `frequency-continuation.ts`, exported as
+`frequencyContinuationLessons`, all at revision 1. Sources and language
+self-reviews are in
+[`next-55-review/`](../../authoring/drafts/next-55-review/).
+Learning lessons 11–50 and checkpoints 20/30/40/50 are in
+`frequency-expansion.ts`, all at revision 1. Historical sources, language
+self-reviews and local integration evidence are preserved in
 [`next-44-review/`](../../authoring/drafts/next-44-review/).
 There is no unit logic or `connections` module. The user-requested expansion
 explicitly supersedes the former three-lesson cap/fourth-lesson prohibition.
@@ -36,7 +41,7 @@ existing CLI command usable without stale candidates. The earlier illustrative
 `fixtures/reader-stories.ts` remains separate, used only by the isolated
 structural tests; it is not imported by the published curriculum. The isolated
 revision browser curriculum has four lessons: the unchanged first three plus
-an early revision copied from the first story, separate from production's 11.
+an early revision copied from the first story, separate from production's 110.
 
 Exports from `curriculum.ts`:
 

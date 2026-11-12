@@ -1,6 +1,7 @@
 import { fundamentalsStories } from "./fundamentals-stories";
 import { extendedFundamentalsLessons } from "./extended-fundamentals";
 import { frequencyExpansionLessons } from "./frequency-expansion";
+import { frequencyContinuationLessons } from "./frequency-continuation";
 
 export type Character = {
   /** Compatibility key for flashcards; equal to hanzi, not a second identity. */
@@ -77,6 +78,7 @@ export const curriculum = {
         },
         ...extendedFundamentalsLessons,
         ...frequencyExpansionLessons,
+        ...frequencyContinuationLessons,
       ],
     },
   ],

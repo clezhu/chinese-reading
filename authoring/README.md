@@ -7,11 +7,15 @@ adapt the existing policy/validation core; they do not define separate rules.
 This space holds offline authoring resources, not runtime application content.
 Published content lives in `app/content/`. The user-requested expansion explicitly
 supersedes the former three-lesson cap and fourth-lesson prohibition: the existing
-**Fundamentals** module now contains 50 learning lessons and five latest-50
-revision checkpoints (55 lessons, 250 introductions), with no unit logic. The
-first 11 lessons remain unchanged. Learning lessons 11–50 and checkpoints
+**Fundamentals** module now contains 100 learning lessons and ten latest-50
+revision checkpoints (110 stories, 500 introductions), with no unit logic. The
+first 55 stories remain unchanged. Learning lessons 51–100 and checkpoints
+60/70/80/90/100 are integrated from `app/content/frequency-continuation.ts`,
+exporting `frequencyContinuationLessons`, at revision 1; see
+[`drafts/next-55-review/`](drafts/next-55-review/) for sources and author self-reviews.
+Learning lessons 11–50 and checkpoints
 20/30/40/50 are integrated from `app/content/frequency-expansion.ts`, at revision 1;
-see [`drafts/next-44-review/`](drafts/next-44-review/) for sources, worker
+see [`drafts/next-44-review/`](drafts/next-44-review/) for historical sources, worker
 self-reviews and local validation. The first three remain at revision 3;
 learning lessons 4–10 and the first checkpoint start at revision 1 in
 `app/content/extended-fundamentals.ts`, now integrated by `curriculum.ts`.
@@ -175,7 +179,7 @@ The helper reports each introduced character's next Fibonacci obligation and
 the next checkpoint as `pending` beyond the authored sequence. A curriculum
 ending at a checkpoint boundary may leave that checkpoint pending; omission
 becomes an error only if the next learning lesson is already present. The current
-55-lesson publication includes five latest-50 checkpoints; later obligations
+110-story publication includes ten latest-50 checkpoints; later obligations
 remain pending, **not missing lessons or errors**. This schedule is an
 authoring heuristic, not a claim that research establishes these exact gaps.
 
@@ -234,7 +238,7 @@ increase. Never pad a natural story to meet a soft range.
    published. Old stories need not be retained for attempts; server reset and
    milestone preservation are separate responsibilities.
 7. Rerun `authoring:check`, `authoring:typecheck`, `authoring:test`, app/test
-   typechecks and the reader/browser suite. Audit the intended 55-lesson
+   typechecks and the reader/browser suite. Audit the intended 110-story
    publication and that the app cannot import dataset/draft files. Record
    actual self-review and validation results with the relevant review; hosted release verification
    is separate from this toolkit. Do not invent an independent reviewer.

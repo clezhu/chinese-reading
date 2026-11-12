@@ -122,9 +122,25 @@ independent Mandarin approval or learner testing is claimed. Source comparison
 and mechanical validation do not establish language quality or learning efficacy.
 
 The requested expansions supersede the former three-lesson cap: the local
-runtime curriculum now has 55 lessons in Fundamentals, with no unit logic.
+runtime curriculum now has 110 stories in Fundamentals (100 learning lessons,
+ten latest-50 revisions, 500 introductions), with no unit logic. The first 55
+stories remain unchanged. Learning lessons 51–100 and checkpoints 60/70/80/90/100
+come from `app/content/frequency-continuation.ts`, exporting
+`frequencyContinuationLessons` at revision 1. The 250 additional reading lists
+use the same CC-CEDICT archive SHA-256
+`2e8921a90b9abdca2ce78b8a6af104368f848681b7afe8020043f500fbe0238a`
+dated `2026-11-09T04:23:50Z`, with documented 汉典 and Taiwan Ministry of
+Education (via 萌典) supplements. Source evidence, rare/regional/neutral reading
+scope, exclusions and contextual-pinyin author self-reviews are preserved in
+[`drafts/next-55-review/`](drafts/next-55-review/). Retain CC-CEDICT contributor
+attribution and CC BY-SA 4.0 terms for the adapted pronunciation material;
+supplemental reference links do not grant rights to redistribute those databases.
+No dictionary is imported into runtime, and integration does not establish
+hosted deployment or independent language approval.
+
+For the earlier expansion, the historical review remains unchanged:
 Learning lessons 11–50 and four additional latest-50 revisions are integrated
-from `app/content/frequency-expansion.ts`. The next 200 reading lists were
+from `app/content/frequency-expansion.ts`. Those 200 reading lists were
 reviewed against CC-CEDICT archive SHA-256
 `2e8921a90b9abdca2ce78b8a6af104368f848681b7afe8020043f500fbe0238a`,
 dated `2026-11-09T04:23:50Z`, not the older archive described above. Attribution,

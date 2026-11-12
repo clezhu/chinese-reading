@@ -7,16 +7,23 @@ accounts → ordered lesson list → character introduction → mastery flashcar
 reveals completes the lesson; otherwise recognise that pass's collected deck,
 then reread with taught pinyin hidden again. Repeat as needed. Explicit revisits
 reset practice without undoing milestones or later access. **Fundamentals** now
-contains 55 lessons: learning 1–50 in exact frequency order plus five latest-50
-revisions. The user-requested expansion supersedes the former three-lesson cap;
-there is no unit logic. #7's first three remain unchanged at revision 3; the
+contains 110 stories: 100 learning lessons in exact frequency order plus ten
+latest-50 revisions, introducing 500 characters. The user-requested expansion
+supersedes the former three-lesson cap; there is no unit logic.
+#7's first three remain unchanged at revision 3; the
 earlier eight lessons at revision 1 remain in `app/content/extended-fundamentals.ts`.
-The next 44 lessons are integrated at revision 1 from
-`app/content/frequency-expansion.ts`; the original 11 are unchanged. Their sources,
-author self-reviews and local validation are in
+Learning lessons 11–50 and checkpoints 20/30/40/50 are integrated at revision 1
+from `app/content/frequency-expansion.ts`. Historical sources, author self-reviews
+and local validation for that expansion remain in
 [`next-44-review/`](authoring/drafts/next-44-review/).
-See [`REVIEW-expansion.md`](authoring/drafts/REVIEW-expansion.md) for new-content
-sources/self-review. This is not independent human approval or a deployment claim.
+The next 55 stories (learning 51–100 and checkpoints 60/70/80/90/100) come from
+`app/content/frequency-continuation.ts`, exporting `frequencyContinuationLessons`,
+at revision 1; the first 55 stories remain unchanged. Sources and author
+self-reviews for this continuation are in
+[`next-55-review/`](authoring/drafts/next-55-review/).
+See [`REVIEW-expansion.md`](authoring/drafts/REVIEW-expansion.md) for the earlier
+learning 4–10/checkpoint sources and self-review. This is not independent human
+approval or a deployment claim.
 The reader under `prototype/` remains unrelated throwaway work.
 
 Issue #9 adds the approved Hanzi Garden interface without changing curriculum,
@@ -181,7 +188,7 @@ Stale/repeated revisit requests cannot replace an active attempt.
 Revision-kind lessons enter the story directly with no new characters or initial
 deck. `npm run test:revision` validates an unpublished fixture in a separate
 build/D1 store. That fixture has the first three lessons plus an early revision
-(four total), separate from the full 55-lesson curriculum. See
+(four total), separate from the full 110-story curriculum. See
 [`tests/revision-README.md`](tests/revision-README.md).
 
 No R2, content administration, email/recovery system, or runtime content generation.
